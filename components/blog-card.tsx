@@ -1,18 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import Link from 'next/link'
 import { cn } from '@/lib/utils'
-
-interface BlogCardProps {
-  title: string
-  description: string
-  slug: string
-  tags?: string[]
-  publishedAt?: string
-  delay?: number
-  className?: string
-}
+import { BlogCardProps } from '@/types/blog-card'
 
 const tagColors = [
   'bg-blue-500/10 text-blue-400',
@@ -28,21 +18,18 @@ export function BlogCard({
   description,
   slug,
   tags = [],
-  publishedAt,
-  delay = 0,
-  className,
+  published_at,
+  delay
 }: BlogCardProps) {
   return (
-    <Link href={`/blogs/${slug}`} passHref>
+    // <Link href={`/blogs/${slug}`} passHref>
       <motion.article
         whileHover={{ scale: 1.02 }}
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay }}
-        className={cn(
-          'hover:bg-darkclip rounded-2xl overflow-hidden shadow-xl/30 hover:shadow-white transition-all duration-300 p-4 h-full flex flex-col justify-between text-text',
-          className
-        )}
+        transition={{ duration: 0.4, delay}}
+        className={
+          'hover:bg-darkclip rounded-2xl overflow-hidden shadow-xl/30 hover:shadow-white transition-all duration-300 p-4 h-full flex flex-col justify-between text-text'}
       >
         {/* Title & Description */}
         <div>
@@ -72,9 +59,9 @@ export function BlogCard({
           </div>
 
           {/* Date */}
-          {publishedAt && (
+          {published_at && (
             <time className="text-xs text-gray-500">
-              {new Date(publishedAt).toLocaleDateString(undefined, {
+              {new Date(published_at).toLocaleDateString(undefined, {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric',
@@ -83,6 +70,6 @@ export function BlogCard({
           )}
         </div>
       </motion.article>
-    </Link>
+    // </Link>
   )
 }

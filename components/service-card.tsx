@@ -1,21 +1,10 @@
 'use client'
 
-import { motion, scale } from 'framer-motion'
-import { LucideIcon } from 'lucide-react'
+import { motion} from 'motion/react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
-
-interface ServiceCardProps {
-  title: string
-  description: string
-  icon?: LucideIcon
-  imageUrl?: any
-  href?: string
-  tags?: string[]
-  className?: string
-  delay?: number
-}
+import { ServiceCardProps } from '@/types/service-card'
 
 const tagColors = [
   'bg-blue-500/10 text-blue-400',
@@ -31,10 +20,10 @@ export function ServiceCard({
   title,
   description,
   icon: Icon,
-  imageUrl,
+  image_url,
   href,
   tags = [],
-  delay = 0,
+  delay
 }: ServiceCardProps) {
   const card = (
 
@@ -42,15 +31,15 @@ export function ServiceCard({
       initial={{ opacity: 0, y: 80 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.025 }}
-      transition={{ duration: 0.25, delay }}
+      transition={{ duration: 0.25,delay }}
       className=
       'flex flex-col justify-between w-full hover:bg-darkclip rounded-2xl overflow-hidden shadow-xl/30 hover:shadow-white transition-all duration-300 p-4'
     >
       {/* Icon */}
-      {imageUrl ? (
+      {image_url ? (
         <div className="relative w-full h-72 flex items-center justify-center overflow-hidden rounded-xl">
           <Image
-            src={imageUrl}
+            src={image_url}
             alt={title}
             height={500}
             width={500}

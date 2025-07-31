@@ -2,49 +2,31 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-
 import { Hero } from '@/components/hero'
 import { ServiceCard } from '@/components/service-card'
 import { BlogCard } from '@/components/blog-card'
 import { ContactForm } from '@/components/contact-form'
-import {
-  Code,
-  Smartphone,
-  BrainCircuit,
-  Cloud,
-  Search,
-  UserPen,
-  Earth,
-  ShoppingCart,
-  Bot,
-} from 'lucide-react'
 import TechTags from '@/components/TechTags'
+import AboutUs from '@/public/images/AboutUs.png'
+import Image from 'next/image'
+import { ServiceCardProps } from '@/types/service-card'
+import { BlogCardProps } from '@/types/blog-card'
+import { iconMap } from '@/lib/helper'
+import Link from 'next/link'
 
 export default function HomePage() {
-  const [services, setServices] = useState<any[]>([])
-  const [blogs, setBlogs] = useState<any[]>([])
-
-  const iconMap = {
-    Code,
-    Smartphone,
-    BrainCircuit,
-    Cloud,
-    Search,
-    UserPen,
-    Earth,
-    ShoppingCart,
-    Bot
-  }
+  const [services, setServices] = useState<ServiceCardProps[]>([]);
+  const [blogs, setBlogs] = useState<BlogCardProps[]>([]);
 
   useEffect(() => {
     fetchData()
-  }, [])
+  })
 
   const fetchData = async () => {
     const { data: servicesData, error: servicesError } = await supabase
       .from('services')
       .select('*')
-      .eq('featured', true) // ✅ filter only featured services
+      .eq('featured', true) 
       .order('created_at', { ascending: false })
       .limit(3)
     const { data: blogsData, error: blogsError } = await supabase
@@ -86,8 +68,8 @@ export default function HomePage() {
 
         {/* Content */}
         <div className="relative z-10 px-4 sm:px-6 md:px-10 py-20 max-w-7xl mx-auto flex flex-col md:flex-row gap-10">
-          <img
-            src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=800&q=80"
+          <Image
+            src={AboutUs}
             alt="Tech Visual"
             className="w-full md:w-1/2 rounded-3xl shadow-2xl object-cover"
           />
@@ -127,7 +109,7 @@ export default function HomePage() {
                   key={service.id}
                   title={service.title}
                   description={service.description}
-                  imageUrl={service.image_url}
+                  image_url={service.image_url}
                   icon={IconComponent}
                   tags={service.tags || []}
                   delay={index * 0.15}
@@ -138,7 +120,7 @@ export default function HomePage() {
 
           {/* View More Button for Services */}
           <div className="flex justify-center mt-10">
-            <a
+            <Link
               href="/services"
               className="group relative inline-flex items-center gap-1 px-6 py-3 btn rounded-lg transition-all duration-300 overflow-hidden"
             >
@@ -156,7 +138,7 @@ export default function HomePage() {
                   d="M13 7l5 5m0 0l-5 5m5-5H6"
                 />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -168,11 +150,11 @@ export default function HomePage() {
           <div className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center">
             {blogs.map((blog, index) => (
               <BlogCard
-                key={blog.slug}
+                key={blog.id}
                 title={blog.title}
                 description={blog.description}
                 slug={blog.slug}
-                publishedAt={blog.published_at}
+                published_at={blog.published_at}
                 tags={blog.tags || []}
                 delay={index * 0.15}
               />
@@ -181,7 +163,7 @@ export default function HomePage() {
 
           {/* View More Button for Blogs */}
           <div className="flex justify-center mt-10">
-            <a
+            <Link
               href="/blog"
               className="group relative inline-flex items-center gap-q px-6 py-3 btn rounded-lg transition-all duration-300 overflow-hidden"
             >
@@ -199,7 +181,7 @@ export default function HomePage() {
                   d="M13 7l5 5m0 0l-5 5m5-5H6"
                 />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
       </section>

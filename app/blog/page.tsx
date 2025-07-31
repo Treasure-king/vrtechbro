@@ -3,17 +3,10 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { motion } from 'motion/react'
-
-type Blog = {
-  id: string
-  title: string
-  content: string
-  slug: string
-  created_at: string
-}
+import { BlogCardProps } from '@/types/blog-card'
 
 export default function Blogs() {
-  const [blogs, setBlogs] = useState<Blog[]>([])
+  const [blogs, setBlogs] = useState<BlogCardProps[]>([])
 
   useEffect(() => {
     fetchBlogs()
@@ -25,7 +18,7 @@ export default function Blogs() {
       .select('*')
       .order('published_at', { ascending: false })
 
-    if (!error && data) setBlogs(data as Blog[])
+    if (!error && data) setBlogs(data as BlogCardProps[])
   }
 
   return (
@@ -57,17 +50,17 @@ export default function Blogs() {
             >
               <h2 className="text-2xl font-semibold mb-2 selection:bg-pink-400">{blog.title}</h2>
               <p className="text-sm text-info mb-3">
-                {new Date(blog.published_at).toLocaleDateString()}
+                 {blog.published_at ? new Date(blog.published_at).toLocaleDateString() : 'Date not available'}
               </p>
               <p className="text-sm line-clamp-4 leading-relaxed mb-4 selection:bg-pink-600">
                 {blog.description}
               </p>
-              <a
+              {/* <a
                 href={`/blogs/${blog.slug}`}
                 className="inline-block text-white hover:text-primaryHover font-medium hover:underline transition"
               >
                 Read more →
-              </a>
+              </a> */}
             </motion.div>
           ))}
         </div>
