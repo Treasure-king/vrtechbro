@@ -36,7 +36,6 @@ export default function HomePage() {
 
 
     if (!servicesError) setServices(servicesData || [])
-    console.log(services);
     if (!blogsError) setBlogs(blogsData || [])
   }
 
