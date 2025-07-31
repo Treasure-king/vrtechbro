@@ -16,7 +16,6 @@ const tagColors = [
 export function BlogCard({
   title,
   description,
-  slug,
   tags = [],
   published_at,
   delay

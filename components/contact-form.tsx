@@ -43,7 +43,7 @@ export function ContactForm() {
       } else {
         toast.error('Something went wrong. Please try again.')
       }
-    } catch (err) {
+    } catch {
       toast.error('Server error. Please try again later.')
     } finally {
       setLoading(false)
