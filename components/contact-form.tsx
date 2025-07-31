@@ -112,7 +112,7 @@ export function ContactForm() {
           <div className="space-y-2 text-sm md:text-lg leading-relaxed font-light ">
             <p><strong className="text-white/80">Company:</strong> VRTECHBRO Pvt. Ltd.</p>
             <p><strong className="text-white/80">Email:</strong> contact@vrtechbro.com</p>
-            <p><strong className="text-white/80">Phone:</strong> +91 98765 43210</p>
+            {/* <p><strong className="text-white/80">Phone:</strong> +91 98765 43210</p> */}
             <p><strong className="text-white/80">Address:</strong> 123 Innovation Avenue, Bangalore, India</p>
             <p><strong className="text-white/80">Working Hours:</strong> Mon–Fri, 9:00 AM – 6:00 PM</p>
           </div>
