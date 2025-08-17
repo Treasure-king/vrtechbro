@@ -53,7 +53,7 @@ export default function ServicesPage() {
       {/* ✅ Intro Paragraph for Context */}
       <p className="text-lg text-center max-w-3xl mx-auto mb-12 text-gray-400">
         At VRTechBro, we offer a wide range of digital solutions tailored to your business goals —
-        from frontend development with <strong>Next.js</strong> to powerful backend APIs, cloud integrations, mobile app builds, and scalable SaaS platforms. Whether you're a startup or an enterprise, our team delivers reliable, high-performance software across the stack.
+        from frontend development with <strong>Next.js</strong> to powerful backend APIs, cloud integrations, mobile app builds, and scalable SaaS platforms. Whether you&apos;re a startup or an enterprise, our team delivers reliable, high-performance software across the stack.
       </p>
 
       {/* ✅ Services Grid */}

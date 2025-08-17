@@ -1,7 +1,6 @@
 // app/blogs/[slug]/page.tsx
 
 import { Metadata } from "next";
-import Image from "next/image";
 import { FiUser, FiClock } from "react-icons/fi";
 import { notFound } from "next/navigation";
 import { supabase } from '@/lib/supabase';

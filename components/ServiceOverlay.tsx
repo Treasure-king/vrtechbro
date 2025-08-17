@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion} from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -101,8 +101,8 @@ export default function ServiceOverlay({ serviceId, serviceTitle }: ServiceOverl
         toast.error('Something went wrong. Please try again.',resData.error)
       }
       setOpen(false);
-    } catch (error: any) {
-      alert(error.message || "Failed to submit the form. Please try again.");
+    } catch{
+      alert("Failed to submit the form. Please try again.");
     } finally {
       setLoading(false);
     }
