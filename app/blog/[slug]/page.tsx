@@ -4,7 +4,14 @@ import { Metadata } from "next";
 import { FiUser, FiClock } from "react-icons/fi";
 import { notFound } from "next/navigation";
 import { supabase } from '@/lib/supabase';
-import React from "react"; // Required for JSX types
+import { JSX } from "react";
+
+// Type for PageProps to include `params` explicitly
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
 
 // Fetch a blog by slug
 async function getblog(slug: string) {
@@ -64,9 +71,7 @@ const renderBlogContent = (content: string) => {
 };
 
 // Metadata for SEO
-export async function generateMetadata(
-  { params }: { params: { slug: string } }
-): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const blog = await getblog(params.slug);
 
   if (!blog) return { title: "Blog Not Found" };
@@ -83,10 +88,8 @@ export async function generateMetadata(
   };
 }
 
-// Main page
-const BlogPage = async (
-  { params }: { params: { slug: string } }
-) => {
+// Main page with explicit typing for params
+const BlogPage = async ({ params }: PageProps): Promise<JSX.Element> => {
   const blog = await getblog(params.slug);
   if (!blog) return notFound();
 
