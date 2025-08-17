@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { supabase } from '@/lib/supabase';
 
 // Fetch a blog by slug
-async function getblog(slug: string) {
+async function getBlog(slug: string) {
   const { data, error } = await supabase
     .from("blogs")
     .select("*")
@@ -64,8 +64,7 @@ const renderBlogContent = (content: string)=> {
 
 // Metadata for SEO
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const {slug} = params
-  const blog = await getblog(slug);
+  const blog = await getBlog(params.slug);
 
   if (!blog) return { title: "Blog Not Found" };
 
@@ -83,7 +82,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 // Main page
 const BlogPage = async ({ params }: { params: { slug: string } }) => {
-  const blog = await getblog(params.slug);
+  const blog = await getBlog(params.slug);
   if (!blog) return notFound();
 
   return (
@@ -170,7 +169,8 @@ export async function generateStaticParams() {
   if (error || !data) return [];
 
   return data.map((blog: { slug: string }) => ({
-    slug: blog.slug,
+    params: { slug: blog.slug },
   }));
 }
+
 

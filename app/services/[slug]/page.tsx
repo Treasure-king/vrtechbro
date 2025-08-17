@@ -107,6 +107,6 @@ export async function generateStaticParams() {
   if (error || !data) return [];
 
   return data.map((service: { slug: string }) => ({
-    slug: service.slug,
+    params: { slug: service.slug }, 
   }));
 }
