@@ -1,6 +1,6 @@
 'use client'
 
-import { motion} from 'motion/react'
+import { motion } from 'motion/react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
@@ -15,65 +15,70 @@ const tagColors = [
   'bg-red-500/10 text-red-400',
 ]
 
-
 export function ServiceCard({
   title,
-  description,
+  short_description,
   icon: Icon,
   image_url,
-  href,
-  tags = [],
+  slug,
+  keywords = [],
   delay
 }: ServiceCardProps) {
-  const card = (
+  const href = slug ? `/services/${slug}` : undefined
 
-    <motion.div
+  const cardContent = (
+    <motion.article
       initial={{ opacity: 0, y: 80 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.025 }}
-      transition={{ duration: 0.25,delay }}
-      className=
-      'flex flex-col justify-between w-full hover:bg-darkclip rounded-2xl overflow-hidden shadow-xl/30 hover:shadow-white transition-all duration-300 p-4'
+      transition={{ duration: 0.25, delay }}
+      className="flex flex-col justify-between w-full hover:bg-darkclip rounded-2xl overflow-hidden shadow-xl/30 hover:shadow-white transition-all duration-100 p-4 border-[1px] border-white"
+      itemScope
+      itemType="https://schema.org/Service"
     >
-      {/* Icon */}
+      {/* 👁️‍🗨️ Image or Icon */}
       {image_url ? (
-        <div className="relative w-full h-72 flex items-center justify-center overflow-hidden rounded-xl">
+        <div className="relative w-full h-64 flex items-center justify-center overflow-hidden rounded-xl">
           <Image
             src={image_url}
-            alt={title}
-            height={500}
-            width={500}
+            alt={title || 'Service Image'}
+            height={400}
+            width={400}
             className="object-cover object-top"
           />
-        </div>)
-        :
-        (
-          <div className="relative w-full h-20 flex items-center justify-center">
-            {Icon && (
-              <Icon className="text-white h-16 w-16 bg-darkclip rounded-md border-white border-2 p-2" />
-            )}
-          </div>
-        )
-      }
+        </div>
+      ) : (
+        <div className="relative w-full h-20 flex items-center justify-center">
+          {Icon && (
+            <Icon className="text-white h-16 w-16 bg-darkclip rounded-md border-white border-2 p-2" />
+          )}
+        </div>
+      )}
 
-      {/* Content Area */}
+      {/* 📄 Textual Content */}
       <div className="flex flex-col flex-1 w-full p-6 md:p-8 justify-between gap-4 overflow-hidden">
-        {/* Title & Description */}
         <div className="flex-1 overflow-hidden">
-          <h3 className="text-2xl font-bold text-white mb-2 truncate">{title}</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
-            {description}
+          {/* ✅ Use semantic heading */}
+          <h3 itemProp="name" className="text-2xl font-bold text-white mb-2 truncate">
+            {title}
+          </h3>
+
+          <p
+            itemProp="description"
+            className="text-sm text-muted-foreground leading-relaxed line-clamp-4"
+          >
+            {short_description}
           </p>
         </div>
 
-        {/* Tags */}
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-4">
-            {tags.map((tag, i) => (
+        {/* 🏷️ keywords */}
+        {keywords.length > 0 && (
+          <div className="w-full flex flex-wrap gap-2 mt-4" aria-label="Keywords">
+            {keywords?.slice(0, 2).map((tag, i) => (
               <span
                 key={i}
                 className={cn(
-                  'px-3 py-1 text-xs rounded-full font-medium',
+                  'p-1 text-xs rounded-full font-medium',
                   tagColors[i % tagColors.length]
                 )}
               >
@@ -82,10 +87,24 @@ export function ServiceCard({
             ))}
           </div>
         )}
-      </div>
-    </motion.div>
 
+        {/* ➡️ CTA (links to slug) */}
+        {href && (
+          <div className="mt-4">
+            <span className="text-sm text-indigo-400 font-semibold inline-flex items-center hover:underline">
+              Learn more →
+            </span>
+          </div>
+        )}
+      </div>
+    </motion.article>
   )
 
-  return href ? <Link href={href}>{card}</Link> : card
+  return href ? (
+    <Link href={href} className="w-full">
+      {cardContent}
+    </Link>
+  ) : (
+    cardContent
+  )
 }

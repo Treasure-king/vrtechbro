@@ -2,13 +2,13 @@
 @import "tw-animate-css";
 
 body {
-  background-color: oklch(25% 0.04 265);
+  background-color: black;
 }
 
 @theme {
-  --color-dark: oklch(25% 0.04 265);
+  --color-dark: oklch(0 0 323);
   /* 🖤 Deep dark navy (for backgrounds) */
-  --color-darkclip: oklch(20% 0.04 260);
+  --color-darkclip: oklch(0.170 0 323);
   /* 🖤 lighter Deep dark navy (for backgrounds) */
   --color-primary: oklch(62.5% 0.21 260);
   /* ⚙️ Vivid modern blue (updated blue-600) */
