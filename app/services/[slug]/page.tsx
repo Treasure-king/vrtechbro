@@ -20,9 +20,10 @@ async function getService(slug: string) {
 }
 
 // ✅ Dynamic SEO metadata
-export async function generateMetadata({ params }: {params: { slug: string };}): Promise<Metadata> {
+export async function generateMetadata({ params }: {params: Promise<{ slug: string }>}): Promise<Metadata> {
   
-  const service = await getService(params.slug);
+  const {slug} = await params
+  const service = await getService(slug);
 
   if (!service) return { title: "Service Not Found" };
 
@@ -38,9 +39,9 @@ export async function generateMetadata({ params }: {params: { slug: string };}):
   };
 }
 
-const ServicePage = async ({ params }: {params: { slug: string }}): Promise<JSX.Element> => {
+const ServicePage = async ({ params }: {params: Promise<{ slug: string }>}): Promise<JSX.Element> => {
 
-  const {slug} = params
+  const {slug} = await params
   const service = await getService(slug);
   if (!service) return notFound();
 

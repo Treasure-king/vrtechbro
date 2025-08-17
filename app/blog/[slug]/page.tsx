@@ -72,11 +72,12 @@ const renderBlogContent = (content: string) => {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  console.log(params);
+  const {slug} = await params
+  console.log(slug);
   
-  const blog = await getBlog(params.slug);
+  const blog = await getBlog(slug);
 
   if (!blog) return { title: "Blog Not Found" };
 
@@ -96,10 +97,10 @@ export async function generateMetadata({
 const BlogPage = async ({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<JSX.Element> => {
-  console.log(params);
-  const blog = await getBlog(params.slug);
+  const {slug} = await params
+  const blog = await getBlog(slug);
   if (!blog) return notFound();
 
   return (
