@@ -4,13 +4,8 @@ import { Metadata } from "next";
 import { FiUser, FiClock } from "react-icons/fi";
 import { notFound } from "next/navigation";
 import { supabase } from '@/lib/supabase';
+import React from "react"; // Required for JSX types
 
-
-type PageProps = {
-  params: {
-    slug: string;
-  };
-};
 // Fetch a blog by slug
 async function getblog(slug: string) {
   const { data, error } = await supabase
@@ -36,7 +31,7 @@ const parseBoldText = (text: string): React.ReactNode[] => {
 };
 
 // Content renderer
-const renderBlogContent = (content: string)=> {
+const renderBlogContent = (content: string) => {
   const lines = content.split('\n');
 
   return lines.map((line, index) => {
@@ -69,7 +64,9 @@ const renderBlogContent = (content: string)=> {
 };
 
 // Metadata for SEO
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: { params: { slug: string } }
+): Promise<Metadata> {
   const blog = await getblog(params.slug);
 
   if (!blog) return { title: "Blog Not Found" };
@@ -87,7 +84,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 // Main page
-const BlogPage = async ({ params }: PageProps) => {
+const BlogPage = async (
+  { params }: { params: { slug: string } }
+) => {
   const blog = await getblog(params.slug);
   if (!blog) return notFound();
 
@@ -132,37 +131,10 @@ const BlogPage = async ({ params }: PageProps) => {
         {/* Description */}
         <p className="text-gray-400 text-lg mb-10 max-w-2xl">{blog.description}</p>
 
-        {/* Thumbnail Image */}
-        {/* {blog.thumbnail && (
-          <div className="w-full mb-12 rounded-lg overflow-hidden shadow-lg max-h-[400px] mx-auto">
-            <Image
-              src={blog.thumbnail}
-              alt={`${blog.title} thumbnail`}
-              width={1200}
-              height={600}
-              className="object-cover w-full h-full"
-              priority
-            />
-          </div>
-        )} */}
-
         {/* Blog Content */}
         <article className="prose prose-invert prose-lg max-w-none">
           {renderBlogContent(blog.content)}
         </article>
-
-        {/* Optional Icon if image_url not present */}
-        {/* {!blog.image_url && blog.icon && (
-          <div className="mt-10 flex justify-center">
-            <Image
-              src={blog.icon}
-              alt={blog.title}
-              width={100}
-              height={100}
-              className="opacity-70"
-            />
-          </div>
-        )} */}
       </div>
     </main>
   );
@@ -170,7 +142,7 @@ const BlogPage = async ({ params }: PageProps) => {
 
 export default BlogPage;
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const { data, error } = await supabase.from("blogs").select("slug");
 
   if (error || !data) return [];
@@ -179,5 +151,3 @@ export async function generateStaticParams() {
     slug: blog.slug,
   }));
 }
-
-
