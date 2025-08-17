@@ -4,13 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { supabase } from '@/lib/supabase' // 👈 your Supabase server client
 import ServiceOverlay from "@/components/ServiceOverlay";
-
-
-type PageProps = {
-  params: {
-    slug: string;
-  };
-};
+import { JSX } from "react";
 
 // ✅ Fetch a single service by slug
 async function getService(slug: string) {
@@ -26,7 +20,7 @@ async function getService(slug: string) {
 }
 
 // ✅ Dynamic SEO metadata
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: {params: { slug: string };}): Promise<Metadata> {
   
   const service = await getService(params.slug);
 
@@ -44,9 +38,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-const ServicePage = async ({ params }: PageProps) => {
+const ServicePage = async ({ params }: {params: { slug: string }}): Promise<JSX.Element> => {
 
-  const {slug} = await params
+  const {slug} = params
   const service = await getService(slug);
   if (!service) return notFound();
 
