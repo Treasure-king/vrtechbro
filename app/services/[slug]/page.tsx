@@ -101,3 +101,12 @@ const ServicePage = async ({ params }: { params: { slug: string } }) => {
 }
 
 export default ServicePage
+
+export async function generateStaticParams() {
+  const { data, error } = await supabase.from("services").select("slug");
+  if (error || !data) return [];
+
+  return data.map((service: { slug: string }) => ({
+    slug: service.slug,
+  }));
+}
