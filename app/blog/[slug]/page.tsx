@@ -5,8 +5,14 @@ import { FiUser, FiClock } from "react-icons/fi";
 import { notFound } from "next/navigation";
 import { supabase } from '@/lib/supabase';
 
+
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
 // Fetch a blog by slug
-async function getBlog(slug: string) {
+async function getblog(slug: string) {
   const { data, error } = await supabase
     .from("blogs")
     .select("*")
@@ -63,8 +69,8 @@ const renderBlogContent = (content: string)=> {
 };
 
 // Metadata for SEO
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const blog = await getBlog(params.slug);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const blog = await getblog(params.slug);
 
   if (!blog) return { title: "Blog Not Found" };
 
@@ -81,8 +87,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 // Main page
-const BlogPage = async ({ params }: { params: { slug: string } }) => {
-  const blog = await getBlog(params.slug);
+const BlogPage = async ({ params }: PageProps) => {
+  const blog = await getblog(params.slug);
   if (!blog) return notFound();
 
   return (
@@ -166,10 +172,11 @@ export default BlogPage;
 
 export async function generateStaticParams() {
   const { data, error } = await supabase.from("blogs").select("slug");
+
   if (error || !data) return [];
 
   return data.map((blog: { slug: string }) => ({
-    params: { slug: blog.slug },
+    slug: blog.slug,
   }));
 }
 

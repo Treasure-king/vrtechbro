@@ -5,10 +5,15 @@ import { notFound } from "next/navigation";
 import { supabase } from '@/lib/supabase' // 👈 your Supabase server client
 import ServiceOverlay from "@/components/ServiceOverlay";
 
+
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
+
 // ✅ Fetch a single service by slug
 async function getService(slug: string) {
-
-  
   const { data, error } = await supabase
     .from("services")
     .select("*")
@@ -21,7 +26,7 @@ async function getService(slug: string) {
 }
 
 // ✅ Dynamic SEO metadata
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   
   const service = await getService(params.slug);
 
@@ -39,7 +44,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-const ServicePage = async ({ params }: { params: { slug: string } }) => {
+const ServicePage = async ({ params }: PageProps) => {
 
   const {slug} = await params
   const service = await getService(slug);
@@ -107,6 +112,6 @@ export async function generateStaticParams() {
   if (error || !data) return [];
 
   return data.map((service: { slug: string }) => ({
-    params: { slug: service.slug }, 
+    slug: service.slug  
   }));
 }
