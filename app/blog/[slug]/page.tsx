@@ -3,18 +3,11 @@
 import { Metadata } from "next";
 import { FiUser, FiClock } from "react-icons/fi";
 import { notFound } from "next/navigation";
-import { supabase } from '@/lib/supabase';
+import { supabase } from "@/lib/supabase";
 import { JSX } from "react";
 
-// Type for BlogPageParams  to include `params` explicitly
-type BlogPageParams  = {
-  params: {
-    slug: string;
-  };
-};
-
 // Fetch a blog by slug
-async function getblog(slug: string) {
+async function getBlog(slug: string) {
   const { data, error } = await supabase
     .from("blogs")
     .select("*")
@@ -30,7 +23,9 @@ const parseBoldText = (text: string): React.ReactNode[] => {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, index) =>
     part.startsWith("**") && part.endsWith("**") ? (
-      <strong key={index} className="font-semibold text-white">{part.slice(2, -2)}</strong>
+      <strong key={index} className="font-semibold text-white">
+        {part.slice(2, -2)}
+      </strong>
     ) : (
       part
     )
@@ -39,26 +34,29 @@ const parseBoldText = (text: string): React.ReactNode[] => {
 
 // Content renderer
 const renderBlogContent = (content: string) => {
-  const lines = content.split('\n');
+  const lines = content.split("\n");
 
   return lines.map((line, index) => {
     const trimmed = line.trim();
 
-    if (trimmed.startsWith('### ')) {
+    if (trimmed.startsWith("### ")) {
       return (
         <h3 key={index} className="text-xl font-semibold mt-8 mb-3 text-blue-400">
-          {parseBoldText(trimmed.replace('### ', ''))}
+          {parseBoldText(trimmed.replace("### ", ""))}
         </h3>
       );
-    } else if (trimmed.startsWith('## ')) {
+    } else if (trimmed.startsWith("## ")) {
       return (
-        <h2 key={index} className="text-3xl font-bold mt-10 mb-4 text-white border-b border-gray-700 pb-2">
-          {parseBoldText(trimmed.replace('## ', ''))}
+        <h2
+          key={index}
+          className="text-3xl font-bold mt-10 mb-4 text-white border-b border-gray-700 pb-2"
+        >
+          {parseBoldText(trimmed.replace("## ", ""))}
         </h2>
       );
-    } else if (trimmed === '---') {
+    } else if (trimmed === "---") {
       return <div key={index} className="my-6 border-t border-gray-700" />;
-    } else if (trimmed === '') {
+    } else if (trimmed === "") {
       return null;
     } else {
       return (
@@ -71,8 +69,12 @@ const renderBlogContent = (content: string) => {
 };
 
 // Metadata for SEO
-export async function generateMetadata({ params }: BlogPageParams ): Promise<Metadata> {
-  const blog = await getblog(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const blog = await getBlog(params.slug);
 
   if (!blog) return { title: "Blog Not Found" };
 
@@ -88,9 +90,13 @@ export async function generateMetadata({ params }: BlogPageParams ): Promise<Met
   };
 }
 
-// Main page with explicit typing for params
-const BlogPage = async ({ params }: BlogPageParams ): Promise<JSX.Element> => {
-  const blog = await getblog(params.slug);
+// Main page component
+const BlogPage = async ({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<JSX.Element> => {
+  const blog = await getBlog(params.slug);
   if (!blog) return notFound();
 
   return (
@@ -145,6 +151,7 @@ const BlogPage = async ({ params }: BlogPageParams ): Promise<JSX.Element> => {
 
 export default BlogPage;
 
+// Static generation of paths
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const { data, error } = await supabase.from("blogs").select("slug");
 
