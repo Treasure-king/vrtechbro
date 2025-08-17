@@ -6,8 +6,8 @@ import { notFound } from "next/navigation";
 import { supabase } from '@/lib/supabase';
 import { JSX } from "react";
 
-// Type for PageProps to include `params` explicitly
-type PageProps = {
+// Type for BlogPageParams  to include `params` explicitly
+type BlogPageParams  = {
   params: {
     slug: string;
   };
@@ -71,7 +71,7 @@ const renderBlogContent = (content: string) => {
 };
 
 // Metadata for SEO
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: BlogPageParams ): Promise<Metadata> {
   const blog = await getblog(params.slug);
 
   if (!blog) return { title: "Blog Not Found" };
@@ -89,7 +89,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 // Main page with explicit typing for params
-const BlogPage = async ({ params }: PageProps): Promise<JSX.Element> => {
+const BlogPage = async ({ params }: BlogPageParams ): Promise<JSX.Element> => {
   const blog = await getblog(params.slug);
   if (!blog) return notFound();
 
