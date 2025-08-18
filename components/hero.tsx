@@ -10,7 +10,7 @@ export function Hero() {
   return (
     <header
       role="banner"
-      className="h-screen bg-linear-to-b from-dark to-darkclip flex items-center justify-center text-text py-20 sm:py-24 [clip-path:polygon(0_0,_100%_0,_100%_95%,_0_100%)]"
+      className="min-h-screen bg-linear-to-b from-dark to-darkclip flex items-center justify-center text-text py-20 sm:py-24 [clip-path:polygon(0_0,_100%_0,_100%_95%,_0_100%)]"
     >
       <div className="relative z-10 w-full max-w-4xl mx-auto text-center px-6 lg:px-8">
         {/* ✅ Don't animate this image */}

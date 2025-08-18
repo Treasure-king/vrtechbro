@@ -84,7 +84,7 @@ export default function HomePage() {
           <p className="text-center max-w-3xl mx-auto text-lg mb-10 text-gray-400">
             Explore our featured services including full-stack development, backend integrations, mobile applications, and scalable SaaS platforms using modern technologies.
           </p>
-          <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-5 place-items-center">
+          <div className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
             {services.map((service, index) => {
               const IconComponent = iconMap[service.icon as keyof typeof iconMap];
               return (

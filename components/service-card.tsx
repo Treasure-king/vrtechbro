@@ -24,7 +24,7 @@ export function ServiceCard({
   keywords = [],
   delay
 }: ServiceCardProps) {
-  const href = slug ? `/services/${slug}` : undefined
+  const serviceUrl = slug ? `/services/${slug}` : undefined
 
   const cardContent = (
     <motion.article
@@ -32,7 +32,7 @@ export function ServiceCard({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.025 }}
       transition={{ duration: 0.25, delay }}
-      className="flex flex-col justify-between w-full hover:bg-darkclip rounded-2xl overflow-hidden shadow-xl/30 hover:shadow-white transition-all duration-100 p-4 border-[1px] border-white"
+      className="flex flex-col justify-between h-full hover:bg-darkclip rounded-2xl overflow-hidden shadow-xl/30 hover:shadow-white transition-all duration-100 p-4 border-[1px] border-white"
       itemScope
       itemType="https://schema.org/Service"
     >
@@ -59,7 +59,7 @@ export function ServiceCard({
       <div className="flex flex-col flex-1 w-full p-6 md:p-8 justify-between gap-4 overflow-hidden">
         <div className="flex-1 overflow-hidden">
           {/* ✅ Use semantic heading */}
-          <h3 itemProp="name" className="text-2xl font-bold text-white mb-2 truncate">
+          <h3 itemProp="name" className="text-2xl font-bold text-white mb-2">
             {title}
           </h3>
 
@@ -89,7 +89,7 @@ export function ServiceCard({
         )}
 
         {/* ➡️ CTA (links to slug) */}
-        {href && (
+        {serviceUrl && (
           <div className="mt-4">
             <span className="text-sm text-indigo-400 font-semibold inline-flex items-center hover:underline">
               Learn more →
@@ -100,8 +100,8 @@ export function ServiceCard({
     </motion.article>
   )
 
-  return href ? (
-    <Link href={href} className="w-full">
+  return serviceUrl ? (
+    <Link href={serviceUrl}>
       {cardContent}
     </Link>
   ) : (

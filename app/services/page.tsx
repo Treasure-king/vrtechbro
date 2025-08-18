@@ -62,7 +62,7 @@ export default function ServicesPage() {
       ) : services.length === 0 ? (
         <p className="text-center text-info text-lg">No services found.</p>
       ) : (
-        <section aria-labelledby="services-list" className="w-full grid md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-5">
+        <section aria-labelledby="services-list" className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
           {services.map((service, index) => {
             const IconComponent = iconMap[service.icon as keyof typeof iconMap]
 

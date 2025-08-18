@@ -38,15 +38,15 @@ export default function FAQPage() {
   const faqs = [
     {
       q: "What is VRTechBro?",
-      a: "VRTechBro is a modern platform offering tech tutorials, digital products, and innovative solutions for developers, creators, and businesses worldwide.",
+      a: "VRTechBro is a modern platform offering tech services, digital products, and innovative solutions for client, creators, and businesses worldwide.",
     },
     {
-      q: "How do I create an account?",
-      a: "Simply click on the 'Sign Up' button at the top-right corner, enter your details, and confirm your email. Your account will be activated instantly.",
+      q: "How do I reach out?",
+      a: "Simply go to service section, click any service you wanted and then click on Get serive button, fill the details in the form and you will be contacted shortly.",
     },
     {
       q: "Is my personal data secure with VRTechBro?",
-      a: "Yes. VRTechBro uses advanced encryption, GDPR-compliant practices, and end-to-end security to protect all user data and transactions.",
+      a: "Yes. VRTechBro doesn't share you personal data with anyone without your permission, all your data is noly used to contact with you regarding the project",
     },
     {
       q: "What payment methods are supported?",
@@ -61,16 +61,12 @@ export default function FAQPage() {
       a: "Absolutely. We provide 24/7 customer support through email, live chat, and a dedicated help center.",
     },
     {
-      q: "How can I reset my password?",
-      a: "Go to the login page, click 'Forgot Password,' enter your registered email, and follow the instructions to reset securely.",
-    },
-    {
-      q: "Where can I find tutorials or documentation?",
-      a: "All learning resources, guides, and step-by-step tutorials are available under the 'Resources' section on our website.",
+      q: "Where can I find services?",
+      a: "All the services are list in the service page, you can also click on explore button the home page under services section on our website.",
     },
     {
       q: "Does VRTechBro offer business or enterprise solutions?",
-      a: "Yes, we provide tailored enterprise-level services, including integration, training, and support packages.",
+      a: "Yes, we provide tailored enterprise-level services, including development, integration, and Search Engine Optimization(SEO).",
     },
   ];
 
@@ -109,7 +105,7 @@ export default function FAQPage() {
                 </span>
               </summary>
               <div
-                className="px-6 pb-5 text-white font-bold leading-relaxed border-t border-gray-700/50 bg-gray-800/50"
+                className="px-6 py-5 text-white font-bold leading-relaxed border-t border-gray-700/50 bg-gray-800/50"
                 itemScope
                 itemProp="acceptedAnswer"
                 itemType="https://schema.org/Answer"
