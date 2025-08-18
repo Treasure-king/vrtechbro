@@ -84,7 +84,7 @@ const ServicePage = async ({ params }: {params: Promise<{ slug: string }>}): Pro
             alt={service.title}
             width={400}
             height={300}
-            className="rounded-2xl shadow-lg"
+            className="rounded-2xl shadow-lg w-auto h-auto"
           />
         ) : service.icon ? (
           <Image
