@@ -79,7 +79,7 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data: Record<string, any> = Object.fromEntries(formData.entries());
+    const data: Record<string, unknown> = Object.fromEntries(formData.entries());
     data.resume = formData.get("resume"); // Ensure resume is included as File
 
     const result = careerSchema.safeParse(data);

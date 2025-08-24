@@ -2,7 +2,6 @@
 
 import { motion } from "motion/react";
 import { Briefcase, Send } from "lucide-react";
-import Link from "next/link";
 import CareerForm from "@/components/CareerForm";
 import { useState } from "react";
 

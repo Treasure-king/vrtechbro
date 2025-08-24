@@ -4,9 +4,6 @@ import {
   FaInstagram,
   FaGithub,
 } from 'react-icons/fa'
-
-import {FaMeta,FaXTwitter } from "react-icons/fa6";
-
 export function Footer() {
   return (
     <>

@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         }
 
         // Convert File to Buffer for Resend attachments
-        let attachments = [];
+        const attachments = [];
         if (resumeFile) {
             const buffer = Buffer.from(await resumeFile.arrayBuffer());
 
