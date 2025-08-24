@@ -12,7 +12,7 @@ export function Footer() {
     <>
       <footer className="bg-dark text-gray-400 border-t border-slate-700" role="contentinfo">
         <div className="container mx-auto p-6 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
-          <p>© {new Date().getFullYear()} TechEdge. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} vrtechbro. All rights reserved.</p>
 
           <nav aria-label="Footer navigation" className="flex flex-wrap gap-6">
             <Link href="/privacy-policy" className="hover:text-white focus:outline-2 focus:outline-primary">
@@ -31,46 +31,28 @@ export function Footer() {
 
           <div className="flex gap-4" aria-label="Social media links">
             <a
-              href="https://www.facebook.com/TechEdge"
+              href="https://www.linkedin.com/company/vrtechbro"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="TechEdge on Facebook"
-              className="hover:text-white transition-colors"
-            >
-              <FaMeta size={20} />
-            </a>
-            <a
-              href="https://twitter.com/TechEdge"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="TechEdge on Twitter"
-              className="hover:text-white transition-colors"
-            >
-              <FaXTwitter size={20} />
-            </a>
-            <a
-              href="https://www.linkedin.com/company/techedge"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="TechEdge on LinkedIn"
+              aria-label="vrtechbro on LinkedIn"
               className="hover:text-white transition-colors"
             >
               <FaLinkedinIn size={20} />
             </a>
             <a
-              href="https://www.instagram.com/TechEdge"
+              href="https://www.instagram.com/vrtechbro_official"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="TechEdge on Instagram"
+              aria-label="vrtechbro on Instagram"
               className="hover:text-white transition-colors"
             >
               <FaInstagram size={20} />
             </a>
             <a
-              href="https://github.com/TechEdge"
+              href="https://github.com/vrtechbro"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="TechEdge on GitHub"
+              aria-label="vrtechbro on GitHub"
               className="hover:text-white transition-colors"
             >
               <FaGithub size={20} />
@@ -87,15 +69,13 @@ export function Footer() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-            "name": "TechEdge",
-            "url": "https://www.techedge.com",
-            "logo": "https://www.techedge.com/logo.png",
+            "name": "vrtechbro",
+            "url": "https://www.vrtechbro.com",
+            "logo": "https://www.vrtechbro.com/logo.png",
             "sameAs": [
-              "https://www.facebook.com/TechEdge",
-              "https://twitter.com/TechEdge",
-              "https://www.linkedin.com/company/techedge",
-              "https://www.instagram.com/TechEdge",
-              "https://github.com/TechEdge"
+              "https://www.linkedin.com/company/vrtechbro",
+              "https://www.instagram.com/vrtechbro_official",
+              "https://github.com/vrtechbro"
             ]
           }),
         }}

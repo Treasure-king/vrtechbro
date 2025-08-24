@@ -15,6 +15,7 @@ const links = [
   { name: 'Blogs', href: '/blog' },
   { name: 'About Us', href: '/about' },
   { name: 'FAQ', href: '/faq' },
+  { name: 'Careers', href: '/careers' },
 ]
 
 export function Navbar() {
@@ -78,7 +79,7 @@ export function Navbar() {
           })}
 
           <Link href="/contact" tabIndex={0}>
-            <Button variant="secondary" className="btn" aria-label="Login to your account">
+            <Button className="btn focus:ring-0 focus:ring-offset-0" aria-label="Login to your account">
               Get in Touch
             </Button>
           </Link>

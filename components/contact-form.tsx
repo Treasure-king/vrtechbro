@@ -141,9 +141,6 @@ export function ContactForm() {
             </a>
           </p>
           <p>
-            <strong className="text-white/80">Address:</strong> 123 Innovation Avenue, Bangalore, India
-          </p>
-          <p>
             <strong className="text-white/80">Working Hours:</strong> Mon–Fri, 9:00 AM – 6:00 PM
           </p>
         </address>

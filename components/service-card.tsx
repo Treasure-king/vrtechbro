@@ -65,7 +65,7 @@ export function ServiceCard({
 
           <p
             itemProp="description"
-            className="text-sm text-muted-foreground leading-relaxed line-clamp-4"
+            className="text-sm text-muted-foreground leading-relaxed"
           >
             {short_description}
           </p>
