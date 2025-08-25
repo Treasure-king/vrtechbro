@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import vrTechBro from '../public/images/vrTechBro.png';
+import vrTechBro from '../public/images/vrTechBro-bg-remove.png';
 import { motion } from 'framer-motion';
 
 const jsonLd = {
