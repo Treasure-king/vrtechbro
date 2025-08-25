@@ -25,16 +25,20 @@ export function BlogCard({
   const blogUrl = `/blog/${slug}`
 
   return (
-    <Link href={blogUrl} passHref>
-      <motion.article
-        whileHover={{ scale: 1.02 }}
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25, delay }}
-        className={cn(`hover:bg-darkclip rounded-2xl overflow-hidden shadow-xl/30 hover:shadow-white transition-all duration-100 p-4 h-full flex flex-col justify-between text-text border-[1px] border-white`
-        )}
+    <motion.article
+      whileHover={{ scale: 1.02 }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, delay }}
+      className={cn(
+        'hover:bg-darkclip rounded-2xl overflow-hidden shadow-xl/30 hover:shadow-white transition-all duration-100 p-4 h-full flex flex-col justify-between text-text border-[1px] border-white'
+      )}
+    >
+      <Link
+        href={blogUrl}
+        aria-label={`Read blog post: ${title}`}
+        className="group flex flex-col h-full"
       >
-        {/* Content Area */}
         <header className="mb-4">
           <h3 className="text-2xl font-bold mb-2 group-hover:text-accent transition-colors">
             {title}
@@ -75,7 +79,7 @@ export function BlogCard({
             )}
           </div>
         </footer>
-      </motion.article>
-    </Link>
+      </Link>
+    </motion.article>
   )
 }

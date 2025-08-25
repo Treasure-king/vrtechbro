@@ -74,21 +74,39 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const {slug} = await params
-  console.log(slug);
-  
+  const { slug } = await params;
   const blog = await getBlog(slug);
 
   if (!blog) return { title: "Blog Not Found" };
 
+  const siteUrl = "https://www.vrtechbro.com";
+  const blogUrl = `${siteUrl}/blogs/${slug}`;
+
   return {
     title: blog.title,
     description: blog.description,
-    keywords: blog.keywords?.slice(0, 10).join(", "),
+    keywords: blog.keywords?.slice(0, 10),
+    alternates: {
+      canonical: blogUrl,
+    },
     openGraph: {
       title: blog.title,
       description: blog.description,
+      url: blogUrl,
+      siteName: "VRTECHBRO Pvt. Ltd.",
+      type: "article",
+      locale: "en_IN",
       images: blog.image_url ? [blog.image_url] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.title,
+      description: blog.description,
+      images: blog.image_url ? [blog.image_url] : [],
+    },
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }
@@ -99,7 +117,7 @@ const BlogPage = async ({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<JSX.Element> => {
-  const {slug} = await params
+  const { slug } = await params;
   const blog = await getBlog(slug);
   if (!blog) return notFound();
 

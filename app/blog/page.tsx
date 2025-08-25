@@ -1,66 +1,46 @@
-'use client'
+// app/blog/page.tsx
+import { Metadata } from 'next'
+import BlogClient from '@/components/BlogClient'
 
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import { motion } from 'motion/react'
-import { BlogCardProps } from '@/types/blog-card'
-import { BlogCard } from '@/components/blog-card'
+export const metadata: Metadata = {
+  title: 'Tech Blogs & Insights | VRTechBro',
+  description:
+    'Read expert blogs by VRTechBro on web development, Next.js, backend systems, Supabase, frontend engineering, and digital innovation.',
+  keywords: [
+    'tech blog',
+    'VRTechBro blog',
+    'web development articles',
+    'Next.js tutorials',
+    'Supabase blogs',
+    'software engineering',
+    'frontend development',
+    'backend architecture',
+    'digital innovation',
+  ],
+  openGraph: {
+    title: 'Tech Blogs & Developer Insights | VRTechBro',
+    description:
+      'Explore the latest tech blogs from VRTechBro: insights on modern stacks, frontend frameworks, scalable architecture, and digital product engineering.',
+    url: 'https://www.vrtechbro.com/blog',
+    siteName: 'VRTechBro',
+    type: 'website',
+    locale: 'en_IN',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'VRTechBro Blog – Modern Tech Insights',
+    description:
+      'VRTechBro shares modern development insights on React, Supabase, backend systems, cloud tools, and scalable web app strategies.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: '/blog',
+  },
+}
 
-export default function Blogs() {
-  const [blogs, setBlogs] = useState<BlogCardProps[]>([])
-
-  useEffect(() => {
-    fetchBlogs()
-  }, [])
-
-  const fetchBlogs = async () => {
-    const { data, error } = await supabase
-      .from('blogs')
-      .select('*')
-      .order('published_at', { ascending: false })
-
-    if (!error && data) setBlogs(data as BlogCardProps[])
-  }
-
-  return (
-    <div className="max-w-6xl mx-auto px-6 py-12 text-text">
-      <motion.h1
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="text-4xl font-bold text-center mb-12"
-      >
-        Latest Blogs
-      </motion.h1>
-
-      {blogs.length === 0 ? (
-        <p className="text-center text-info text-lg">No blog posts available.</p>
-      ) : (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-          {blogs.map((blog, index) => (
-            <motion.div
-              key={blog.id}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.4,
-                delay: index * 0.05,
-                ease: 'easeOut',
-              }}
-              className="h-full"
-            >
-              <BlogCard
-                title={blog.title}
-                description={blog.description}
-                slug={blog.slug}
-                published_at={blog.published_at}
-                tags={blog.tags || []}
-                delay={index * 0.05}
-              />
-            </motion.div>
-          ))}
-        </div>
-      )}
-    </div>
-  )
+export default function BlogPage() {
+  return <BlogClient />
 }

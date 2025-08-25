@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
@@ -26,7 +26,7 @@ export function ServiceCard({
 }: ServiceCardProps) {
   const serviceUrl = slug ? `/services/${slug}` : undefined
 
-  const cardContent = (
+  const card = (
     <motion.article
       initial={{ opacity: 0, y: 80 }}
       animate={{ opacity: 1, y: 0 }}
@@ -36,8 +36,7 @@ export function ServiceCard({
       itemScope
       itemType="https://schema.org/Service"
     >
-      {/* 👁️‍🗨️ Image or Icon */}
-      {image_url ? (
+       {image_url ? (
         <div className="relative w-full h-64 flex items-center justify-center overflow-hidden rounded-xl">
           <Image
             src={image_url}
@@ -55,10 +54,8 @@ export function ServiceCard({
         </div>
       )}
 
-      {/* 📄 Textual Content */}
       <div className="flex flex-col flex-1 w-full p-6 md:p-8 justify-between gap-4 overflow-hidden">
         <div className="flex-1 overflow-hidden">
-          {/* ✅ Use semantic heading */}
           <h3 itemProp="name" className="text-2xl font-bold text-white mb-2">
             {title}
           </h3>
@@ -71,10 +68,9 @@ export function ServiceCard({
           </p>
         </div>
 
-        {/* 🏷️ keywords */}
         {keywords.length > 0 && (
-          <div className="w-full flex flex-wrap gap-2 mt-4" aria-label="Keywords">
-            {keywords?.slice(0, 2).map((tag, i) => (
+          <div className="w-full flex flex-wrap gap-2 mt-4" aria-label="Service keywords">
+            {keywords.slice(0, 2).map((tag, i) => (
               <span
                 key={i}
                 className={cn(
@@ -88,7 +84,6 @@ export function ServiceCard({
           </div>
         )}
 
-        {/* ➡️ CTA (links to slug) */}
         {serviceUrl && (
           <div className="mt-4">
             <span className="text-sm text-indigo-400 font-semibold inline-flex items-center hover:underline">
@@ -101,10 +96,15 @@ export function ServiceCard({
   )
 
   return serviceUrl ? (
-    <Link href={serviceUrl}>
-      {cardContent}
+    <Link
+      href={serviceUrl}
+      passHref
+      aria-label={`Read more about ${title} service`}
+      className="h-full block"
+    >
+      {card}
     </Link>
   ) : (
-    cardContent
+    card
   )
 }

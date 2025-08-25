@@ -34,7 +34,7 @@ body {
 
 
 .btn {
-  @apply bg-linear-to-r from-pink-500 to-violet-500 cursor-pointer px-6
+  @apply bg-linear-to-r from-pink-500 to-violet-500 cursor-pointer px-6 rounded-full py-3
 }
 
 

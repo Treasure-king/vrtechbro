@@ -8,24 +8,30 @@ import { Toaster } from '@/components/ui/sonner';
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const metadata = {
-  title: 'VRTechBro | Custom IT Services & Software Development Company',
+  title: {
+    default: 'VRTechBro | Custom Software & App Development Agency',
+    template: '%s | VRTechBro',
+  },
   description:
-    'VRTechBro is a full-stack IT services company delivering modern software solutions including custom web development, SaaS platforms, mobile apps, cloud integrations, and scalable backends using Next.js, Supabase, Python, Node.js, and more.',
+    'VRTechBro is a modern digital studio building custom software, web & mobile apps, SaaS platforms, and scalable backends using Next.js, Supabase, and Python.',
   robots: 'index, follow',
   alternates: {
     canonical: 'https://vrtechbro.com',
   },
   keywords: [
-    'IT services',
+    'VRTechBro',
+    'vrtechbro digital studio',
     'software development company',
-    'custom web development',
-    'enterprise IT solutions',
-    'mobile app development',
-    'cloud application development',
-    'Next.js developers',
-    'Supabase backend',
+    'custom web development agency',
+    'Next.js development',
+    'Supabase backend development',
+    'cloud-native software solutions',
     'hire full stack developers',
-    'digital transformation agency',
+    'enterprise IT services',
+    'modern SaaS development',
+    'mobile and web app development',
+    'backend as a service',
+    'digital transformation partner'
   ],
   authors: [{ name: 'VRTechBro', url: 'https://vrtechbro.com' }],
   icons: {
@@ -33,17 +39,17 @@ export const metadata = {
   },
   metadataBase: new URL('https://vrtechbro.com'),
   openGraph: {
-    title: 'VRTechBro | Full-Stack IT Services & Modern Software Solutions',
+    title: 'VRTechBro | Full-Stack Software Solutions & SaaS Development',
     description:
-      'Partner with VRTechBro for scalable IT solutions: from custom web and mobile app development to backend systems and cloud-native architectures.',
+      'Build modern, scalable software with VRTechBro: experts in Next.js, Supabase, cloud-native backends, and custom app development.',
     url: 'https://vrtechbro.com',
-    siteName: 'VRTechBro',
+    siteName: 'VRTechBro – Modern Digital Studio',
     images: [
       {
         url: '/vrtechbro-logo.png',
         width: 1200,
         height: 630,
-        alt: 'VRTechBro - Full-Stack IT Services',
+        alt: 'VRTechBro - Digital Studio',
       },
     ],
     locale: 'en_US',
@@ -51,14 +57,15 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'VRTechBro | Your Partner in Scalable Software & IT Services',
+    title: 'VRTechBro – Full-Stack Software & SaaS Development Agency',
     description:
-      'Offering end-to-end IT services: web & mobile apps, SaaS solutions, backend development, and more with modern stacks like Next.js, Supabase, and Node.js.',
+      'Offering custom software, SaaS, mobile, and backend services with Next.js, Supabase, and Python.',
     site: '@vrtechbro',
     creator: '@vrtechbro',
     images: ['/vrtechbro-logo.png'],
   },
 };
+
 
 export default function RootLayout({
   children,
@@ -80,18 +87,19 @@ export default function RootLayout({
               "@type": "Organization",
               name: "VRTechBro",
               url: "https://vrtechbro.com",
-              logo: "https://vrtechbro.com/vrtechbro-logo.png",
+              logo: "https://vrtechbro.com/logo.png",
               sameAs: [
-                "https://twitter.com/vrtechbro",
                 "https://www.linkedin.com/company/vrtechbro",
+                "https://www.instagram.com/vrtechbro_official",
+                'https://x.com/vrtechbro',
               ],
               description:
                 "VRTechBro is a full-service IT company delivering web, mobile, backend, and cloud-native solutions using modern technologies like Next.js, Supabase, Node.js, Python, and React.",
               contactPoint: {
                 "@type": "ContactPoint",
                 telephone: "",
-                contactType: "customer support",
-                areaServed: "Global",
+                contactType: "Customer Service",
+                areaServed: "Worldwide",
                 availableLanguage: ["English"],
               },
             }),

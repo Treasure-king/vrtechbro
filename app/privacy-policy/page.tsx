@@ -1,7 +1,38 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | VRTechBro",
+  description:
+    "Read VRTechBro's Privacy Policy to understand how we collect, use, and protect your personal data when you interact with our services.",
+  alternates: {
+    canonical: "https://www.vrtechbro.com/privacy-policy",
+  },
+  openGraph: {
+    title: "Privacy Policy | VRTechBro",
+    description:
+      "Learn about VRTechBro’s commitment to your privacy, how we collect and use data, and your rights as a user.",
+    url: "https://www.vrtechbro.com/privacy-policy",
+    siteName: "VRTechBro",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy | VRTechBro",
+    description:
+      "Learn about VRTechBro’s commitment to your privacy, how we collect and use data, and your rights as a user.",
+  },
+};
+
 export default function PrivacyPolicy() {
   return (
-    <main className="max-w-3xl mx-auto px-6 py-12 text-white">
-      <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
+    <main
+      className="max-w-3xl mx-auto px-6 py-12 text-white"
+      role="main"
+      aria-labelledby="privacy-policy-title"
+    >
+      <h1 id="privacy-policy-title" className="text-3xl font-bold mb-6">
+        Privacy Policy
+      </h1>
       <p className="mb-4">
         At <strong>VRTechBro</strong>, we respect your privacy and are committed to protecting
         your personal information. This Privacy Policy explains how we collect, use, and safeguard
@@ -52,9 +83,14 @@ export default function PrivacyPolicy() {
       <h2 className="text-2xl font-semibold mt-8 mb-4">7. Contact Us</h2>
       <p>
         If you have any questions regarding this Privacy Policy, please contact us at{" "}
-        <a href="mailto:vrtechbro@gmail.com" className="text-blue-600 underline">
+        <a
+          href="mailto:vrtechbro@gmail.com"
+          className="text-blue-600 underline"
+          aria-label="Email VRTechBro support"
+        >
           vrtechbro@gmail.com
-        </a>.
+        </a>
+        .
       </p>
     </main>
   );

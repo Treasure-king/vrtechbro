@@ -4,6 +4,7 @@ import {
   FaInstagram,
   FaGithub,
 } from 'react-icons/fa'
+import { FaXTwitter } from "react-icons/fa6";
 export function Footer() {
   return (
     <>
@@ -54,6 +55,15 @@ export function Footer() {
             >
               <FaGithub size={20} />
             </a>
+            <a
+              href="https://x.com/vrtechbro"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="vrtechbro on X"
+              className="hover:text-white transition-colors"
+            >
+              <FaXTwitter size={20} />
+            </a>
           </div>
         </div>
       </footer>
@@ -72,6 +82,7 @@ export function Footer() {
             "sameAs": [
               "https://www.linkedin.com/company/vrtechbro",
               "https://www.instagram.com/vrtechbro_official",
+              'https://x.com/vrtechbro',
               "https://github.com/vrtechbro"
             ]
           }),
