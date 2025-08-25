@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { motion } from 'motion/react'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
-import vrTechBro from '../public/images/vrTechBro.png'
+import vrTechBro from '../public/images/vrTechBro-bg-remove.png'
 
 const links = [
   { name: 'Home', href: '/' },
