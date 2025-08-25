@@ -3,15 +3,15 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import vrTechBro from '../public/images/vrTechBro-bg-remove.png';
+import vrTechBro from '../public/images/vrTechBro.png';
 import { motion } from 'framer-motion';
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "VRTechBro",
-  "url": "https://yourdomain.com",  // Replace with your real URL
-  "logo": "https://yourdomain.com/images/vrTechBro-bg-remove.png", // Absolute URL of logo image
+  "url": "https://www.vrtechbro.com/",  // Replace with your real URL
+  "logo": "https://https://www.vrtechbro.com//images/vrTechBro.png", // Absolute URL of logo image
   "description": "VRTechBro empowers your digital future by building scalable websites, applications, and cloud solutions tailored to accelerate business growth.",
   "sameAs": [
     "https://www.linkedin.com/company/vrtechbro",   // add your social URLs
