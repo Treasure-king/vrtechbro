@@ -119,7 +119,7 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 text-black"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -139,7 +139,7 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
           ✕
         </button>
 
-        <h2 className="text-2xl font-bold mb-6">
+        <h2 className="text-2xl font-bold mb-6 text-black">
           Apply for <span className="text-indigo-500">{job.title}</span>
         </h2>
 

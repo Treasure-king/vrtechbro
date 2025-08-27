@@ -142,7 +142,7 @@ export default function ServiceOverlay({ serviceId, serviceTitle }: ServiceOverl
             </button>
 
             <h2 className="text-2xl font-bold mb-6">
-              Enquire about <span className="text-primary">{serviceTitle}</span>
+              Enquire about <span className="text-indigo-500">{serviceTitle}</span>
             </h2>
 
             <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
