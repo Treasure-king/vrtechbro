@@ -1,5 +1,4 @@
 import { TECH_TAGS } from "@/lib/constants";
-import { Marquee } from "@/components/motion/marquee";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -27,14 +26,15 @@ export default function TechTags() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="container-page flex flex-col gap-4 md:flex-row md:items-center md:gap-10">
+      <div className="container-page flex flex-col gap-4 md:flex-row md:items-baseline md:gap-10">
         <h2 id="tech-tags-title" className="text-text-muted shrink-0 text-sm">
           Our everyday stack
         </h2>
-        <Marquee
-          items={TECH_TAGS}
-          className="font-display text-text-secondary [mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)] text-lg"
-        />
+        <ul className="text-text-secondary flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          {TECH_TAGS.map((tag) => (
+            <li key={tag}>{tag}</li>
+          ))}
+        </ul>
       </div>
     </section>
   );

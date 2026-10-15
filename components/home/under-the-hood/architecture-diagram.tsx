@@ -100,12 +100,6 @@ function DiagramSvg({ layout, active, reduce, className }: { layout: Layout; act
           >
             {edge.label}
           </text>
-          {/* Data packet travelling along the line, only once drawn and only with motion allowed */}
-          {active && !reduce && (
-            <circle r="3.5" fill="var(--brand-signal)">
-              <animateMotion dur="2.4s" begin={`${1.4 + i * 0.4}s`} repeatCount="indefinite" path={edge.d} />
-            </circle>
-          )}
         </g>
       ))}
 

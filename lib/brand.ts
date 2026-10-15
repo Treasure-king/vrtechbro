@@ -59,7 +59,7 @@ export const BRAND = {
   },
 
   /** Display font width (Archivo's wdth axis: 62–125). 100 = normal. */
-  displayStretch: "112%",
+  displayStretch: "106%",
 } as const;
 
 export type BrandColor = keyof typeof BRAND.colors;

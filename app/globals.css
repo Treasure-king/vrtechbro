@@ -169,9 +169,9 @@
 @utility type-display {
   font-family: var(--font-display);
   font-stretch: var(--brand-display-stretch);
-  font-weight: 800;
-  font-size: clamp(2.5rem, 1.6rem + 4vw, 5.25rem);
-  line-height: 1;
+  font-weight: 700;
+  font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.75rem);
+  line-height: 1.05;
   letter-spacing: -0.035em;
   text-wrap: balance;
 }
@@ -180,9 +180,9 @@
 @utility type-hero {
   font-family: var(--font-display);
   font-stretch: var(--brand-display-stretch);
-  font-weight: 800;
-  font-size: clamp(2.5rem, 1.5rem + 2.7vw, 4.25rem);
-  line-height: 1;
+  font-weight: 700;
+  font-size: clamp(2.125rem, 1.55rem + 1.7vw, 3.25rem);
+  line-height: 1.08;
   letter-spacing: -0.035em;
   text-wrap: balance;
 }
@@ -191,45 +191,17 @@
 @utility type-heading {
   font-family: var(--font-display);
   font-stretch: var(--brand-display-stretch);
-  font-weight: 750;
-  font-size: clamp(1.875rem, 1.4rem + 1.8vw, 3rem);
-  line-height: 1.06;
+  font-weight: 650;
+  font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.375rem);
+  line-height: 1.12;
   letter-spacing: -0.025em;
   text-wrap: balance;
 }
 
-/* Oversized statement type (manifesto, footer wordmark) */
-@utility type-mega {
-  font-family: var(--font-display);
-  font-stretch: var(--brand-display-stretch);
-  font-weight: 800;
-  font-size: clamp(2.125rem, 0.9rem + 3.9vw, 5rem);
-  line-height: 0.98;
-  letter-spacing: -0.04em;
-  text-wrap: balance;
-}
 
 /* ========================================
  * 4. Animations
  * ======================================== */
-@keyframes scroll {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
-
-.marquee-track {
-  animation: scroll 40s linear infinite;
-  will-change: transform;
-}
-
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-
 @keyframes caret {
   50% {
     opacity: 0;
@@ -241,7 +213,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track,
   .caret {
     animation: none !important;
   }

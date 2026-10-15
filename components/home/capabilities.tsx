@@ -1,14 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from "motion/react";
-import { Spotlight } from "@/components/motion/spotlight";
+import { useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SectionHeading } from "@/components/section-heading";
 import {
   ChatDemo,
   DashboardDemo,
@@ -57,128 +52,96 @@ const PANELS = [
   },
 ];
 
-/** Pinning only happens on md+ screens without reduced motion; CSS mirrors this with md:motion-safe:. */
-function usePinned() {
-  const reduce = useReducedMotion();
-  const [wide, setWide] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    const update = () => setWide(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  return wide && !reduce;
-}
-
-/** Six kinds of work, scrolled sideways while the section stays pinned. */
+/**
+ * Six kinds of work as an index: pick one on the left (click, hover or keyboard)
+ * and its description, tools and a small live demo appear on the right.
+ * Motion only happens in response to the visitor.
+ */
 export function Capabilities() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const frameRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const pinned = usePinned();
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-
-  // How far the track must travel so its last panel ends at the right edge
-  const distance = useMotionValue(0);
-  useEffect(() => {
-    const measure = () => {
-      if (!trackRef.current || !frameRef.current) return;
-      distance.set(
-        Math.max(
-          0,
-          trackRef.current.scrollWidth - frameRef.current.clientWidth,
-        ),
-      );
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    if (trackRef.current) observer.observe(trackRef.current);
-    if (frameRef.current) observer.observe(frameRef.current);
-    return () => observer.disconnect();
-  }, [distance, pinned]);
-
-  const x = useTransform(() => -scrollYProgress.get() * distance.get());
+  const reduce = useReducedMotion();
+  const [active, setActive] = useState(PANELS[0].title);
 
   return (
-    <section
-      ref={sectionRef}
-      aria-labelledby="capabilities-title"
-      className="border-border-subtle relative border-b py-24 md:motion-safe:h-[500vh] md:motion-safe:py-0"
-    >
-      <div
-        ref={frameRef}
-        className="md:motion-safe:sticky md:motion-safe:top-0 md:motion-safe:pt-16 md:motion-safe:flex md:motion-safe:h-screen md:motion-safe:flex-col md:motion-safe:justify-center md:motion-safe:overflow-hidden"
-      >
-        <div className="container-page mb-10 md:motion-safe:mb-8">
-          <h2
-            id="capabilities-title"
-            className="type-heading text-text-primary max-w-2xl"
+    <section aria-labelledby="capabilities-title" className="py-24 md:py-32">
+      <div className="container-page">
+        <SectionHeading
+          id="capabilities-title"
+          title="Six kinds of product, one team"
+          intro="The same people design, build and maintain each of these, so nothing gets lost between specialists."
+        />
+
+        <Tabs
+          value={active}
+          onValueChange={setActive}
+          orientation="vertical"
+          className="grid gap-8 lg:grid-cols-12 lg:gap-12"
+        >
+          <TabsList
+            aria-label="Kinds of product"
+            className="border-border-subtle flex h-auto w-full flex-row flex-wrap justify-start gap-2 rounded-none border-0 bg-transparent p-0 lg:col-span-5 lg:flex-col lg:gap-0 lg:border-t"
           >
-            Six kinds of product, one team
-          </h2>
-          <p className="text-text-secondary mt-4 max-w-2xl text-lg leading-relaxed">
-            The same people design, build and maintain each of these, so nothing
-            gets lost between specialists.
-          </p>
-        </div>
+            {PANELS.map((panel, i) => (
+              <TabsTrigger
+                key={panel.title}
+                value={panel.title}
+                onPointerEnter={(e) => {
+                  if (e.pointerType === "mouse") setActive(panel.title);
+                }}
+                className="group text-text-secondary hover:text-text-primary data-[state=active]:text-text-primary border-border-subtle data-[state=active]:border-signal dark:data-[state=active]:border-signal lg:dark:data-[state=active]:border-border-subtle h-auto flex-none cursor-pointer justify-start gap-4 rounded-full border px-4 py-2 text-left text-sm shadow-none transition-colors data-[state=active]:bg-transparent data-[state=active]:shadow-none lg:w-full lg:rounded-none lg:border-0 lg:border-b lg:px-0 lg:py-5 dark:data-[state=active]:bg-transparent"
+              >
+                <span
+                  aria-hidden="true"
+                  className="text-text-muted group-data-[state=active]:text-signal hidden font-mono text-xs lg:inline"
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="lg:font-display lg:text-2xl lg:font-semibold lg:tracking-tight">
+                  {panel.title}
+                </span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-        <motion.div
-          ref={trackRef}
-          style={{ x: pinned ? x : 0 }}
-          className="flex flex-col gap-6 px-4 sm:px-6 md:motion-safe:w-max md:motion-safe:flex-row lg:px-10 lg:motion-safe:pl-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))]"
-        >
-          {PANELS.map(({ title, body, tools, Demo }) => (
-            <Spotlight
-              key={title}
-              className="border-border-subtle bg-bg-secondary rounded-2xl border md:motion-safe:w-[min(85vw,960px)] md:motion-safe:shrink-0"
+          {PANELS.map((panel) => (
+            <TabsContent
+              key={panel.title}
+              value={panel.title}
+              className="m-0 lg:col-span-7"
             >
-              <article className="grid h-full gap-8 p-6 md:grid-cols-2 md:p-10 md:motion-safe:min-h-[min(60vh,520px)]">
-                <div className="flex flex-col">
-                  <h3 className="type-heading text-text-primary">{title}</h3>
-                  <p className="text-text-secondary mt-4 text-lg leading-relaxed">
-                    {body}
-                  </p>
-                  <ul
-                    className="mt-auto flex flex-wrap gap-2 pt-8"
-                    aria-label={`Tools for ${title.toLowerCase()}`}
-                  >
-                    {tools.map((tool) => (
-                      <li
-                        key={tool}
-                        className="border-border-strong text-text-secondary rounded-full border px-3 py-1 text-sm"
-                      >
-                        {tool}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="min-h-64">
-                  <Demo />
-                </div>
-              </article>
-            </Spotlight>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={panel.title}
+                  initial={reduce ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className="border-border-subtle bg-bg-secondary/60 grid gap-8 rounded-2xl border p-6 md:p-8"
+                >
+                  <div className="flex flex-col">
+                    <h3 className="font-display text-text-primary text-2xl font-semibold tracking-tight">
+                      {panel.title}
+                    </h3>
+                    <p className="text-text-secondary mt-3 leading-relaxed">
+                      {panel.body}
+                    </p>
+                    <ul className="mt-5 flex flex-wrap gap-2">
+                      {panel.tools.map((tool) => (
+                        <li
+                          key={tool}
+                          className="border-border-subtle text-text-secondary rounded-full border px-3 py-1 text-xs"
+                        >
+                          {tool}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="border-border-subtle bg-bg-primary min-h-[260px] overflow-hidden rounded-xl border">
+                    <panel.Demo />
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </TabsContent>
           ))}
-        </motion.div>
-
-        {/* Horizontal progress, only while pinned */}
-        <div
-          className="container-page mt-8 hidden md:motion-safe:block"
-          aria-hidden="true"
-        >
-          <div className="bg-border-subtle h-px w-full overflow-hidden">
-            <motion.div
-              className="bg-signal h-px origin-left"
-              style={{ scaleX: scrollYProgress }}
-            />
-          </div>
-        </div>
+        </Tabs>
       </div>
     </section>
   );

@@ -12,7 +12,6 @@ import { Process } from "@/components/home/process";
 import { ServiceIndex } from "@/components/home/service-index";
 import { RichText } from "@/components/services/rich-text";
 import { ServiceArt } from "@/components/services/service-art";
-import { Magnetic } from "@/components/motion/magnetic";
 import { Button } from "@/components/ui/button";
 import type { ServiceCardProps } from "@/types/service-card";
 
@@ -179,14 +178,12 @@ const ServicePage = async ({
             )}
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Magnetic className="w-full sm:w-auto">
                 <ServiceOverlay
                   serviceId={service.slug}
                   serviceTitle={service.title}
                   triggerLabel={ctaLabel}
                   triggerClassName="w-full sm:w-auto"
                 />
-              </Magnetic>
               <Button asChild variant="outline" size="lg">
                 <Link href="/contact">Ask a question first</Link>
               </Button>

@@ -8,7 +8,6 @@ import { SectionHeading } from "@/components/section-heading";
 import { ServiceIndex } from "@/components/home/service-index";
 import { Process } from "@/components/home/process";
 import { WritingList } from "@/components/home/writing-list";
-import { Manifesto } from "@/components/home/manifesto";
 import { Capabilities } from "@/components/home/capabilities";
 import { UnderTheHood } from "@/components/home/under-the-hood";
 import { Button } from "@/components/ui/button";
@@ -98,8 +97,6 @@ export default async function HomePage() {
       <Hero />
 
       <TechTags />
-
-      <Manifesto />
 
       <Capabilities />
 

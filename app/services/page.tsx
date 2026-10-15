@@ -5,7 +5,6 @@ import { PageHero } from '@/components/page-hero'
 import { SectionHeading } from '@/components/section-heading'
 import { Process } from '@/components/home/process'
 import { ServiceList } from '@/components/services/service-list'
-import { Magnetic } from '@/components/motion/magnetic'
 import { Button } from '@/components/ui/button'
 import { ServiceCardProps } from '@/types/service-card'
 
@@ -99,11 +98,9 @@ export default async function ServicesPage() {
         intro="Websites, mobile apps, cloud backends, AI features and the marketing that brings people to them. Take one service on its own, or have us build the whole thing."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Magnetic>
             <Button asChild size="lg" className="w-full sm:w-auto">
               <Link href="/contact">Discuss your project</Link>
             </Button>
-          </Magnetic>
           <Button asChild variant="outline" size="lg">
             <a href="#process">See how we work</a>
           </Button>
