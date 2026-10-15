@@ -1,23 +1,24 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { useEffect } from "react";
+
+// Templates remount on every navigation, but module state survives, so this
+// tells us whether the visitor has already seen a page in this session.
+let hasNavigated = false;
 
 /**
- * Re-mounts on every navigation, so each page fades and lifts in.
- * Enter-only (no exit), and it animates transform/opacity only, so Next's
- * scroll-to-top and anchor links behave exactly as before.
+ * Short CSS fade between pages. The first page load is never faded: it must
+ * paint immediately from the server HTML, without waiting for JavaScript.
+ * (`.page-fade` respects prefers-reduced-motion via the global rule.)
  */
 export default function Template({ children }: { children: React.ReactNode }) {
-  const reduce = useReducedMotion();
+  const fade = hasNavigated;
+
+  useEffect(() => {
+    hasNavigated = true;
+  }, []);
 
   return (
-    <motion.div
-      className="relative"
-      initial={reduce ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-    >
-      {children}
-    </motion.div>
+    <div className={fade ? "page-fade relative" : "relative"}>{children}</div>
   );
 }

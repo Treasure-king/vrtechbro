@@ -29,7 +29,10 @@ async function getService(slug: string) {
 }
 
 /** Up to three other services, same category first. */
-async function getRelated(slug: string, category?: string | null): Promise<ServiceCardProps[]> {
+async function getRelated(
+  slug: string,
+  category?: string | null,
+): Promise<ServiceCardProps[]> {
   const { data } = await supabase
     .from("services")
     .select("title, slug, short_description, icon, image_url, category")
@@ -53,10 +56,12 @@ export async function generateMetadata({
   if (!service)
     return {
       title: "Service Not Found | VRTechBro",
-      description: "Sorry, we couldn't find the service you're looking for at VRTechBro.",
+      description:
+        "Sorry, we couldn't find the service you're looking for at VRTechBro.",
       openGraph: {
         title: "Service Not Found | VRTechBro",
-        description: "Sorry, we couldn't find the service you're looking for at VRTechBro.",
+        description:
+          "Sorry, we couldn't find the service you're looking for at VRTechBro.",
         url: `https://vrtechbro.com/services/${slug}`,
         siteName: "VRTechBro",
         type: "website",
@@ -78,7 +83,9 @@ export async function generateMetadata({
       url: `https://vrtechbro.com/services/${slug}`,
       siteName: "VRTechBro",
       type: "article",
-      images: service.image_url ? [{ url: service.image_url, alt: service.title }] : [],
+      images: service.image_url
+        ? [{ url: service.image_url, alt: service.title }]
+        : [],
     },
     twitter: {
       card: "summary_large_image",
@@ -105,11 +112,16 @@ const ServicePage = async ({
 
   const related = await getRelated(slug, service.category);
   const Icon =
-    typeof service.icon === "string" ? iconMap[service.icon as keyof typeof iconMap] : undefined;
+    typeof service.icon === "string"
+      ? iconMap[service.icon as keyof typeof iconMap]
+      : undefined;
   const keywords: string[] = service.keywords ?? [];
-  const overview: string | undefined = service.content || service.long_description;
+  const overview: string | undefined =
+    service.content || service.long_description;
   const ctaLabel: string =
-    service.cta_enabled !== false && service.cta_label ? service.cta_label : "Enquire about this service";
+    service.cta_enabled !== false && service.cta_label
+      ? service.cta_label
+      : "Enquire about this service";
 
   const serviceJsonLd = {
     "@context": "https://schema.org",
@@ -130,9 +142,24 @@ const ServicePage = async ({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://vrtechbro.com" },
-      { "@type": "ListItem", position: 2, name: "Services", item: "https://vrtechbro.com/services" },
-      { "@type": "ListItem", position: 3, name: service.title, item: `https://vrtechbro.com/services/${slug}` },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://vrtechbro.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Services",
+        item: "https://vrtechbro.com/services",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: service.title,
+        item: `https://vrtechbro.com/services/${slug}`,
+      },
     ],
   };
 
@@ -149,14 +176,20 @@ const ServicePage = async ({
       />
 
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border-subtle">
-        <div className="bg-grid pointer-events-none absolute inset-0" aria-hidden="true" />
+      <section className="border-border-subtle relative overflow-hidden border-b">
+        <div
+          className="bg-grid pointer-events-none absolute inset-0"
+          aria-hidden="true"
+        />
         <div className="container-page relative grid gap-12 pt-12 pb-16 md:pt-16 md:pb-20 lg:grid-cols-12 lg:items-center lg:gap-16">
           <div className="lg:col-span-7">
             <nav aria-label="Breadcrumb" className="mb-10">
-              <ol className="flex flex-wrap items-center gap-1.5 text-sm text-text-muted">
+              <ol className="text-text-muted flex flex-wrap items-center gap-1.5 text-sm">
                 <li>
-                  <Link href="/services" className="transition-colors hover:text-text-primary">
+                  <Link
+                    href="/services"
+                    className="hover:text-text-primary transition-colors"
+                  >
                     Services
                   </Link>
                 </li>
@@ -169,21 +202,26 @@ const ServicePage = async ({
               </ol>
             </nav>
 
-            {Icon && <Icon className="mb-6 h-8 w-8 text-accent-primary" aria-hidden="true" />}
+            {Icon && (
+              <Icon
+                className="text-accent-primary mb-6 h-8 w-8"
+                aria-hidden="true"
+              />
+            )}
             <h1 className="type-display text-text-primary">{service.title}</h1>
             {service.short_description && (
-              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-text-secondary md:text-xl">
+              <p className="text-text-secondary mt-6 max-w-2xl text-lg leading-relaxed md:text-xl">
                 {service.short_description}
               </p>
             )}
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <ServiceOverlay
-                  serviceId={service.slug}
-                  serviceTitle={service.title}
-                  triggerLabel={ctaLabel}
-                  triggerClassName="w-full sm:w-auto"
-                />
+              <ServiceOverlay
+                serviceId={service.slug}
+                serviceTitle={service.title}
+                triggerLabel={ctaLabel}
+                triggerClassName="w-full sm:w-auto"
+              />
               <Button asChild variant="outline" size="lg">
                 <Link href="/contact">Ask a question first</Link>
               </Button>
@@ -191,7 +229,7 @@ const ServicePage = async ({
           </div>
 
           <div className="lg:col-span-5">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border-subtle bg-bg-secondary">
+            <div className="border-border-subtle bg-bg-secondary relative aspect-[16/9] max-w-xl overflow-hidden rounded-2xl border lg:aspect-[4/3] lg:max-w-none">
               {service.image_url ? (
                 <Image
                   src={service.image_url}
@@ -214,26 +252,40 @@ const ServicePage = async ({
         <section aria-labelledby="overview-title" className="py-20 md:py-28">
           <div className="container-page grid gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
-              <h2 id="overview-title" className="type-heading mb-8 text-text-primary">
+              <h2
+                id="overview-title"
+                className="type-heading text-text-primary mb-8"
+              >
                 Overview
               </h2>
               {overview ? (
                 <RichText text={overview} skipHeading={service.title} />
               ) : (
-                <p className="text-lg leading-relaxed text-text-secondary">{service.short_description}</p>
+                <p className="text-text-secondary text-lg leading-relaxed">
+                  {service.short_description}
+                </p>
               )}
             </div>
 
             {keywords.length > 0 && (
               <aside aria-labelledby="covers-title" className="lg:col-span-5">
-                <div className="rounded-2xl border border-border-subtle bg-bg-secondary/50 p-6 md:p-8 lg:sticky lg:top-28">
-                  <h2 id="covers-title" className="font-display text-xl font-semibold text-text-primary">
+                <div className="border-border-subtle bg-bg-secondary/50 rounded-2xl border p-6 md:p-8 lg:sticky lg:top-28">
+                  <h2
+                    id="covers-title"
+                    className="font-display text-text-primary text-xl font-semibold"
+                  >
                     What this covers
                   </h2>
-                  <ul className="mt-5 divide-y divide-border-subtle">
+                  <ul className="divide-border-subtle mt-5 divide-y">
                     {keywords.map((k) => (
-                      <li key={k} className="flex items-start gap-3 py-3 text-text-secondary">
-                        <Check className="mt-1 h-4 w-4 shrink-0 text-success" aria-hidden="true" />
+                      <li
+                        key={k}
+                        className="text-text-secondary flex items-start gap-3 py-3"
+                      >
+                        <Check
+                          className="text-success mt-1 h-4 w-4 shrink-0"
+                          aria-hidden="true"
+                        />
                         <span>{k}</span>
                       </li>
                     ))}
@@ -248,7 +300,7 @@ const ServicePage = async ({
       {/* Process */}
       <section
         aria-labelledby="process-title"
-        className="border-y border-border-subtle bg-bg-secondary/40 py-20 md:py-28"
+        className="border-border-subtle bg-bg-secondary/40 border-y py-20 md:py-28"
       >
         <div className="container-page">
           <SectionHeading
@@ -263,14 +315,15 @@ const ServicePage = async ({
       {/* Enquiry */}
       <section aria-labelledby="enquiry-title" className="py-20 md:py-28">
         <div className="container-page">
-          <div className="grid gap-8 rounded-2xl border border-border-strong bg-bg-secondary p-8 md:p-12 lg:grid-cols-12 lg:items-center">
+          <div className="border-border-strong bg-bg-secondary grid gap-8 rounded-2xl border p-8 md:p-12 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-8">
               <h2 id="enquiry-title" className="type-heading text-text-primary">
                 Planning a {service.title} project?
               </h2>
-              <p className="mt-4 max-w-2xl text-lg leading-relaxed text-text-secondary">
-                Send a short enquiry with your goals, timeline and budget range. We&apos;ll reply by email with
-                questions or a proposed next step.
+              <p className="text-text-secondary mt-4 max-w-2xl text-lg leading-relaxed">
+                Send a short enquiry with your goals, timeline and budget range.
+                We&apos;ll reply by email with questions or a proposed next
+                step.
               </p>
             </div>
             <div className="lg:col-span-4 lg:flex lg:justify-end">

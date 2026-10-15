@@ -31,6 +31,20 @@ export interface BlogRecord {
   updated_at?: string;
 }
 
+export interface JobRecord {
+  id: string;
+  slug: string;
+  title: string;
+  location: string;
+  type: string;
+  description: string;
+  is_open: boolean;
+  display_order?: number;
+  date_posted: string;
+  valid_through?: string | null;
+  created_at?: string;
+}
+
 export function isServiceArray(data: unknown): data is ServiceCardProps[] {
   return Array.isArray(data) && data.every((item) => typeof item === 'object' && item !== null && 'title' in item);
 }

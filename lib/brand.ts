@@ -88,4 +88,6 @@ export const fontMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono-brand",
   display: "swap",
+  // Only used for code snippets, so it should not compete with the first paint
+  preload: false,
 });

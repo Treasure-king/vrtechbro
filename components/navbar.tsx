@@ -51,7 +51,7 @@ export function Navbar() {
 
       <div className="container mx-auto flex items-center justify-between px-4">
         <motion.div
-          initial={shouldReduceMotion ? false : { opacity: 0, x: -20 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
@@ -68,7 +68,7 @@ export function Navbar() {
         <motion.nav
           className="hidden items-center gap-8 md:flex"
           aria-label="Primary navigation"
-          initial={shouldReduceMotion ? false : { opacity: 0, x: 40 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
         >

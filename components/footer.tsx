@@ -143,11 +143,26 @@ export function Footer() {
       </div>
 
       {/* Oversized wordmark, revealed as the page lifts off the footer */}
-      <div aria-hidden="true" className="overflow-hidden select-none">
-        <p className="font-display text-text-primary/[0.06] -mb-[0.22em] text-center text-[13vw] leading-none font-extrabold tracking-[-0.05em] whitespace-nowrap uppercase">
-          {BRAND.name}
-        </p>
-      </div>
+      {/* Drawn as SVG so it reads as a graphic, not low-contrast text */}
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 1000 120"
+        className="text-text-primary/[0.06] mt-6 block w-full select-none"
+      >
+        <text
+          x="500"
+          y="118"
+          textAnchor="middle"
+          textLength="990"
+          lengthAdjust="spacingAndGlyphs"
+          fill="currentColor"
+          fontSize="150"
+          fontWeight="800"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          {BRAND.name.toUpperCase()}
+        </text>
+      </svg>
     </footer>
   );
 }
