@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { CONTACT_EMAIL } from '@/lib/constants'
 
 export default function Error({
   error,
@@ -16,26 +17,31 @@ export default function Error({
   }, [error])
 
   return (
-    <main className="min-h-[80vh] flex items-center justify-center px-6 py-24 text-center">
-      <div className="max-w-md mx-auto space-y-6">
-        <h1 className="text-5xl font-display font-extrabold text-error">Something Went Wrong</h1>
-        <p className="text-text-secondary text-lg">
-          An unexpected error occurred while loading this page. Our team has been notified.
-        </p>
-        <div className="flex justify-center gap-4 pt-4">
-          <Button
-            variant="secondary"
-            onClick={() => reset()}
+    <section aria-labelledby="error-title" className="container-page py-24 md:py-32">
+      <div className="max-w-2xl">
+        <p className="font-mono text-sm text-error">Something went wrong</p>
+        <h1 id="error-title" className="type-heading mt-4 text-text-primary">
+          This page didn&apos;t load
+        </h1>
+        <p className="mt-6 text-lg leading-relaxed text-text-secondary">
+          An unexpected error stopped the page from loading. Try again; if it keeps happening, email{' '}
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="text-text-primary underline decoration-border-strong underline-offset-4 hover:decoration-accent-primary"
           >
-            Try Again
+            {CONTACT_EMAIL}
+          </a>
+          {error.digest ? ` and mention reference ${error.digest}` : ''}.
+        </p>
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <Button size="lg" onClick={() => reset()}>
+            Try again
           </Button>
-          <Link href="/">
-            <Button>
-              Go Home
-            </Button>
-          </Link>
+          <Button asChild variant="outline" size="lg">
+            <Link href="/">Go to the home page</Link>
+          </Button>
         </div>
       </div>
-    </main>
+    </section>
   )
 }

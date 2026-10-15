@@ -213,7 +213,7 @@ vrtechbro/
     ├── phase_4.md              # Phase 4: SEO Foundation (Completed)
     ├── phase_5.md              # Phase 5: Code Quality & DX (Completed)
     ├── phase_6.md              # Phase 6: Design System Revolution (Completed)
-    ├── phase_7.md              # Phase 7: Page Redesign & Storytelling (Upcoming)
+    ├── phase_7.md              # Phase 7: Page Redesign & Storytelling (In progress)
     ├── phase_8.md              # Phase 8: 3D Integration & Interactivity (Upcoming)
     ├── phase_9.md              # Phase 9: Portfolio & Showcase (Upcoming)
     └── phase_10.md             # Phase 10: Infrastructure & Launch (Upcoming)
@@ -492,7 +492,7 @@ Tailwind CSS v4 uses modern `@theme` OKLCH color definitions:
 [Phase 4: SEO Foundation]       --> COMPLETE (Dynamic sitemap.ts, robots.ts, Schemas, Markdown renderer)
 [Phase 5: Code Quality & DX]    --> COMPLETE (Kebab-case naming, @/ aliases, Constants, Clean CSS, README)
 [Phase 6: Design Revolution]    --> COMPLETE (OKLCH palette, 3 fonts, CVA buttons, glassmorphism navbar, multi-col footer)
-[Phase 7: Page Redesigns]       --> UPCOMING (Storytelling UX, Case studies, Interactive flow)
+[Phase 7: Page Redesigns]       --> IN PROGRESS (All pages rebuilt 2026-10-15; final Gemini images, a11y/Lighthouse audits pending)
 [Phase 8: 3D Interactivity]     --> UPCOMING ("The Forge" Blender workstation, Three.js scene)
 [Phase 9: Portfolio & Showcase] --> UPCOMING (Chrome extensions gallery, npm packages)
 [Phase 10: Infrastructure]      --> UPCOMING (Admin panel, Analytics, Monitoring, Final audits)
@@ -633,3 +633,11 @@ Tailwind CSS v4 uses modern `@theme` OKLCH color definitions:
 
 
 
+
+### Phase 7 progress log (2026-10-15)
+- **Motion & layout system:** `components/motion/` (Reveal, SplitText, Counter, Marquee, Magnetic, SmoothScroll/Lenis), `components/page-hero.tsx`, `components/section-heading.tsx`, CSS utilities `container-page`, `type-display`, `type-hero`, `type-heading`, `bg-grid` in `app/globals.css`.
+- **Naming gotcha:** custom type utilities use the `type-*` prefix on purpose. A `text-*` name gets dropped by `cn()`/tailwind-merge when combined with a `text-<color>` class.
+- **Home:** hero "workbench" (`components/home/workbench.tsx`): tabbed code editor + live preview for website / mobile app / Chrome extension / API. Services as an index list, 4-step process, writing list, contact.
+- **All inner pages rebuilt** (About, Services + detail with slide-out enquiry sheet, Blog + article with TOC/share, Contact, FAQ accordion, Careers with application sheet, legal docs with sticky TOC, honest portfolio placeholder, 404/error).
+- `Button asChild` now renders a bare Slot (single child). Root title template is `%s` because page titles already include the brand.
+- **Pending:** replace placeholder/light clipart images with the Gemini set; run accessibility + Lighthouse audits; owner to confirm FAQ claims (24/7 live chat, 14-day refunds contradict Terms).

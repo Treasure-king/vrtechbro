@@ -1,208 +1,145 @@
-import Link from 'next/link'
-import {
-  FaLinkedinIn,
-  FaInstagram,
-  FaGithub,
-} from 'react-icons/fa'
+import Link from "next/link";
+import { FaLinkedinIn, FaInstagram, FaGithub } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { SOCIAL_LINKS, COMPANY_LEGAL_NAME, CONTACT_EMAIL } from '@/lib/constants'
-import { Mail } from 'lucide-react'
+import {
+  SOCIAL_LINKS,
+  COMPANY_LEGAL_NAME,
+  CONTACT_EMAIL,
+} from "@/lib/constants";
 
 const quickLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'About Us', href: '/about' },
-  { name: 'Services', href: '/services' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Careers', href: '/careers' },
-  { name: 'Contact', href: '/contact' },
-]
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "Services", href: "/services" },
+  { name: "Blog", href: "/blog" },
+  { name: "Careers", href: "/careers" },
+  { name: "Contact", href: "/contact" },
+];
 
 const serviceLinks = [
-  { name: 'Web Development', href: '/services' },
-  { name: 'Mobile Apps', href: '/services' },
-  { name: 'Cloud Solutions', href: '/services' },
-  { name: 'UI/UX Design', href: '/services' },
-  { name: 'SEO & Marketing', href: '/services' },
-]
+  { name: "Web development", href: "/services" },
+  { name: "Mobile apps", href: "/services" },
+  { name: "Cloud solutions", href: "/services" },
+  { name: "UI/UX design", href: "/services" },
+  { name: "SEO and marketing", href: "/services" },
+];
 
 const legalLinks = [
-  { name: 'Privacy Policy', href: '/privacy-policy' },
-  { name: 'Terms of Service', href: '/terms' },
-  { name: 'FAQ', href: '/faq' },
-]
+  { name: "Privacy policy", href: "/privacy-policy" },
+  { name: "Terms of service", href: "/terms" },
+  { name: "FAQ", href: "/faq" },
+];
 
 const socialItems = [
   {
     icon: FaLinkedinIn,
     href: SOCIAL_LINKS.linkedin,
-    label: 'VRTechBro on LinkedIn',
-    hoverColor: 'hover:text-[#0A66C2]',
+    label: "VRTechBro on LinkedIn",
+    hoverColor: "hover:text-[#0A66C2]",
   },
   {
     icon: FaInstagram,
     href: SOCIAL_LINKS.instagram,
-    label: 'VRTechBro on Instagram',
-    hoverColor: 'hover:text-[#E4405F]',
+    label: "VRTechBro on Instagram",
+    hoverColor: "hover:text-[#E4405F]",
   },
   {
     icon: FaGithub,
     href: SOCIAL_LINKS.github,
-    label: 'VRTechBro on GitHub',
-    hoverColor: 'hover:text-white',
+    label: "VRTechBro on GitHub",
+    hoverColor: "hover:text-white",
   },
   {
     icon: FaXTwitter,
     href: SOCIAL_LINKS.twitter,
-    label: 'VRTechBro on X',
-    hoverColor: 'hover:text-white',
+    label: "VRTechBro on X",
+    hoverColor: "hover:text-white",
   },
-]
-
+];
 export function Footer() {
+  const columns = [
+    { title: "Studio", label: "Footer studio links", links: quickLinks },
+    { title: "Services", label: "Footer services links", links: serviceLinks },
+    { title: "Legal and help", label: "Footer legal links", links: legalLinks },
+  ];
+
   return (
-    <footer className="relative bg-bg-primary border-t border-border-subtle" role="contentinfo">
-      {/* Gradient top border accent */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-primary/40 to-transparent" />
+    <footer
+      className="border-border-subtle bg-bg-primary border-t"
+      role="contentinfo"
+    >
+      <div className="container-page pt-20 pb-8">
+        {/* Closing line: the one thing we want every visitor to leave with */}
+        <div className="border-border-subtle flex flex-col gap-6 border-b pb-14 md:flex-row md:items-end md:justify-between">
+          <p className="type-heading text-text-primary max-w-xl">
+            Have a project in mind?
+          </p>
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="font-display text-accent-primary decoration-accent-primary/40 hover:text-accent-hover hover:decoration-accent-hover text-xl underline underline-offset-8 transition-colors md:text-2xl"
+          >
+            {CONTACT_EMAIL}
+          </a>
+        </div>
 
-      <div className="container mx-auto px-4 pt-16 pb-8">
-        {/* Multi-column grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
-          {/* Column 1: Company Info */}
-          <div className="sm:col-span-2 lg:col-span-1">
-            <h3 className="text-lg font-display font-bold text-text-primary mb-4">
+        <div className="grid grid-cols-2 gap-10 pt-14 lg:grid-cols-5 lg:gap-8">
+          <div className="col-span-2">
+            <p className="font-display text-text-primary text-lg font-bold">
               VRTechBro
-            </h3>
-            <p className="text-text-secondary text-sm leading-relaxed mb-6 max-w-xs">
-              A modern digital studio building custom software, web & mobile apps, and scalable cloud solutions.
             </p>
-
-            {/* Newsletter placeholder */}
-            <div className="space-y-2">
-              <p className="text-text-muted text-xs font-medium uppercase tracking-wider">
-                Stay Updated
-              </p>
-              <div className="flex gap-2">
-                <div className="flex-1 flex items-center gap-2 bg-bg-secondary border border-border-subtle rounded-lg px-3 py-2">
-                  <Mail className="h-4 w-4 text-text-muted shrink-0" />
-                  <input
-                    type="email"
-                    placeholder="your@email.com"
-                    className="bg-transparent text-sm text-text-primary placeholder:text-text-muted outline-none w-full"
-                    aria-label="Email for newsletter"
-                    disabled
-                  />
-                </div>
-                <button
-                  className="gradient-primary text-white text-sm font-medium px-4 rounded-lg opacity-60 cursor-not-allowed"
-                  disabled
-                  aria-label="Subscribe to newsletter (coming soon)"
-                >
-                  Soon
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Column 2: Quick Links */}
-          <div>
-            <h3 className="text-sm font-display font-semibold text-text-primary uppercase tracking-wider mb-4">
-              Quick Links
-            </h3>
-            <nav aria-label="Footer quick links">
-              <ul className="space-y-2.5">
-                {quickLinks.map(link => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-text-secondary hover:text-accent-primary transition-colors duration-200"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-
-          {/* Column 3: Services */}
-          <div>
-            <h3 className="text-sm font-display font-semibold text-text-primary uppercase tracking-wider mb-4">
-              Services
-            </h3>
-            <nav aria-label="Footer services links">
-              <ul className="space-y-2.5">
-                {serviceLinks.map(link => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-text-secondary hover:text-accent-primary transition-colors duration-200"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-
-          {/* Column 4: Legal & Social */}
-          <div>
-            <h3 className="text-sm font-display font-semibold text-text-primary uppercase tracking-wider mb-4">
-              Legal
-            </h3>
-            <nav aria-label="Footer legal links">
-              <ul className="space-y-2.5 mb-6">
-                {legalLinks.map(link => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-text-secondary hover:text-accent-primary transition-colors duration-200"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            {/* Contact */}
-            <p className="text-sm text-text-secondary mb-4">
-              <a
-                href={`mailto:${CONTACT_EMAIL}`}
-                className="hover:text-accent-primary transition-colors duration-200"
-              >
-                {CONTACT_EMAIL}
-              </a>
+            <p className="text-text-secondary mt-3 max-w-xs text-sm leading-relaxed">
+              A founder-led studio building websites, mobile apps, Chrome
+              extensions and APIs.
             </p>
-
-            {/* Social Icons */}
-            <div className="flex gap-3" aria-label="Social media links">
-              {socialItems.map(item => (
+            <div className="mt-6 flex gap-1" aria-label="Social media links">
+              {socialItems.map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={item.label}
-                  className={`text-text-muted ${item.hoverColor} transition-colors duration-200 p-2 rounded-lg hover:bg-bg-tertiary`}
+                  className={`text-text-muted hover:bg-bg-tertiary rounded-lg p-2 transition-colors duration-200 ${item.hoverColor}`}
                 >
                   <item.icon size={18} />
                 </a>
               ))}
             </div>
           </div>
+
+          {columns.map((col) => (
+            <div key={col.title}>
+              <h2 className="text-text-muted mb-4 text-sm font-medium">
+                {col.title}
+              </h2>
+              <nav aria-label={col.label}>
+                <ul className="space-y-2.5">
+                  {col.links.map((link) => (
+                    <li key={link.name}>
+                      <Link
+                        href={link.href}
+                        className="text-text-secondary hover:text-text-primary text-sm transition-colors duration-200"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          ))}
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 pt-6 border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-xs text-text-muted">
-            © {new Date().getFullYear()} {COMPANY_LEGAL_NAME}. All rights reserved.
+        <div className="border-border-subtle mt-14 flex flex-col justify-between gap-3 border-t pt-6 sm:flex-row">
+          <p className="text-text-muted text-xs">
+            © {new Date().getFullYear()} {COMPANY_LEGAL_NAME} All rights
+            reserved.
           </p>
-          <p className="text-xs text-text-muted">
-            Built with Next.js, Supabase & ❤️
+          <p className="text-text-muted text-xs">
+            Built with Next.js and Supabase
           </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

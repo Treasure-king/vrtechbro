@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import { Mail, Building2, Clock } from 'lucide-react'
+import { CONTACT_EMAIL, COMPANY_LEGAL_NAME } from '@/lib/constants'
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name is too short'),
@@ -17,6 +17,9 @@ const contactSchema = z.object({
 })
 
 type ContactFormData = z.infer<typeof contactSchema>
+
+const fieldClass =
+  'h-12 rounded-lg bg-bg-secondary border-border-subtle text-text-primary placeholder:text-text-muted focus-visible:border-accent-primary'
 
 export function ContactForm() {
   const [loading, setLoading] = useState(false)
@@ -39,132 +42,142 @@ export function ContactForm() {
       })
 
       if (res.ok) {
-        toast.success('Message sent successfully!')
+        toast.success('Message sent. We’ll reply to your email.')
         reset()
       } else {
-        toast.error('Something went wrong. Please try again.')
+        toast.error('Your message wasn’t sent. Check the fields and try again.')
       }
     } catch {
-      toast.error('Server error. Please try again later.')
+      toast.error('Your message wasn’t sent. Check your connection and try again.')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="w-full mx-auto flex flex-col lg:flex-row lg:gap-10">
-      <form onSubmit={handleSubmit(onSubmit)} noValidate aria-describedby="form-error" className="lg:w-1/2 space-y-5">
-        <h2 className="text-2xl font-display font-bold mb-6 text-text-primary">Contact Us</h2>
+    <div className="grid gap-12 border-t border-border-subtle pt-10 lg:grid-cols-12 lg:gap-16">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+        aria-label="Contact form"
+        aria-describedby="form-error"
+        className="space-y-6 lg:col-span-7"
+      >
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div>
+            <label htmlFor="name" className="mb-2 block text-sm font-medium text-text-primary">
+              Name
+            </label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Your name"
+              aria-invalid={errors.name ? 'true' : 'false'}
+              aria-describedby={errors.name ? 'name-error' : undefined}
+              {...register('name')}
+              className={fieldClass}
+              autoComplete="name"
+            />
+            {errors.name && (
+              <p id="name-error" className="mt-1.5 text-sm text-error" role="alert" aria-live="assertive">
+                {errors.name.message}
+              </p>
+            )}
+          </div>
 
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-1.5 text-text-secondary">
-            Name
-          </label>
-          <Input
-            id="name"
-            type="text"
-            placeholder="Your name"
-            aria-invalid={errors.name ? 'true' : 'false'}
-            aria-describedby={errors.name ? 'name-error' : undefined}
-            {...register('name')}
-            className="bg-bg-secondary border-border-subtle text-text-primary placeholder:text-text-muted"
-            autoComplete="name"
-          />
-          {errors.name && (
-            <p id="name-error" className="text-sm text-error mt-1" role="alert" aria-live="assertive">
-              {errors.name.message}
-            </p>
-          )}
+          <div>
+            <label htmlFor="email" className="mb-2 block text-sm font-medium text-text-primary">
+              Email
+            </label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              aria-invalid={errors.email ? 'true' : 'false'}
+              aria-describedby={errors.email ? 'email-error' : undefined}
+              {...register('email')}
+              className={fieldClass}
+              autoComplete="email"
+            />
+            {errors.email && (
+              <p id="email-error" className="mt-1.5 text-sm text-error" role="alert" aria-live="assertive">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium mb-1.5 text-text-secondary">
-            Email
-          </label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
-            aria-invalid={errors.email ? 'true' : 'false'}
-            aria-describedby={errors.email ? 'email-error' : undefined}
-            {...register('email')}
-            className="bg-bg-secondary border-border-subtle text-text-primary placeholder:text-text-muted"
-            autoComplete="email"
-          />
-          {errors.email && (
-            <p id="email-error" className="text-sm text-error mt-1" role="alert" aria-live="assertive">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="message" className="block text-sm font-medium mb-1.5 text-text-secondary">
-            Message
+          <label htmlFor="message" className="mb-2 block text-sm font-medium text-text-primary">
+            About your project
           </label>
           <Textarea
             id="message"
-            placeholder="What do you want to discuss?"
-            rows={5}
+            placeholder="What are you building, and where are you stuck?"
+            rows={6}
             aria-invalid={errors.message ? 'true' : 'false'}
-            aria-describedby={errors.message ? 'message-error' : undefined}
+            aria-describedby={errors.message ? 'message-error' : 'message-hint'}
             {...register('message')}
-            className="bg-bg-secondary border-border-subtle text-text-primary placeholder:text-text-muted"
+            className={`${fieldClass} h-auto min-h-40 py-3`}
           />
-          {errors.message && (
-            <p id="message-error" className="text-sm text-error mt-1" role="alert" aria-live="assertive">
+          {errors.message ? (
+            <p id="message-error" className="mt-1.5 text-sm text-error" role="alert" aria-live="assertive">
               {errors.message.message}
+            </p>
+          ) : (
+            <p id="message-hint" className="mt-1.5 text-sm text-text-muted">
+              A few lines is enough. Goals, rough timeline and budget help if you have them.
             </p>
           )}
         </div>
 
-        <Button type="submit" isLoading={loading} className="w-full" aria-live="polite" aria-busy={loading}>
-          {loading ? 'Sending...' : 'Send Message'}
-        </Button>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-text-muted sm:max-w-xs">
+            Your message goes straight to our inbox. We reply by email with questions or a next step.
+          </p>
+          <Button
+            type="submit"
+            size="lg"
+            isLoading={loading}
+            className="w-full sm:w-auto"
+            aria-live="polite"
+            aria-busy={loading}
+          >
+            {loading ? 'Sending…' : 'Send message'}
+          </Button>
+        </div>
 
         <div id="form-error" role="alert" aria-live="assertive" className="sr-only"></div>
       </form>
 
-      <div className="hidden lg:block w-px bg-border-subtle mx-2"></div>
-
-      {/* Contact Info Section */}
-      <section className="lg:w-1/2 mt-10 lg:mt-0 space-y-6 border-border-subtle border-t lg:border-t-0 pt-6 lg:pt-0 lg:pl-4">
-        <h2 className="text-2xl font-display font-bold text-text-primary">Get in Touch</h2>
-        <p className="text-text-secondary text-sm leading-relaxed">
-          Have a project in mind? We&apos;d love to hear about it. Fill out the form or reach out directly.
-        </p>
-        <address className="not-italic space-y-4">
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-accent-primary/10">
-              <Building2 className="h-5 w-5 text-accent-primary" />
+      <aside aria-labelledby="contact-details-title" className="lg:col-span-4 lg:col-start-9">
+        <h3 id="contact-details-title" className="font-display text-xl font-semibold text-text-primary">
+          Other ways to reach us
+        </h3>
+        <address className="mt-6 not-italic">
+          <dl className="divide-y divide-border-subtle border-y border-border-subtle">
+            <div className="py-4">
+              <dt className="text-sm text-text-muted">Email</dt>
+              <dd className="mt-1">
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="text-text-primary underline decoration-border-strong underline-offset-4 transition-colors hover:text-accent-hover hover:decoration-accent-primary"
+                >
+                  {CONTACT_EMAIL}
+                </a>
+              </dd>
             </div>
-            <div>
-              <p className="text-sm font-medium text-text-primary">Company</p>
-              <p className="text-sm text-text-secondary">VRTECHBRO Pvt. Ltd.</p>
+            <div className="py-4">
+              <dt className="text-sm text-text-muted">Working hours</dt>
+              <dd className="mt-1 text-text-primary">Mon–Fri, 9:00 AM – 6:00 PM</dd>
             </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-accent-primary/10">
-              <Mail className="h-5 w-5 text-accent-primary" />
+            <div className="py-4">
+              <dt className="text-sm text-text-muted">Company</dt>
+              <dd className="mt-1 text-text-primary">{COMPANY_LEGAL_NAME}</dd>
             </div>
-            <div>
-              <p className="text-sm font-medium text-text-primary">Email</p>
-              <a href="mailto:vrtechbro@gmail.com" className="text-sm text-accent-primary hover:text-accent-hover transition-colors">
-                vrtechbro@gmail.com
-              </a>
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-accent-primary/10">
-              <Clock className="h-5 w-5 text-accent-primary" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-text-primary">Working Hours</p>
-              <p className="text-sm text-text-secondary">Mon–Fri, 9:00 AM – 6:00 PM</p>
-            </div>
-          </div>
+          </dl>
         </address>
-      </section>
+      </aside>
     </div>
   )
 }

@@ -11,25 +11,51 @@ export const metadata: Metadata = {
   },
 }
 
+const DESTINATIONS = [
+  { href: '/services', label: 'Services', note: 'What we build and how' },
+  { href: '/blog', label: 'Blog', note: 'Articles from the studio' },
+  { href: '/contact', label: 'Contact', note: 'Ask us directly' },
+]
+
 export default function NotFound() {
   return (
-    <main className="min-h-[80vh] flex items-center justify-center px-6 py-24 text-center">
-      <div className="max-w-md mx-auto space-y-6">
-        <h1 className="text-8xl font-display font-extrabold text-gradient">
-          404
-        </h1>
-        <h2 className="text-3xl font-display font-bold text-text-primary">Page Not Found</h2>
-        <p className="text-text-secondary text-lg">
-          The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
-        </p>
-        <div className="pt-4">
-          <Link href="/">
-            <Button size="lg">
-              Return to Homepage
+    <section aria-labelledby="not-found-title" className="relative overflow-hidden">
+      <div className="bg-grid pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div className="container-page relative grid gap-12 py-24 md:py-32 lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          <p className="font-mono text-sm text-accent-primary">Error 404</p>
+          <h1 id="not-found-title" className="type-display mt-4 text-text-primary">
+            This page doesn&apos;t exist
+          </h1>
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-text-secondary">
+            The link may be out of date, or the address may have a typo. Check the URL, or head to one of the pages
+            below.
+          </p>
+          <div className="mt-10">
+            <Button asChild size="lg">
+              <Link href="/">Go to the home page</Link>
             </Button>
-          </Link>
+          </div>
         </div>
+
+        <nav aria-label="Popular pages" className="self-end lg:col-span-4 lg:col-start-9">
+          <ul className="divide-y divide-border-subtle border-y border-border-subtle">
+            {DESTINATIONS.map((d) => (
+              <li key={d.href}>
+                <Link
+                  href={d.href}
+                  className="group flex items-baseline justify-between gap-4 py-4 outline-none focus-visible:bg-bg-secondary"
+                >
+                  <span className="font-display text-lg font-medium text-text-primary group-hover:text-accent-hover">
+                    {d.label}
+                  </span>
+                  <span className="text-sm text-text-muted">{d.note}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
-    </main>
+    </section>
   )
 }

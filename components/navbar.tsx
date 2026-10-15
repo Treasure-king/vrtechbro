@@ -1,47 +1,54 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
-import { usePathname } from 'next/navigation'
-import Image from 'next/image'
-import vrTechBro from '@/public/images/vrTechBro-bg-remove.webp'
-import { NAV_LINKS } from '@/lib/constants'
+import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { usePathname } from "next/navigation";
+import Image from "next/image";
+import vrTechBro from "@/public/images/vrTechBro-bg-remove.webp";
+import { NAV_LINKS } from "@/lib/constants";
 
-const links = NAV_LINKS
+const links = NAV_LINKS;
+
+/** A section link stays active on its child pages (e.g. /blog on /blog/some-post). */
+function isActiveLink(pathname: string, href: string) {
+  return href === "/"
+    ? pathname === "/"
+    : pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function Navbar() {
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const pathname = usePathname()
-  const shouldReduceMotion = useReducedMotion()
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Close mobile menu on route change
   useEffect(() => {
-    setMobileOpen(false)
-  }, [pathname])
+    setMobileOpen(false);
+  }, [pathname]);
 
   return (
     <header
       role="banner"
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'glass py-2 shadow-lg shadow-black/20'
-          : 'bg-bg-primary/80 backdrop-blur-md py-3'
+          ? "glass py-2 shadow-lg shadow-black/20"
+          : "bg-bg-primary/80 py-3 backdrop-blur-md"
       }`}
     >
       {/* Gradient bottom border */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-primary/40 to-transparent" />
+      <div className="via-accent-primary/40 absolute right-0 bottom-0 left-0 h-px bg-gradient-to-r from-transparent to-transparent" />
 
       <div className="container mx-auto flex items-center justify-between px-4">
         <motion.div
@@ -65,44 +72,44 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <motion.nav
-          className="hidden md:flex gap-8 items-center"
+          className="hidden items-center gap-8 md:flex"
           aria-label="Primary navigation"
           initial={shouldReduceMotion ? false : { opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {links.map(link => {
-            const isActive = pathname === link.href
+          {links.map((link) => {
+            const isActive = isActiveLink(pathname, link.href);
 
             return (
               <Link
                 key={link.name}
                 href={link.href}
-                aria-current={isActive ? 'page' : undefined}
-                className={`relative group transition-colors duration-200 text-sm font-medium ${
+                aria-current={isActive ? "page" : undefined}
+                className={`group relative text-sm font-medium transition-colors duration-200 ${
                   isActive
-                    ? 'text-accent-primary'
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? "text-accent-primary"
+                    : "text-text-secondary hover:text-text-primary"
                 }`}
                 tabIndex={0}
               >
                 {link.name}
                 {/* Underline animation: width 0 → 100% from center */}
                 <span
-                  className={`pointer-events-none absolute left-0 -bottom-1.5 h-0.5 w-full origin-center rounded-full transition-transform duration-300 ease-out ${
+                  className={`pointer-events-none absolute -bottom-1.5 left-0 h-0.5 w-full origin-center rounded-full transition-transform duration-300 ease-out ${
                     isActive
-                      ? 'bg-accent-primary scale-x-100'
-                      : 'bg-accent-primary/60 scale-x-0 group-hover:scale-x-100'
+                      ? "bg-accent-primary scale-x-100"
+                      : "bg-accent-primary/60 scale-x-0 group-hover:scale-x-100"
                   }`}
                   aria-hidden="true"
                 />
               </Link>
-            )
+            );
           })}
 
           <Link href="/contact" tabIndex={0}>
             <Button size="sm" aria-label="Get in touch with VRTechBro">
-              Get in Touch
+              Start a project
             </Button>
           </Link>
         </motion.nav>
@@ -110,10 +117,10 @@ export function Navbar() {
         {/* Mobile Toggle */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
-          className="md:hidden text-text-primary p-2 rounded-lg hover:bg-bg-tertiary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
+          className="text-text-primary hover:bg-bg-tertiary focus:ring-accent-primary/50 rounded-lg p-2 transition-colors focus:ring-2 focus:outline-none md:hidden"
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -132,7 +139,7 @@ export function Navbar() {
           >
             {/* Backdrop */}
             <motion.div
-              className="absolute inset-0 bg-bg-primary/95 backdrop-blur-xl"
+              className="bg-bg-primary/95 absolute inset-0 backdrop-blur-xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -142,7 +149,7 @@ export function Navbar() {
             <button
               onClick={() => setMobileOpen(false)}
               aria-label="Close menu"
-              className="absolute top-5 right-5 z-50 text-text-primary p-2 rounded-lg hover:bg-bg-tertiary transition-colors"
+              className="text-text-primary hover:bg-bg-tertiary absolute top-5 right-5 z-50 rounded-lg p-2 transition-colors"
             >
               <X size={24} />
             </button>
@@ -150,7 +157,7 @@ export function Navbar() {
             {/* Nav links */}
             <nav
               aria-label="Mobile primary navigation"
-              className="relative z-50 flex flex-col items-center justify-center h-full gap-6"
+              className="relative z-50 flex h-full flex-col items-center justify-center gap-6"
             >
               {links.map((link, i) => (
                 <motion.div
@@ -166,12 +173,14 @@ export function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className={`block text-2xl font-display font-semibold tracking-tight transition-colors duration-200 ${
-                      pathname === link.href
-                        ? 'text-accent-primary'
-                        : 'text-text-secondary hover:text-text-primary'
+                    className={`font-display block text-2xl font-semibold tracking-tight transition-colors duration-200 ${
+                      isActiveLink(pathname, link.href)
+                        ? "text-accent-primary"
+                        : "text-text-secondary hover:text-text-primary"
                     }`}
-                    aria-current={pathname === link.href ? 'page' : undefined}
+                    aria-current={
+                      isActiveLink(pathname, link.href) ? "page" : undefined
+                    }
                     tabIndex={0}
                   >
                     {link.name}
@@ -194,7 +203,7 @@ export function Navbar() {
                     aria-label="Get in touch with VRTechBro"
                     onClick={() => setMobileOpen(false)}
                   >
-                    Get in Touch
+                    Start a project
                   </Button>
                 </Link>
               </motion.div>
@@ -203,5 +212,5 @@ export function Navbar() {
         )}
       </AnimatePresence>
     </header>
-  )
+  );
 }

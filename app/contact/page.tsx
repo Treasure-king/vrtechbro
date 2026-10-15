@@ -1,4 +1,7 @@
+import Link from 'next/link';
 import { ContactForm } from '@/components/contact-form';
+import { PageHero } from '@/components/page-hero';
+import { Button } from '@/components/ui/button';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -69,20 +72,31 @@ const jsonLd = {
 export default function ContactPage() {
   return (
     <>
-      {/* JSON-LD structured data rendered directly in JSX body */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <PageHero
+        title="Let's talk about your project"
+        intro="Whether it's a new website, an app, or an idea you're still shaping, tell us a little about it. You'll be talking with the people who would build it."
       />
 
-      <section
-        aria-label="Contact VRTechBro Pvt. Ltd. team"
-        className="max-w-5xl mx-auto py-24 px-4 sm:px-6 lg:px-8"
-      >
-        <h1 className="text-3xl sm:text-4xl font-display font-bold mb-8 text-text-primary text-center md:text-left">
-          Let&apos;s Build Something <span className="text-gradient">Together</span>
-        </h1>
-        <ContactForm />
+      <section aria-label="Send us a message" className="py-16 md:py-24">
+        <div className="container-page">
+          <ContactForm />
+        </div>
+      </section>
+
+      <section aria-labelledby="faq-teaser-title" className="border-t border-border-subtle py-16 md:py-20">
+        <div className="container-page flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-xl">
+            <h2 id="faq-teaser-title" className="font-display text-2xl font-semibold tracking-tight text-text-primary">
+              Questions about pricing, timelines or process?
+            </h2>
+            <p className="mt-2 text-text-secondary">The FAQ covers the things people usually ask before getting in touch.</p>
+          </div>
+          <Button asChild variant="outline" size="lg">
+            <Link href="/faq">Read the FAQ</Link>
+          </Button>
+        </div>
       </section>
     </>
   );

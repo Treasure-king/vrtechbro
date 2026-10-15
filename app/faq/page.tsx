@@ -1,4 +1,8 @@
+import Link from "next/link";
 import { Metadata } from "next";
+import { PageHero } from "@/components/page-hero";
+import { Button } from "@/components/ui/button";
+import { FaqGroups, type FaqGroup } from "@/components/faq/faq-groups";
 
 // SEO Metadata — clean, descriptive, and rich for sharing & crawling
 export const metadata: Metadata = {
@@ -33,116 +37,103 @@ export const metadata: Metadata = {
   },
 };
 
+// Existing answers, grouped by topic
+const FAQ_GROUPS: FaqGroup[] = [
+  {
+    topic: "About VRTechBro",
+    items: [
+      {
+        q: "What is VRTechBro?",
+        a: "VRTechBro is a modern platform offering tech services, digital products, and innovative solutions for clients, creators, and businesses worldwide.",
+      },
+      {
+        q: "Where can I find services?",
+        a: "All the services are listed on the service page. You can also click on the Explore button on the home page under the services section on our website.",
+      },
+      {
+        q: "Does VRTechBro offer business or enterprise solutions?",
+        a: "Yes, we provide tailored enterprise-level services, including development, integration, and Search Engine Optimization (SEO).",
+      },
+    ],
+  },
+  {
+    topic: "Starting a project",
+    items: [
+      {
+        q: "How do I reach out?",
+        a: "Simply go to the service section, click any service you want, then click on the Get Service button. Fill the details in the form and you will be contacted shortly.",
+      },
+    ],
+  },
+  {
+    topic: "Payments and refunds",
+    items: [
+      {
+        q: "What payment methods are supported?",
+        a: "We accept all major credit/debit cards, PayPal, UPI, and international payment gateways for global users.",
+      },
+      {
+        q: "Can I get a refund?",
+        a: "Yes. Refunds are available under our Refund Policy within 14 days of purchase if conditions are met.",
+      },
+    ],
+  },
+  {
+    topic: "Privacy and support",
+    items: [
+      {
+        q: "Is my personal data secure with VRTechBro?",
+        a: "Yes. VRTechBro doesn't share your personal data with anyone without your permission; all your data is only used to contact you regarding the project.",
+      },
+      {
+        q: "Do you offer customer support?",
+        a: "Absolutely. We provide 24/7 customer support through email, live chat, and a dedicated help center.",
+      },
+    ],
+  },
+];
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ_GROUPS.flatMap((group) =>
+    group.items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    }))
+  ),
+};
+
 export default function FAQPage() {
-  const faqs = [
-    {
-      q: "What is VRTechBro?",
-      a: "VRTechBro is a modern platform offering tech services, digital products, and innovative solutions for clients, creators, and businesses worldwide.",
-    },
-    {
-      q: "How do I reach out?",
-      a: "Simply go to the service section, click any service you want, then click on the Get Service button. Fill the details in the form and you will be contacted shortly.",
-    },
-    {
-      q: "Is my personal data secure with VRTechBro?",
-      a: "Yes. VRTechBro doesn't share your personal data with anyone without your permission; all your data is only used to contact you regarding the project.",
-    },
-    {
-      q: "What payment methods are supported?",
-      a: "We accept all major credit/debit cards, PayPal, UPI, and international payment gateways for global users.",
-    },
-    {
-      q: "Can I get a refund?",
-      a: "Yes. Refunds are available under our Refund Policy within 14 days of purchase if conditions are met.",
-    },
-    {
-      q: "Do you offer customer support?",
-      a: "Absolutely. We provide 24/7 customer support through email, live chat, and a dedicated help center.",
-    },
-    {
-      q: "Where can I find services?",
-      a: "All the services are listed on the service page. You can also click on the Explore button on the home page under the services section on our website.",
-    },
-    {
-      q: "Does VRTechBro offer business or enterprise solutions?",
-      a: "Yes, we provide tailored enterprise-level services, including development, integration, and Search Engine Optimization (SEO).",
-    },
-  ];
-
   return (
-    <main
-      className="max-w-7xl mx-auto px-6 py-24"
-      role="main"
-      aria-labelledby="faq-heading"
-    >
-      {/* Page Header */}
-      <header className="mb-16 text-center">
-        <h1
-          id="faq-heading"
-          className="text-4xl md:text-5xl font-display font-extrabold mb-4 text-text-primary"
-        >
-          Frequently Asked <span className="text-gradient">Questions</span>
-        </h1>
-        <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-          Have questions about <span className="font-semibold text-text-primary">VRTechBro</span>?{" "}
-          We’ve got you covered. Browse through our most commonly asked questions below.
-        </p>
-      </header>
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      {/* FAQ Section with FAQPage schema */}
-      <section
-        itemScope
-        itemType="https://schema.org/FAQPage"
-        className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
-        aria-label="Frequently Asked Questions"
-      >
-        {faqs.map((faq, idx) => (
-          <div
-            key={idx}
-            itemScope
-            itemProp="mainEntity"
-            itemType="https://schema.org/Question"
-            className="rounded-2xl border border-border-subtle bg-bg-secondary shadow-md transition-all duration-300 hover:border-border-strong hover:shadow-xl hover:shadow-accent-primary/5 overflow-hidden"
-          >
-            <details className="group">
-              <summary
-                className="cursor-pointer px-6 py-5 flex justify-between items-center text-base font-display font-semibold text-text-primary hover:text-accent-primary transition-colors"
-                aria-controls={`faq-answer-${idx}`}
-                id={`faq-question-${idx}`}
-              >
-                <span>{faq.q}</span>
-                <span className="ml-3 text-accent-primary font-bold group-open:rotate-45 transition-transform duration-300 text-xl shrink-0">
-                  +
-                </span>
-              </summary>
-              <div
-                id={`faq-answer-${idx}`}
-                className="px-6 py-5 text-text-secondary leading-relaxed border-t border-border-subtle bg-bg-tertiary/50 text-sm"
-                itemScope
-                itemProp="acceptedAnswer"
-                itemType="https://schema.org/Answer"
-                aria-labelledby={`faq-question-${idx}`}
-              >
-                <p itemProp="text">{faq.a}</p>
-              </div>
-            </details>
-            <meta itemProp="name" content={faq.q} />
-          </div>
-        ))}
+      <PageHero
+        title="Frequently asked questions"
+        intro="Answers about how we work, payments, privacy and support. If something isn't covered here, ask us directly."
+      />
+
+      <section aria-label="Questions and answers" className="py-16 md:py-24">
+        <div className="container-page">
+          <FaqGroups groups={FAQ_GROUPS} />
+        </div>
       </section>
 
-      {/* Footer */}
-      <footer className="mt-16 text-center text-sm text-text-muted">
-        Still have questions?{" "}
-        <a
-          href="/contact"
-          className="text-accent-primary hover:text-accent-hover hover:underline font-medium"
-          aria-label="Contact VRTechBro Support"
-        >
-          Contact our support team
-        </a>
-        .
-      </footer>
-    </main>
+      <section aria-labelledby="faq-contact-title" className="border-t border-border-subtle py-16 md:py-20">
+        <div className="container-page flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-xl">
+            <h2 id="faq-contact-title" className="font-display text-2xl font-semibold tracking-tight text-text-primary">
+              Didn&apos;t find your answer?
+            </h2>
+            <p className="mt-2 text-text-secondary">Send us your question and we&apos;ll reply by email.</p>
+          </div>
+          <Button asChild size="lg">
+            <Link href="/contact">Ask a question</Link>
+          </Button>
+        </div>
+      </section>
+    </>
   );
 }

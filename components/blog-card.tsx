@@ -1,96 +1,29 @@
-'use client'
-
 import Link from 'next/link'
-import { motion, useReducedMotion } from 'motion/react'
-import { cn } from '@/lib/utils'
 import { BlogCardProps } from '@/types/blog-card'
-import { Calendar, Clock } from 'lucide-react'
 
-const tagColors = [
-  'bg-accent-primary/10 text-accent-primary',
-  'bg-success/10 text-success',
-  'bg-accent-secondary/10 text-accent-secondary',
-  'bg-warning/10 text-warning',
-  'bg-[oklch(0.70_0.15_200)]/10 text-[oklch(0.70_0.15_200)]',
-  'bg-error/10 text-error',
-]
+export function formatPostDate(date: Date | string) {
+  return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+}
 
-export function BlogCard({
-  title,
-  description,
-  tags = [],
-  published_at,
-  reading_time,
-  slug,
-  delay = 0,
-}: BlogCardProps) {
-  const blogUrl = `/blog/${slug}`
-  const shouldReduceMotion = useReducedMotion()
-
+/** One post as a row in an editorial list: date and tags on the left, title and summary on the right. */
+export function BlogCard({ title, description, tags = [], published_at, slug }: BlogCardProps) {
   return (
-    <motion.article
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: shouldReduceMotion ? 0 : 0.4, delay: shouldReduceMotion ? 0 : delay }}
-      className={cn(
-        'group bg-bg-secondary border border-border-subtle rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:border-border-strong hover:shadow-xl hover:shadow-accent-primary/5'
-      )}
-    >
+    <article className="border-b border-border-subtle">
       <Link
-        href={blogUrl}
-        aria-label={`Read blog post: ${title}`}
-        className="flex flex-col h-full p-6"
+        href={`/blog/${slug}`}
+        className="group grid gap-3 py-8 outline-none focus-visible:bg-bg-secondary md:grid-cols-12 md:gap-8 md:px-4"
       >
-        {/* Tags */}
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            {tags.map((tag, i) => (
-              <span
-                key={i}
-                className={cn(
-                  'px-2.5 py-1 rounded-full font-medium text-xs',
-                  tagColors[i % tagColors.length]
-                )}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Title */}
-        <h3 className="text-xl font-display font-bold text-text-primary mb-3 group-hover:text-accent-primary transition-colors duration-200 line-clamp-2">
-          {title}
-        </h3>
-
-        {/* Description */}
-        <p className="text-sm text-text-secondary leading-relaxed line-clamp-3 flex-1">
-          {description}
-        </p>
-
-        {/* Footer: Date + Reading Time */}
-        <footer className="mt-5 pt-4 border-t border-border-subtle flex items-center gap-4 text-xs text-text-muted">
-          {published_at && (
-            <span className="inline-flex items-center gap-1.5">
-              <Calendar className="h-3.5 w-3.5" />
-              <time dateTime={new Date(published_at).toISOString()}>
-                {new Date(published_at).toLocaleDateString(undefined, {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                })}
-              </time>
-            </span>
-          )}
-          {reading_time && (
-            <span className="inline-flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" />
-              {reading_time} min read
-            </span>
-          )}
-        </footer>
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-text-muted md:col-span-3 md:flex-col">
+          {published_at && <time dateTime={new Date(published_at).toISOString()}>{formatPostDate(published_at)}</time>}
+          {tags.length > 0 && <span>{tags.slice(0, 2).join(', ')}</span>}
+        </div>
+        <div className="md:col-span-9">
+          <h3 className="font-display text-xl font-semibold tracking-tight text-text-primary transition-colors group-hover:text-accent-hover sm:text-2xl">
+            {title}
+          </h3>
+          {description && <p className="mt-2 max-w-[68ch] leading-relaxed text-text-secondary line-clamp-2">{description}</p>}
+        </div>
       </Link>
-    </motion.article>
+    </article>
   )
 }

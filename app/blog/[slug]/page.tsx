@@ -1,10 +1,15 @@
-
-
 import { Metadata } from "next";
-import { FiUser, FiClock } from "react-icons/fi";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import { JSX } from "react";
+import { supabase } from "@/lib/supabase";
+import { Markdown, extractHeadings, readingTime } from "@/components/blog/markdown";
+import { TableOfContents } from "@/components/blog/table-of-contents";
+import { ShareLinks } from "@/components/blog/share-links";
+import { formatPostDate } from "@/components/blog-card";
+import { SectionHeading } from "@/components/section-heading";
+import { WritingList } from "@/components/home/writing-list";
+import type { BlogCardProps } from "@/types/blog-card";
 
 // Fetch a blog by slug
 async function getBlog(slug: string) {
@@ -18,186 +23,23 @@ async function getBlog(slug: string) {
   return data;
 }
 
-// Inline formatting parser (links, code, bold, italic)
-const parseInlineFormatting = (text: string): React.ReactNode[] => {
-  const pattern = /(\[[^\]]+\]\([^)]+\)|`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*)/g;
-  const parts = text.split(pattern);
+// Up to three other posts, ranked by shared tags, falling back to the latest
+async function getRelated(slug: string, tags: string[]): Promise<BlogCardProps[]> {
+  const { data } = await supabase
+    .from("blogs")
+    .select("id, title, slug, tags, published_at")
+    .neq("slug", slug)
+    .order("published_at", { ascending: false })
+    .limit(30);
 
-  return parts.map((part, index) => {
-    if (!part) return null;
-
-    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-    if (linkMatch) {
-      return (
-        <a
-          key={index}
-          href={linkMatch[2]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-accent-primary underline hover:text-accent-hover transition-colors"
-        >
-          {linkMatch[1]}
-        </a>
-      );
-    }
-
-    if (part.startsWith("`") && part.endsWith("`")) {
-      return (
-        <code
-          key={index}
-          className="bg-bg-tertiary text-accent-secondary px-1.5 py-0.5 rounded font-mono text-sm"
-        >
-          {part.slice(1, -1)}
-        </code>
-      );
-    }
-
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return (
-        <strong key={index} className="font-semibold text-text-primary">
-          {part.slice(2, -2)}
-        </strong>
-      );
-    }
-
-    if (part.startsWith("*") && part.endsWith("*")) {
-      return (
-        <em key={index} className="italic text-text-secondary">
-          {part.slice(1, -1)}
-        </em>
-      );
-    }
-
-    return part;
-  });
-};
-
-// Full Block Markdown renderer
-const renderBlogContent = (content: string) => {
-  if (!content) return null;
-  const lines = content.split("\n");
-  const nodes: React.ReactNode[] = [];
-  let inCodeBlock = false;
-  let codeBlockContent: string[] = [];
-  let currentList: { type: 'ul' | 'ol'; items: string[] } | null = null;
-
-  const flushList = () => {
-    if (currentList) {
-      const ListTag = currentList.type;
-      nodes.push(
-        <ListTag
-          key={`list-${nodes.length}`}
-          className={`my-4 pl-6 space-y-2 text-gray-300 text-lg ${
-            currentList.type === 'ul' ? 'list-disc' : 'list-decimal'
-          }`}
-        >
-          {currentList.items.map((item, idx) => (
-            <li key={idx}>{parseInlineFormatting(item)}</li>
-          ))}
-        </ListTag>
-      );
-      currentList = null;
-    }
-  };
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const trimmed = line.trim();
-
-    if (trimmed.startsWith("```")) {
-      flushList();
-      if (inCodeBlock) {
-        nodes.push(
-          <pre
-            key={`code-${nodes.length}`}
-            className="my-6 p-4 rounded-xl bg-bg-secondary border border-border-subtle overflow-x-auto text-sm text-success font-mono"
-          >
-            <code>{codeBlockContent.join("\n")}</code>
-          </pre>
-        );
-        codeBlockContent = [];
-        inCodeBlock = false;
-      } else {
-        inCodeBlock = true;
-      }
-      continue;
-    }
-
-    if (inCodeBlock) {
-      codeBlockContent.push(line);
-      continue;
-    }
-
-    if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
-      const itemText = trimmed.replace(/^[-*]\s+/, "");
-      if (!currentList || currentList.type !== 'ul') {
-        flushList();
-        currentList = { type: 'ul', items: [itemText] };
-      } else {
-        currentList.items.push(itemText);
-      }
-      continue;
-    }
-
-    const olMatch = trimmed.match(/^\d+\.\s+(.+)$/);
-    if (olMatch) {
-      if (!currentList || currentList.type !== 'ol') {
-        flushList();
-        currentList = { type: 'ol', items: [olMatch[1]] };
-      } else {
-        currentList.items.push(olMatch[1]);
-      }
-      continue;
-    }
-
-    flushList();
-
-    if (trimmed.startsWith("#### ")) {
-      nodes.push(
-        <h4 key={`h4-${nodes.length}`} className="text-lg font-display font-semibold mt-6 mb-2 text-text-primary">
-          {parseInlineFormatting(trimmed.replace("#### ", ""))}
-        </h4>
-      );
-    } else if (trimmed.startsWith("### ")) {
-      nodes.push(
-        <h3 key={`h3-${nodes.length}`} className="text-xl font-display font-semibold mt-8 mb-3 text-accent-primary">
-          {parseInlineFormatting(trimmed.replace("### ", ""))}
-        </h3>
-      );
-    } else if (trimmed.startsWith("## ")) {
-      nodes.push(
-        <h2
-          key={`h2-${nodes.length}`}
-          className="text-2xl sm:text-3xl font-display font-bold mt-10 mb-4 text-text-primary border-b border-border-subtle pb-2"
-        >
-          {parseInlineFormatting(trimmed.replace("## ", ""))}
-        </h2>
-      );
-    } else if (trimmed.startsWith("> ")) {
-      nodes.push(
-        <blockquote
-          key={`quote-${nodes.length}`}
-          className="my-6 pl-4 border-l-4 border-accent-primary text-text-secondary italic text-lg bg-bg-secondary py-3 pr-4 rounded-r-xl"
-        >
-          {parseInlineFormatting(trimmed.replace(/^>\s*/, ""))}
-        </blockquote>
-      );
-    } else if (trimmed === "---") {
-      nodes.push(<hr key={`hr-${nodes.length}`} className="my-8 border-border-subtle" />);
-    } else if (trimmed === "") {
-      continue;
-    } else {
-      nodes.push(
-        <p key={`p-${nodes.length}`} className="text-text-secondary leading-relaxed text-lg mb-5">
-          {parseInlineFormatting(trimmed)}
-        </p>
-      );
-    }
-  }
-
-  flushList();
-  return nodes;
-};
+  const posts = (data ?? []) as BlogCardProps[];
+  const score = (p: BlogCardProps) => (p.tags ?? []).filter((t) => tags.includes(t)).length;
+  return posts
+    .map((p, i) => ({ p, s: score(p), i }))
+    .sort((a, b) => b.s - a.s || a.i - b.i)
+    .slice(0, 3)
+    .map(({ p }) => p);
+}
 
 // Metadata for SEO
 export async function generateMetadata({
@@ -240,7 +82,6 @@ export async function generateMetadata({
     },
   };
 }
-
 // Main page component
 const BlogPage = async ({
   params,
@@ -250,6 +91,12 @@ const BlogPage = async ({
   const { slug } = await params;
   const blog = await getBlog(slug);
   if (!blog) return notFound();
+
+  const tags: string[] = blog.tags ?? [];
+  const headings = extractHeadings(blog.content);
+  const minutes: number = blog.reading_time || readingTime(blog.content);
+  const related = await getRelated(slug, tags);
+  const url = `https://vrtechbro.com/blog/${slug}`;
 
   const blogJsonLd = {
     "@context": "https://schema.org",
@@ -297,47 +144,80 @@ const BlogPage = async ({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <main className="min-h-screen">
-        <div className="max-w-4xl mx-auto px-6 py-24">
-          <h1 className="text-4xl md:text-5xl font-display font-bold leading-tight text-text-primary mb-6">
-            {blog.title}
-          </h1>
+      <article>
+        <header className="border-b border-border-subtle">
+          <div className="container-page pt-12 pb-14 md:pt-16 md:pb-20">
+            <nav aria-label="Breadcrumb" className="text-sm text-text-muted">
+              <Link href="/blog" className="transition-colors hover:text-text-primary">
+                Articles
+              </Link>
+            </nav>
+            <h1 className="mt-8 max-w-4xl font-display text-4xl font-bold leading-[1.08] tracking-tight text-balance text-text-primary sm:text-5xl lg:text-6xl">
+              {blog.title}
+            </h1>
+            {blog.description && (
+              <p className="mt-6 max-w-[60ch] text-lg leading-relaxed text-text-secondary md:text-xl">
+                {blog.description}
+              </p>
+            )}
+            <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4 text-sm">
+              {blog.published_at && (
+                <div>
+                  <dt className="text-text-muted">Published</dt>
+                  <dd className="mt-1 text-text-primary">
+                    <time dateTime={new Date(blog.published_at).toISOString()}>
+                      {formatPostDate(blog.published_at)}
+                    </time>
+                  </dd>
+                </div>
+              )}
+              <div>
+                <dt className="text-text-muted">Reading time</dt>
+                <dd className="mt-1 text-text-primary">{minutes} min</dd>
+              </div>
+              {blog.author && (
+                <div>
+                  <dt className="text-text-muted">Written by</dt>
+                  <dd className="mt-1 text-text-primary">{blog.author}</dd>
+                </div>
+              )}
+              {tags.length > 0 && (
+                <div>
+                  <dt className="text-text-muted">Topics</dt>
+                  <dd className="mt-1 text-text-primary">{tags.join(", ")}</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+        </header>
 
-          <div className="flex items-center text-text-muted mb-8 space-x-6 text-sm md:text-base">
-            {blog.author && (
-              <div className="flex items-center gap-2">
-                <FiUser className="text-accent-primary" />
-                <span>{blog.author}</span>
-              </div>
-            )}
-            {blog.reading_time && (
-              <div className="flex items-center gap-2">
-                <FiClock className="text-accent-primary" />
-                <span>{blog.reading_time} min read</span>
-              </div>
-            )}
+        <div className="container-page grid gap-12 py-14 md:py-20 lg:grid-cols-12">
+          <div className="max-w-[68ch] text-lg leading-[1.75] text-text-secondary lg:col-span-8">
+            <Markdown content={blog.content} />
           </div>
 
-          {blog.keywords?.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-8">
-              {blog.keywords.map((keyword: string) => (
-                <span
-                  key={keyword}
-                  className="bg-accent-primary/10 text-accent-primary text-sm px-3 py-1 rounded-full border border-accent-primary/20 font-medium"
-                >
-                  {keyword}
-                </span>
-              ))}
+          <aside className="lg:col-span-3 lg:col-start-10">
+            <div className="space-y-10 border-t border-border-subtle pt-8 lg:sticky lg:top-28 lg:border-t-0 lg:pt-0">
+              <div className="hidden lg:block">
+                <TableOfContents headings={headings} />
+              </div>
+              <div>
+                <h2 className="mb-4 text-sm font-medium text-text-primary">Share this article</h2>
+                <ShareLinks url={url} title={blog.title} />
+              </div>
             </div>
-          )}
-
-          <p className="text-text-secondary text-lg mb-12 max-w-2xl leading-relaxed">{blog.description}</p>
-
-          <article className="prose prose-invert prose-lg max-w-none">
-            {renderBlogContent(blog.content)}
-          </article>
+          </aside>
         </div>
-      </main>
+      </article>
+
+      {related.length > 0 && (
+        <section aria-labelledby="related-title" className="border-t border-border-subtle py-16 md:py-24">
+          <div className="container-page">
+            <SectionHeading id="related-title" title="Keep reading" />
+            <WritingList posts={related} />
+          </div>
+        </section>
+      )}
     </>
   );
 };
@@ -353,4 +233,3 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
     slug: blog.slug,
   }));
 }
-

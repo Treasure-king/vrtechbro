@@ -1,80 +1,144 @@
 "use client";
 
-import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
 interface ServiceOverlayProps {
   serviceId: string;
   serviceTitle: string;
+  /** Text on the button that opens the form */
+  triggerLabel?: string;
+  triggerVariant?: "default" | "outline" | "secondary";
+  triggerSize?: "default" | "lg";
+  triggerClassName?: string;
 }
 
 const enquirySchema = z.object({
-  clientName: z.string().min(2, "Name must be at least 2 characters"),
-  clientEmail: z.string().email("Invalid email address"),
+  clientName: z.string().min(2, "Enter your name (at least 2 characters)."),
+  clientEmail: z.string().email("Enter a valid email address, like name@company.com."),
   clientPhone: z
     .string()
     .optional()
     .refine((val) => !val || /^\+?[0-9\s\-()]{7,}$/.test(val), {
-      message: "Invalid phone number",
+      message: "Enter a phone number with at least 7 digits, or leave it empty.",
     }),
-  projectName: z.string().min(2, "Project name must be at least 2 characters"),
-  projectDetails: z.string().min(10, "Project details must be at least 10 characters"),
+  projectName: z.string().min(2, "Give the project a short name (at least 2 characters)."),
+  projectDetails: z.string().min(10, "Describe the project in at least 10 characters."),
   budgetMin: z
     .string()
     .optional()
-    .refine((val) => !val || !isNaN(Number(val)) && Number(val) >= 0, {
-      message: "Min budget must be a positive number",
+    .refine((val) => !val || (!isNaN(Number(val)) && Number(val) >= 0), {
+      message: "Minimum budget must be a number of 0 or more.",
     }),
   budgetMax: z
     .string()
     .optional()
-    .refine((val) => !val || !isNaN(Number(val)) && Number(val) >= 0, {
-      message: "Max budget must be a positive number",
+    .refine((val) => !val || (!isNaN(Number(val)) && Number(val) >= 0), {
+      message: "Maximum budget must be a number of 0 or more.",
     }),
-  timeDuration: z.enum([
-    "less_than_1_month",
-    "1_to_3_months",
-    "3_to_6_months",
-    "6_to_12_months",
-    "more_than_1_year",
-  ]),
+  timeDuration: z.enum(
+    ["less_than_1_month", "1_to_3_months", "3_to_6_months", "6_to_12_months", "more_than_1_year"],
+    { message: "Choose an estimated timeline." }
+  ),
   preferredContact: z.enum(["email", "phone", "either"]).optional(),
   agreeTerms: z.preprocess(
     (val) => val === "on",
-    z.boolean().refine(val => val === true, {
-      message: "You must agree to the privacy policy and terms",
+    z.boolean().refine((val) => val === true, {
+      message: "Agree to the privacy policy and terms to send your enquiry.",
     })
-  )
-  ,
+  ),
   serviceTitle: z.string(),
   serviceId: z.string(),
 });
 
-export default function ServiceOverlay({ serviceId, serviceTitle }: ServiceOverlayProps) {
+const TIMELINES = [
+  ["less_than_1_month", "Less than 1 month"],
+  ["1_to_3_months", "1 to 3 months"],
+  ["3_to_6_months", "3 to 6 months"],
+  ["6_to_12_months", "6 to 12 months"],
+  ["more_than_1_year", "More than 1 year"],
+] as const;
+
+const inputStyles =
+  "w-full rounded-lg border border-border-subtle bg-bg-primary px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted outline-none transition-colors focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 disabled:opacity-50";
+const errorStyles = "border-error focus:border-error focus:ring-error/20";
+
+function Field({
+  id,
+  label,
+  hint,
+  error,
+  children,
+}: {
+  id: string;
+  label: string;
+  hint?: string;
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <label htmlFor={id} className="block text-sm font-medium text-text-primary">
+        {label}
+        {hint && <span className="ml-1.5 font-normal text-text-muted">{hint}</span>}
+      </label>
+      {children}
+      {error && (
+        <p id={`${id}-error`} className="text-xs text-error">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+export default function ServiceOverlay({
+  serviceId,
+  serviceTitle,
+  triggerLabel = "Enquire about this service",
+  triggerVariant = "default",
+  triggerSize = "lg",
+  triggerClassName,
+}: ServiceOverlayProps) {
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
+  const budgetError = errors.budgetMin || errors.budgetMax;
+
+  const fieldProps = (name: string) => ({
+    id: `enquiry-${name}`,
+    name,
+    disabled: loading,
+    "aria-invalid": errors[name] ? true : undefined,
+    "aria-describedby": errors[name] ? `enquiry-${name}-error` : undefined,
+    className: cn(inputStyles, errors[name] && errorStyles),
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-
+    const data = Object.fromEntries(new FormData(e.currentTarget).entries());
     const result = enquirySchema.safeParse(data);
 
     if (!result.success) {
       const formErrors: Record<string, string> = {};
       result.error.issues.forEach(({ path, message }) => {
         const key = path[0];
-        if (typeof key === "string" || typeof key === "number") {
+        if ((typeof key === "string" || typeof key === "number") && !formErrors[String(key)]) {
           formErrors[String(key)] = message;
         }
       });
-
       setErrors(formErrors);
       return;
     }
@@ -85,222 +149,161 @@ export default function ServiceOverlay({ serviceId, serviceTitle }: ServiceOverl
     try {
       const response = await fetch("/api/enquiry-email", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(result.data),
       });
 
-      const resData = await response.json();
-
-
       if (response.ok) {
-        toast.success('Message sent successfully!')
-
+        toast.success("Enquiry sent. We'll reply to you by email.");
+        setOpen(false);
+      } else if (response.status === 429) {
+        toast.error("Too many enquiries in a short time. Wait a minute, then send again.");
       } else {
-        toast.error('Something went wrong. Please try again.',resData.error)
+        toast.error("Your enquiry wasn't sent. Check your connection and send again, or email us directly.");
       }
-      setOpen(false);
-    } catch{
-      alert("Failed to submit the form. Please try again.");
+    } catch {
+      toast.error("Your enquiry wasn't sent. Check your connection and send again, or email us directly.");
     } finally {
       setLoading(false);
     }
   };
 
-  const inputStyles = `w-full bg-bg-secondary border border-border-subtle rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-text-muted outline-none transition-all duration-200 focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 disabled:opacity-50`;
-  const errorInputStyles = `border-error focus:border-error focus:ring-error/20`;
-
   return (
-    <>
-      {/* Trigger Button */}
-      <Button onClick={() => setOpen(true)}>
-        Get {serviceTitle}
-      </Button>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <Button variant={triggerVariant} size={triggerSize} className={triggerClassName}>
+          {triggerLabel}
+        </Button>
+      </SheetTrigger>
 
-      {/* Overlay */}
-      {open && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm flex items-center justify-center z-50"
-        >
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 50, opacity: 0 }}
-            className="bg-bg-secondary border border-border-subtle rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto p-6 relative"
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors rounded-lg p-1.5 hover:bg-bg-tertiary cursor-pointer"
-              aria-label="Close enquiry form"
-            >
-              <X className="h-5 w-5" />
-            </button>
+      <SheetContent
+        side="right"
+        data-lenis-prevent
+        className="w-full gap-0 overflow-y-auto border-border-subtle bg-bg-secondary p-0 sm:max-w-lg"
+      >
+        <SheetHeader className="border-b border-border-subtle p-6 pr-12">
+          <SheetTitle className="font-display text-2xl font-bold tracking-tight text-text-primary">
+            Enquire about {serviceTitle}
+          </SheetTitle>
+          <SheetDescription className="text-text-secondary">
+            Tell us what you have in mind. We read every enquiry and reply by email.
+          </SheetDescription>
+        </SheetHeader>
 
-            <h2 className="text-xl font-display font-bold mb-6 text-text-primary">
-              Enquire about <span className="text-gradient">{serviceTitle}</span>
-            </h2>
+        <form className="flex flex-col gap-5 p-6" onSubmit={handleSubmit} noValidate>
+          <input type="hidden" name="serviceTitle" value={serviceTitle} />
+          <input type="hidden" name="serviceId" value={serviceId} />
 
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
-              <input type="hidden" name="serviceTitle" value={serviceTitle} />
-              <input type="hidden" name="serviceId" value={serviceId} />
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field id="enquiry-clientName" label="Name" error={errors.clientName}>
+              <input type="text" autoComplete="name" {...fieldProps("clientName")} />
+            </Field>
+            <Field id="enquiry-clientEmail" label="Email" error={errors.clientEmail}>
+              <input type="email" autoComplete="email" {...fieldProps("clientEmail")} />
+            </Field>
+          </div>
 
-              {/* Client Name */}
-              <input
-                type="text"
-                name="clientName"
-                placeholder="Your Full Name"
-                className={`${inputStyles} ${errors.clientName ? errorInputStyles : ""}`}
-                disabled={loading}
-              />
-              {errors.clientName && (
-                <p className="text-error text-xs -mt-2">{errors.clientName}</p>
-              )}
+          <Field id="enquiry-clientPhone" label="Phone" hint="optional" error={errors.clientPhone}>
+            <input type="tel" autoComplete="tel" {...fieldProps("clientPhone")} />
+          </Field>
 
-              {/* Client Email */}
-              <input
-                type="email"
-                name="clientEmail"
-                placeholder="Your Email"
-                className={`${inputStyles} ${errors.clientEmail ? errorInputStyles : ""}`}
-                disabled={loading}
-              />
-              {errors.clientEmail && (
-                <p className="text-error text-xs -mt-2">{errors.clientEmail}</p>
-              )}
+          <Field id="enquiry-projectName" label="Project name" error={errors.projectName}>
+            <input type="text" placeholder="e.g. Booking app for our clinic" {...fieldProps("projectName")} />
+          </Field>
 
-              {/* Client Phone */}
-              <input
-                type="tel"
-                name="clientPhone"
-                placeholder="Phone Number (optional)"
-                className={`${inputStyles} ${errors.clientPhone ? errorInputStyles : ""}`}
-                disabled={loading}
-              />
-              {errors.clientPhone && (
-                <p className="text-error text-xs -mt-2">{errors.clientPhone}</p>
-              )}
+          <Field id="enquiry-projectDetails" label="What do you need?" error={errors.projectDetails}>
+            <textarea
+              rows={5}
+              placeholder="Goals, must-have features, links to anything similar you like"
+              {...fieldProps("projectDetails")}
+              className={cn(inputStyles, "resize-y", errors.projectDetails && errorStyles)}
+            />
+          </Field>
 
-              {/* Project Name */}
-              <input
-                type="text"
-                name="projectName"
-                placeholder="Project Name"
-                className={`${inputStyles} ${errors.projectName ? errorInputStyles : ""}`}
-                disabled={loading}
-              />
-              {errors.projectName && (
-                <p className="text-error text-xs -mt-2">{errors.projectName}</p>
-              )}
+          <fieldset className="space-y-1.5">
+            <legend className="text-sm font-medium text-text-primary">
+              Budget in USD <span className="font-normal text-text-muted">optional</span>
+            </legend>
+            <div className="grid grid-cols-2 gap-3">
+              <input type="number" min={0} inputMode="numeric" placeholder="From" aria-label="Minimum budget in USD" {...fieldProps("budgetMin")} aria-describedby={budgetError ? "enquiry-budget-error" : undefined} />
+              <input type="number" min={0} inputMode="numeric" placeholder="To" aria-label="Maximum budget in USD" {...fieldProps("budgetMax")} aria-describedby={budgetError ? "enquiry-budget-error" : undefined} />
+            </div>
+            {budgetError && (
+              <p id="enquiry-budget-error" className="text-xs text-error">
+                {budgetError}
+              </p>
+            )}
+          </fieldset>
 
-              {/* Project Details */}
-              <textarea
-                name="projectDetails"
-                placeholder="Project Details / Requirements"
-                rows={4}
-                className={`${inputStyles} resize-none ${errors.projectDetails ? errorInputStyles : ""}`}
-                disabled={loading}
-              />
-              {errors.projectDetails && (
-                <p className="text-error text-xs -mt-2">{errors.projectDetails}</p>
-              )}
-
-              {/* Budget Range */}
-              <div className="flex gap-3">
-                <input
-                  type="number"
-                  name="budgetMin"
-                  placeholder="Min Budget ($)"
-                  min={0}
-                  className={`${inputStyles} w-1/2 ${errors.budgetMin ? errorInputStyles : ""}`}
-                  disabled={loading}
-                />
-                <input
-                  type="number"
-                  name="budgetMax"
-                  placeholder="Max Budget ($)"
-                  min={0}
-                  className={`${inputStyles} w-1/2 ${errors.budgetMax ? errorInputStyles : ""}`}
-                  disabled={loading}
-                />
-              </div>
-              {(errors.budgetMin || errors.budgetMax) && (
-                <p className="text-error text-xs -mt-2">
-                  {errors.budgetMin || errors.budgetMax}
-                </p>
-              )}
-
-              {/* Time Duration */}
-              <select
-                name="timeDuration"
-                className={`${inputStyles} ${errors.timeDuration ? errorInputStyles : ""}`}
-                defaultValue=""
-                disabled={loading}
-              >
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field id="enquiry-timeDuration" label="Timeline" error={errors.timeDuration}>
+              <select defaultValue="" {...fieldProps("timeDuration")}>
                 <option value="" disabled>
-                  Estimated Project Duration
+                  Choose one
                 </option>
-                <option value="less_than_1_month">Less than 1 month</option>
-                <option value="1_to_3_months">1 to 3 months</option>
-                <option value="3_to_6_months">3 to 6 months</option>
-                <option value="6_to_12_months">6 to 12 months</option>
-                <option value="more_than_1_year">More than 1 year</option>
+                {TIMELINES.map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
               </select>
-              {errors.timeDuration && (
-                <p className="text-error text-xs -mt-2">{errors.timeDuration}</p>
-              )}
-
-              {/* Preferred Contact Method */}
-              <select
-                name="preferredContact"
-                className={inputStyles}
-                defaultValue=""
-                disabled={loading}
-              >
+            </Field>
+            <Field id="enquiry-preferredContact" label="Reach me by" hint="optional">
+              <select defaultValue="" {...fieldProps("preferredContact")}>
                 <option value="" disabled>
-                  Preferred Contact Method (optional)
+                  Choose one
                 </option>
                 <option value="email">Email</option>
                 <option value="phone">Phone</option>
                 <option value="either">Either</option>
               </select>
+            </Field>
+          </div>
 
-              {/* Terms & Privacy */}
-              <label className="flex items-start gap-2.5 text-sm text-text-secondary">
-                <input
-                  type="checkbox"
-                  name="agreeTerms"
-                  className={`mt-0.5 w-4 h-4 rounded border-border-subtle accent-accent-primary ${errors.agreeTerms ? "border-error" : ""}`}
-                  disabled={loading}
-                />
-                <span>
-                  I agree to the{" "}
-                  <a
-                    href="/privacy-policy"
-                    className="text-accent-primary hover:text-accent-hover underline"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    privacy policy
-                  </a>{" "}
-                  and terms.
-                </span>
-              </label>
-              {errors.agreeTerms && (
-                <p className="text-error text-xs -mt-2">{errors.agreeTerms}</p>
-              )}
+          <div className="space-y-1.5">
+            <label className="flex items-start gap-2.5 text-sm text-text-secondary">
+              <input
+                type="checkbox"
+                name="agreeTerms"
+                disabled={loading}
+                aria-invalid={errors.agreeTerms ? true : undefined}
+                aria-describedby={errors.agreeTerms ? "enquiry-agreeTerms-error" : undefined}
+                className="mt-0.5 h-4 w-4 rounded border-border-subtle accent-accent-primary"
+              />
+              <span>
+                I agree to the{" "}
+                <a
+                  href="/privacy-policy"
+                  className="text-accent-primary underline underline-offset-2 hover:text-accent-hover"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  privacy policy
+                </a>{" "}
+                and{" "}
+                <a
+                  href="/terms"
+                  className="text-accent-primary underline underline-offset-2 hover:text-accent-hover"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  terms
+                </a>
+                .
+              </span>
+            </label>
+            {errors.agreeTerms && (
+              <p id="enquiry-agreeTerms-error" className="text-xs text-error">
+                {errors.agreeTerms}
+              </p>
+            )}
+          </div>
 
-              <Button type="submit" isLoading={loading} className="w-full mt-2">
-                {loading ? "Submitting..." : "Submit Enquiry"}
-              </Button>
-            </form>
-          </motion.div>
-        </motion.div>
-      )}
-    </>
+          <Button type="submit" size="lg" isLoading={loading} className="mt-1 w-full">
+            {loading ? "Sending enquiry" : "Send enquiry"}
+          </Button>
+        </form>
+      </SheetContent>
+    </Sheet>
   );
 }

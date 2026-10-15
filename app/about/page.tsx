@@ -1,8 +1,14 @@
 // app/about/page.tsx
 import { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Target, Eye } from 'lucide-react'
+import { PageHero } from '@/components/page-hero'
+import { SectionHeading } from '@/components/section-heading'
+import { Reveal } from '@/components/motion/reveal'
+import { Principles } from '@/components/about/principles'
+import { Disciplines } from '@/components/about/disciplines'
+import AboutUs from '@/public/images/AboutUs.webp'
 
 export const metadata: Metadata = {
   title: 'About Us – VRTechBro | Modern Digital Studio for Web, Apps & Backends',
@@ -57,112 +63,126 @@ const jsonLd = {
   }
 }
 
+
 export default function AboutPage() {
   return (
     <>
       {/* Structured Data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <div className="py-24">
-        <section className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-4xl sm:text-5xl font-display font-bold mb-6 text-text-primary">
-            About <span className="text-gradient">VRTechBro</span>
-          </h1>
-          <p className="text-lg text-text-secondary mb-16 max-w-3xl mx-auto leading-relaxed">
-            We&apos;re a modern digital studio crafting next-generation websites,
-            mobile applications, and backend solutions for clients worldwide. Our
-            mission is to transform complex challenges into simple, scalable, and
-            elegant digital experiences.
-          </p>
-        </section>
+      <PageHero
+        title="A small studio that designs, builds and runs your product"
+        intro="VRTechBro is a founder-led digital studio. We make websites, mobile apps, Chrome extensions, npm packages and the backends behind them, and you talk directly to the people doing the work."
+      >
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Button asChild size="lg">
+            <Link href="/contact">Start a project</Link>
+          </Button>
+          <Button asChild variant="outline" size="lg">
+            <Link href="/services">See our services</Link>
+          </Button>
+        </div>
+      </PageHero>
 
-        <section className="max-w-5xl mx-auto px-6 grid sm:grid-cols-2 gap-6">
-          <article
-            className="bg-bg-secondary border border-border-subtle p-8 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-xl hover:shadow-accent-primary/5"
-            aria-labelledby="mission-heading"
-          >
-            <div className="p-3 rounded-xl bg-accent-primary/10 w-fit mb-4">
-              <Target className="h-6 w-6 text-accent-primary" />
-            </div>
-            <h2 id="mission-heading" className="text-xl font-display font-semibold mb-3 text-text-primary">
-              Our Mission
+      {/* Story */}
+      <section aria-labelledby="story-title" className="py-24 md:py-32">
+        <div className="container-page grid items-start gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-6">
+            <h2 id="story-title" className="type-heading text-text-primary">
+              Not an agency, a workshop
             </h2>
-            <p className="text-text-secondary leading-relaxed">
-              To empower businesses with beautifully designed, high-performance digital
-              products that drive growth and deliver real-world impact.
-            </p>
-          </article>
-
-          <article
-            className="bg-bg-secondary border border-border-subtle p-8 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-xl hover:shadow-accent-primary/5"
-            aria-labelledby="vision-heading"
-          >
-            <div className="p-3 rounded-xl bg-accent-secondary/10 w-fit mb-4">
-              <Eye className="h-6 w-6 text-accent-secondary" />
+            <div className="mt-6 max-w-xl space-y-4 text-lg leading-relaxed text-text-secondary">
+              <p>
+                Most software projects pass through a chain of people: a salesperson, a project manager, a designer,
+                a developer you never meet. Things get lost at every handoff.
+              </p>
+              <p>
+                We work differently. The same small team scopes your project, designs it, writes the code and keeps
+                it running after launch. When you ask a question, the person answering is the one who built it.
+              </p>
+              <p>
+                That range is the point. One project might be a fast marketing site, the next a mobile app with a
+                Supabase backend, a browser extension or a published npm package.
+              </p>
             </div>
-            <h2 id="vision-heading" className="text-xl font-display font-semibold mb-3 text-text-primary">
-              Our Vision
-            </h2>
-            <p className="text-text-secondary leading-relaxed">
-              To become the trusted technology partner for forward-thinking businesses,
-              recognized globally for innovation, reliability, and elegance in digital solutions.
+          </div>
+          <div className="lg:col-span-6">
+            <Image
+              src={AboutUs}
+              alt="A laptop on a desk in the VRTechBro studio"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              placeholder="blur"
+              className="aspect-[4/3] w-full rounded-2xl border border-border-subtle object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Mission & vision */}
+      <section aria-label="Mission and vision" className="border-y border-border-subtle bg-bg-secondary/40">
+        <div className="container-page grid md:grid-cols-2">
+          <div className="border-b border-border-subtle py-14 md:border-r md:border-b-0 md:py-20 md:pr-12">
+            <h2 className="font-display text-sm font-medium text-text-muted">Mission</h2>
+            <p className="mt-4 font-display text-2xl leading-snug font-medium tracking-tight text-text-primary md:text-3xl">
+              Give businesses well-designed, fast software that makes a measurable difference to how they work.
             </p>
-          </article>
-        </section>
-
-        <section className="max-w-4xl mx-auto px-6 mt-20 text-center">
-          <h2 className="text-2xl font-display font-bold mb-4 text-text-primary">Technologies We Love</h2>
-          <p className="text-text-secondary mb-8 max-w-xl mx-auto">
-            Crafting every solution with performance, scalability, and maintainability in mind.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3 text-sm">
-            {[
-              'Next.js',
-              'React',
-              'Node.js',
-              'JavaScript',
-              'TypeScript',
-              'Tailwind CSS',
-              'Supabase',
-              'SQL',
-              'MongoDB',
-              'Motion',
-              'Resend',
-              'React Native',
-            ].map((tech, idx) => (
-              <span key={idx} className="bg-bg-secondary border border-border-subtle px-4 py-2 rounded-full text-text-secondary hover:text-accent-primary hover:border-accent-primary/30 transition-colors duration-200">
-                {tech}
-              </span>
-            ))}
           </div>
-        </section>
-
-        {/* CTA */}
-        <section className="max-w-3xl mx-auto px-6 mt-20 text-center">
-          <h2 className="text-2xl font-display font-bold mb-4 text-text-primary">Want to Know More?</h2>
-          <p className="text-text-secondary mb-8">
-            Explore our services or check out our blog to see how we solve complex
-            challenges with elegant, scalable solutions.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/services">
-              <Button>
-                Our Services
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="/blog">
-              <Button variant="secondary">
-                Our Blog
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
+          <div className="py-14 md:py-20 md:pl-12">
+            <h2 className="font-display text-sm font-medium text-text-muted">Vision</h2>
+            <p className="mt-4 font-display text-2xl leading-snug font-medium tracking-tight text-text-primary md:text-3xl">
+              Be the technology partner that forward-thinking teams trust for reliable, carefully made products.
+            </p>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      {/* Principles */}
+      <section aria-labelledby="principles-title" className="py-24 md:py-32">
+        <div className="container-page">
+          <SectionHeading
+            id="principles-title"
+            title="What we hold ourselves to"
+            intro="The rules we use to make decisions, on client work and on this website."
+          />
+          <Reveal>
+            <Principles />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Disciplines */}
+      <section aria-labelledby="disciplines-title" className="pb-24 md:pb-32">
+        <div className="container-page">
+          <SectionHeading
+            id="disciplines-title"
+            title="What we work on"
+            intro="The kinds of things we build, and the tools we usually reach for."
+          />
+          <Disciplines />
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section aria-labelledby="about-cta-title" className="border-t border-border-subtle py-24 md:py-32">
+        <div className="container-page flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <h2 id="about-cta-title" className="type-heading text-text-primary">
+              Have something you want built?
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-text-secondary">
+              Tell us what you have in mind. We&apos;ll reply by email with questions or a suggested next step.
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+            <Button asChild size="lg">
+              <Link href="/contact">Start a project</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/blog">Read our articles</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
     </>
   )
 }

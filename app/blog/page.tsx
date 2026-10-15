@@ -1,6 +1,11 @@
 import { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
-import { BlogCard } from '@/components/blog-card'
+import Link from 'next/link'
+import { PageHero } from '@/components/page-hero'
+import { SectionHeading } from '@/components/section-heading'
+import { PostList } from '@/components/blog/post-list'
+import { formatPostDate } from '@/components/blog-card'
+import { Button } from '@/components/ui/button'
 import { BlogCardProps } from '@/types/blog-card'
 
 export const metadata: Metadata = {
@@ -63,42 +68,81 @@ const jsonLd = {
 }
 
 export default async function BlogPage() {
-  const { data: blogs } = await supabase
+  const { data } = await supabase
     .from('blogs')
-    .select('*')
+    .select('id, title, slug, description, tags, published_at')
     .order('published_at', { ascending: false })
+
+  const blogs = (data ?? []) as BlogCardProps[]
+  const [featured, ...rest] = blogs
 
   return (
     <>
       {/* Blog structured data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <PageHero
+        title="Articles"
+        intro="Writing on web development, mobile apps, backend systems and AI, drawn from the projects we build."
       />
 
-      <div className="max-w-6xl mx-auto px-6 py-24">
-        <h1 className="text-4xl sm:text-5xl font-display font-bold text-center mb-14 text-text-primary">
-          Latest <span className="text-gradient">Blogs</span>
-        </h1>
+      {!featured ? (
+        <section className="container-page py-24">
+          <p className="max-w-xl text-lg text-text-secondary">
+            No articles are published yet. In the meantime, you can see what we build.
+          </p>
+          <Button asChild variant="outline" className="mt-6">
+            <Link href="/services">Browse services</Link>
+          </Button>
+        </section>
+      ) : (
+        <>
+          {/* Latest post, given the most room */}
+          <section aria-labelledby="latest-title" className="border-b border-border-subtle">
+            <div className="container-page py-16 md:py-24">
+              <h2 id="latest-title" className="sr-only">
+                Latest article
+              </h2>
+              <Link
+                href={`/blog/${featured.slug}`}
+                className="group grid gap-6 outline-none focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-accent-primary lg:grid-cols-12 lg:gap-12"
+              >
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-text-muted lg:col-span-3 lg:flex-col lg:pt-3">
+                  <span className="text-accent-primary">Latest</span>
+                  {featured.published_at && (
+                    <time dateTime={new Date(featured.published_at).toISOString()}>
+                      {formatPostDate(featured.published_at)}
+                    </time>
+                  )}
+                  {(featured.tags ?? []).length > 0 && <span>{(featured.tags ?? []).slice(0, 3).join(', ')}</span>}
+                </div>
+                <div className="lg:col-span-9">
+                  <p className="type-heading text-text-primary transition-colors group-hover:text-accent-hover">
+                    {featured.title}
+                  </p>
+                  {featured.description && (
+                    <p className="mt-5 max-w-[60ch] text-lg leading-relaxed text-text-secondary">
+                      {featured.description}
+                    </p>
+                  )}
+                  <span className="mt-8 inline-block text-sm font-medium text-accent-primary underline decoration-accent-primary/40 underline-offset-4 group-hover:decoration-accent-primary">
+                    Read the article
+                  </span>
+                </div>
+              </Link>
+            </div>
+          </section>
 
-        {!blogs || blogs.length === 0 ? (
-          <p className="text-center text-info text-lg">No blog posts available.</p>
-        ) : (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-            {blogs.map((blog: BlogCardProps, index: number) => (
-              <BlogCard
-                key={blog.id}
-                title={blog.title}
-                description={blog.description}
-                slug={blog.slug}
-                published_at={blog.published_at}
-                tags={blog.tags || []}
-                delay={index * 0.05}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+          {rest.length > 0 && (
+            <section aria-labelledby="all-posts-title" className="py-16 md:py-24">
+              <div className="container-page">
+                <SectionHeading id="all-posts-title" title="More articles" />
+                <PostList posts={rest} />
+              </div>
+            </section>
+          )}
+        </>
+      )}
     </>
   )
 }

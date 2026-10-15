@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import CareersClient from '@/components/careers-client';
+import { PageHero } from '@/components/page-hero';
+import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = {
   title: 'Careers at VRTechBro | Join Our Team',
@@ -109,9 +111,15 @@ export default function CareersPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="min-h-screen px-6 py-24 lg:px-20 max-w-7xl mx-auto">
-        <CareersClient jobs={jobs} />
-      </main>
+      <PageHero
+        title="Help us build things people rely on"
+        intro="We're a small, founder-led studio. You'd work on real client projects from first sketch to launch, alongside the people who run the studio."
+      >
+        <Button asChild size="lg">
+          <a href="#roles">See open roles</a>
+        </Button>
+      </PageHero>
+      <CareersClient jobs={jobs} />
     </>
   );
 }

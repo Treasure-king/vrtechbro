@@ -1,91 +1,93 @@
-import { Metadata } from 'next'
-import { supabase } from '@/lib/supabase'
-import { Hero } from '@/components/hero'
-import { ServiceCard } from '@/components/service-card'
-import { BlogCard } from '@/components/blog-card'
-import { ContactForm } from '@/components/contact-form'
-import TechTags from '@/components/tech-tags'
-import AboutUs from '@/public/images/AboutUs.webp'
-import Image from 'next/image'
-import { ServiceCardProps } from '@/types/service-card'
-import { BlogCardProps } from '@/types/blog-card'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { ArrowRight } from 'lucide-react'
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import { Hero } from "@/components/hero";
+import TechTags from "@/components/tech-tags";
+import { ContactForm } from "@/components/contact-form";
+import { SectionHeading } from "@/components/section-heading";
+import { ServiceIndex } from "@/components/home/service-index";
+import { Process } from "@/components/home/process";
+import { WritingList } from "@/components/home/writing-list";
+import { Button } from "@/components/ui/button";
+import AboutUs from "@/public/images/AboutUs.webp";
+import { ServiceCardProps } from "@/types/service-card";
+import { BlogCardProps } from "@/types/blog-card";
 
 export const metadata: Metadata = {
-  title: 'VRTechBro – Empowering Your Digital Future',
+  title: "VRTechBro – Empowering Your Digital Future",
   description:
-    'VRTechBro offers scalable websites, applications, and cloud solutions tailored to accelerate your business growth. Trusted full-stack IT partner for startups and enterprises.',
+    "VRTechBro offers scalable websites, applications, and cloud solutions tailored to accelerate your business growth. Trusted full-stack IT partner for startups and enterprises.",
   alternates: {
-    canonical: '/',
+    canonical: "/",
   },
   openGraph: {
-    type: 'website',
-    title: 'VRTechBro – Empowering Your Digital Future',
+    type: "website",
+    title: "VRTechBro – Empowering Your Digital Future",
     description:
-      'VRTechBro offers scalable websites, applications, and cloud solutions tailored to accelerate your business growth.',
-    url: 'https://vrtechbro.com',
+      "VRTechBro offers scalable websites, applications, and cloud solutions tailored to accelerate your business growth.",
+    url: "https://vrtechbro.com",
     images: [
       {
-        url: '/images/vrTechBro.webp',
-        alt: 'VRTechBro - Full-Stack IT Partner',
+        url: "/images/vrTechBro.webp",
+        alt: "VRTechBro - Full-Stack IT Partner",
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'VRTechBro – Empowering Your Digital Future',
+    card: "summary_large_image",
+    title: "VRTechBro – Empowering Your Digital Future",
     description:
-      'VRTechBro offers scalable websites, applications, and cloud solutions tailored to accelerate your business growth.',
-    images: ['/images/vrTechBro.webp'],
+      "VRTechBro offers scalable websites, applications, and cloud solutions tailored to accelerate your business growth.",
+    images: ["/images/vrTechBro.webp"],
   },
-}
+};
 
 export const revalidate = 3600;
 
 export default async function HomePage() {
-  const { data: services } = await supabase
-    .from('services')
-    .select('*')
-    .eq('featured', true)
-    .order('created_at', { ascending: true })
-    .limit(3)
-
-  const { data: blogs } = await supabase
-    .from('blogs')
-    .select('*')
-    .limit(3)
-
-  const siteUrl = 'https://vrtechbro.com'
+  const [{ data: services }, { data: blogs }] = await Promise.all([
+    supabase
+      .from("services")
+      .select("*")
+      .eq("featured", true)
+      .order("display_order", { ascending: true })
+      .limit(6),
+    supabase
+      .from("blogs")
+      .select("id, title, slug, description, tags, published_at")
+      .order("published_at", { ascending: false })
+      .limit(4),
+  ]);
+  const siteUrl = "https://vrtechbro.com";
 
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
+    "@context": "https://schema.org",
+    "@graph": [
       {
-        '@type': 'WebSite',
-        '@id': `${siteUrl}/#website`,
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
         url: siteUrl,
-        name: 'VRTechBro',
+        name: "VRTechBro",
         description:
-          'VRTechBro offers scalable websites, applications, and cloud solutions tailored to accelerate your business growth.',
-        publisher: { '@id': `${siteUrl}/#organization` },
+          "VRTechBro offers scalable websites, applications, and cloud solutions tailored to accelerate your business growth.",
+        publisher: { "@id": `${siteUrl}/#organization` },
       },
       {
-        '@type': 'WebPage',
-        '@id': `${siteUrl}/#webpage`,
+        "@type": "WebPage",
+        "@id": `${siteUrl}/#webpage`,
         url: siteUrl,
-        name: 'VRTechBro – Empowering Your Digital Future',
+        name: "VRTechBro – Empowering Your Digital Future",
         description:
-          'VRTechBro offers scalable websites, applications, and cloud solutions tailored to accelerate your business growth.',
-        isPartOf: { '@id': `${siteUrl}/#website` },
-        inLanguage: 'en-US',
+          "VRTechBro offers scalable websites, applications, and cloud solutions tailored to accelerate your business growth.",
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        inLanguage: "en-US",
       },
     ],
-  }
+  };
 
   return (
-    <div className="min-h-screen">
+    <>
       {/* Page-specific WebSite + WebPage JSON-LD (Organization is in layout.tsx) */}
       <script
         type="application/ld+json"
@@ -96,159 +98,112 @@ export default async function HomePage() {
 
       <TechTags />
 
-      {/* About Section */}
-      <section
-        aria-labelledby="about-title"
-        className="relative py-24 overflow-hidden"
-      >
-        {/* Background gradient */}
-        <div className="absolute inset-0 gradient-glow opacity-30" />
-
-        <div className="relative z-10 px-4 sm:px-6 md:px-10 max-w-7xl mx-auto flex flex-col md:flex-row gap-12 items-center">
-          <div className="w-full md:w-1/2">
+      {/* Studio */}
+      <section aria-labelledby="about-title" className="py-24 md:py-32">
+        <div className="container-page grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-6">
+            <h2 id="about-title" className="type-heading text-text-primary">
+              A small studio that covers the whole build
+            </h2>
+            <div className="text-text-secondary mt-6 max-w-xl space-y-4 text-lg leading-relaxed">
+              <p>
+                Most projects need more than one skill: design, front end, back
+                end, hosting, and someone to keep it running afterwards. We
+                handle all of it, so you are not stitching together three
+                agencies and a freelancer.
+              </p>
+              <p>
+                That ranges from a fast marketing site to a mobile app, a Chrome
+                extension or a SaaS platform with its own API.
+              </p>
+            </div>
+            <Button
+              asChild
+              variant="link"
+              className="mt-6 h-auto px-0 text-base"
+            >
+              <Link href="/about">How we work and who we are</Link>
+            </Button>
+          </div>
+          <div className="lg:col-span-6">
             <Image
               src={AboutUs}
-              alt="About VRTechBro - IT Services Company"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="w-full rounded-2xl shadow-2xl shadow-black/20 object-cover border border-border-subtle"
+              alt="The VRTechBro team at work"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              placeholder="blur"
+              className="border-border-subtle aspect-[4/3] w-full rounded-2xl border object-cover"
             />
-          </div>
-          <div className="text-center md:text-left md:w-1/2">
-            <h2
-              id="about-title"
-              className="text-3xl sm:text-4xl font-display font-bold mb-5 text-text-primary"
-            >
-              Your Trusted Full-Stack{' '}
-              <span className="text-gradient">IT Partner</span>
-            </h2>
-            <p className="text-base sm:text-lg text-text-secondary leading-relaxed">
-              At VRTechBro, we help startups and enterprises transform ideas
-              into intelligent, scalable, and secure software solutions. With
-              expertise across technologies like{' '}
-              <strong className="text-text-primary">Next.js</strong>,{' '}
-              <strong className="text-text-primary">Node.js</strong>,{' '}
-              <strong className="text-text-primary">Supabase</strong>,{' '}
-              <strong className="text-text-primary">Python</strong>, and more,
-              our full-stack team builds high-impact web & mobile apps, cloud
-              platforms, and enterprise systems that fuel real-world success.
-            </p>
-            <div className="mt-6">
-              <Link href="/about">
-                <Button variant="secondary">
-                  Learn More About Us
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
           </div>
         </div>
       </section>
 
       {/* Services */}
-      <section className="py-24" aria-labelledby="services-title">
-        <div className="container px-4 mx-auto max-w-7xl">
-          <div className="text-center mb-14">
-            <h2
+      {services && services.length > 0 && (
+        <section aria-labelledby="services-title" className="pb-24 md:pb-32">
+          <div className="container-page">
+            <SectionHeading
               id="services-title"
-              className="text-3xl sm:text-4xl font-display font-bold text-text-primary mb-4"
-            >
-              Custom IT Services That{' '}
-              <span className="text-gradient">Drive Results</span>
-            </h2>
-            <p className="max-w-3xl mx-auto text-lg text-text-secondary">
-              Explore our featured services including full-stack development,
-              backend integrations, mobile applications, and scalable SaaS
-              platforms using modern technologies.
-            </p>
+              title="What we build"
+              intro="Pick a service to see what's included, the stack we use and how to get started."
+              action={
+                <Button asChild variant="outline">
+                  <Link href="/services">All services</Link>
+                </Button>
+              }
+            />
+            <ServiceIndex services={services as ServiceCardProps[]} />
           </div>
-          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-            {(services ?? []).map((service: ServiceCardProps, index: number) => {
-              return (
-                <ServiceCard
-                  key={service.id}
-                  slug={service.slug}
-                  title={service.title}
-                  short_description={service.short_description}
-                  image_url={service.image_url}
-                  icon={service.icon}
-                  keywords={service.keywords || []}
-                  delay={index * 0.05}
-                />
-              )
-            })}
-          </div>
+        </section>
+      )}
 
-          <div className="flex justify-center mt-12">
-            <Link href="/services">
-              <Button>
-                Explore More Services
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
+      {/* Process */}
+      <section
+        aria-labelledby="process-title"
+        className="border-border-subtle bg-bg-secondary/40 border-y py-24 md:py-32"
+      >
+        <div className="container-page">
+          <SectionHeading
+            id="process-title"
+            title="How a project runs"
+            intro="Four stages, with something you can see and react to at the end of each one."
+          />
+          <Process />
         </div>
       </section>
 
-      {/* Blog */}
-      <section className="py-24" aria-labelledby="blog-title">
-        <div className="container px-4 mx-auto max-w-7xl">
-          <div className="text-center mb-14">
-            <h2
+      {/* Writing */}
+      {blogs && blogs.length > 0 && (
+        <section aria-labelledby="blog-title" className="py-24 md:py-32">
+          <div className="container-page">
+            <SectionHeading
               id="blog-title"
-              className="text-3xl sm:text-4xl font-display font-bold text-text-primary mb-4"
-            >
-              Insights, Trends &{' '}
-              <span className="text-gradient">Tech News</span>
-            </h2>
-            <p className="max-w-2xl mx-auto text-lg text-text-secondary">
-              Stay ahead with expert-written articles on software development,
-              emerging frameworks, cloud engineering, and tech strategy.
-            </p>
+              title="Notes from the studio"
+              intro="What we're learning about building for the web, mobile and AI."
+              action={
+                <Button asChild variant="outline">
+                  <Link href="/blog">All articles</Link>
+                </Button>
+              }
+            />
+            <WritingList posts={blogs as BlogCardProps[]} />
           </div>
-          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-            {(blogs ?? []).map((blog: BlogCardProps, index: number) => (
-              <BlogCard
-                key={blog.id}
-                title={blog.title}
-                description={blog.description}
-                slug={blog.slug}
-                published_at={blog.published_at}
-                tags={blog.tags || []}
-                delay={index * 0.05}
-              />
-            ))}
-          </div>
+        </section>
+      )}
 
-          <div className="flex justify-center mt-12">
-            <Link href="/blog">
-              <Button variant="secondary">
-                Read More Articles
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact CTA */}
-      <section className="py-24" aria-labelledby="contact-title">
-        <div className="container px-4 mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h2
-              id="contact-title"
-              className="text-3xl sm:text-4xl font-display font-bold text-text-primary mb-4"
-            >
-              Let&apos;s Build Something{' '}
-              <span className="text-gradient">Incredible</span>
-            </h2>
-            <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-              Need a reliable software development team? Let&apos;s talk about your
-              business needs and how VRTechBro can deliver value.
-            </p>
-          </div>
+      {/* Contact */}
+      <section
+        aria-labelledby="contact-title"
+        className="border-border-subtle border-t py-24 md:py-32"
+      >
+        <div className="container-page">
+          <SectionHeading
+            id="contact-title"
+            title="Tell us what you're planning"
+            intro="Share a few lines about your project. We'll reply by email with questions or a next step."
+          />
           <ContactForm />
         </div>
       </section>
-    </div>
-  )
+    </>
+  );
 }

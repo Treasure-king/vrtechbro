@@ -1,11 +1,17 @@
 "use client";
 
-import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { X, Upload, FileCheck } from "lucide-react";
+import { Upload, FileCheck } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 interface CareerFormProps {
   job: {
@@ -119,154 +125,188 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
     }
   };
 
+  const labelStyles = "block text-sm font-medium text-text-secondary mb-1.5";
+  const errorText = (key: string) =>
+    errors[key] ? (
+      <p id={`${key}-error`} className="text-error text-xs mt-1.5">
+        {errors[key]}
+      </p>
+    ) : null;
+
   return (
-    <motion.div
-      className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm flex items-center justify-center z-50"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 50, opacity: 0 }}
-        className="bg-bg-secondary border border-border-subtle rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 relative"
+    <Sheet open onOpenChange={(open) => !open && !loading && onClose()}>
+      <SheetContent
+        side="right"
+        className="w-full gap-0 overflow-y-auto border-border-subtle bg-bg-secondary sm:max-w-lg"
       >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors rounded-lg p-1.5 hover:bg-bg-tertiary cursor-pointer"
-          aria-label="Close form"
-        >
-          <X className="h-5 w-5" />
-        </button>
+        <SheetHeader className="border-b border-border-subtle px-6 pt-8 pb-6">
+          <SheetTitle className="font-display text-2xl font-semibold tracking-tight text-text-primary">
+            Apply for {job.title}
+          </SheetTitle>
+          <SheetDescription className="text-text-secondary">
+            {job.location}, {job.type.toLowerCase()}. All fields are required unless marked optional.
+          </SheetDescription>
+        </SheetHeader>
 
-        <h2 className="text-xl font-display font-bold mb-6 text-text-primary">
-          Apply for <span className="text-gradient">{job.title}</span>
-        </h2>
-
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+        <form className="flex flex-col gap-5 px-6 py-6" onSubmit={handleSubmit} noValidate>
           <input type="hidden" name="position" value={job.title} />
           <input type="hidden" name="jobId" value={job.id} />
 
-          {/* Full Name */}
-          <input
-            type="text"
-            name="name"
-            placeholder="Your Full Name"
-            className={`${inputStyles} ${errors.name ? errorInputStyles : ""}`}
-            disabled={loading}
-          />
-          {errors.name && <p className="text-error text-xs -mt-2">{errors.name}</p>}
-
-          {/* Email */}
-          <input
-            type="email"
-            name="email"
-            placeholder="Your Email"
-            className={`${inputStyles} ${errors.email ? errorInputStyles : ""}`}
-            disabled={loading}
-          />
-          {errors.email && <p className="text-error text-xs -mt-2">{errors.email}</p>}
-
-          {/* Phone */}
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone Number (optional)"
-            className={`${inputStyles} ${errors.phone ? errorInputStyles : ""}`}
-            disabled={loading}
-          />
-          {errors.phone && <p className="text-error text-xs -mt-2">{errors.phone}</p>}
-
-          {/* Cover Letter */}
-          <textarea
-            name="coverLetter"
-            placeholder="Why should we hire you? (Cover Letter)"
-            rows={4}
-            maxLength={1000}
-            className={`${inputStyles} resize-none ${errors.coverLetter ? errorInputStyles : ""}`}
-            disabled={loading}
-          />
-          {errors.coverLetter && (
-            <p className="text-error text-xs -mt-2">{errors.coverLetter}</p>
-          )}
-
-          {/* Resume Upload */}
-          <label
-            htmlFor="resume"
-            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all duration-200 ${
-              dragActive
-                ? "bg-accent-primary/10 border-accent-primary"
-                : errors?.resume
-                  ? "border-error"
-                  : "border-border-subtle hover:border-border-strong hover:bg-bg-tertiary/50"
-            }`}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          >
-            {fileName ? (
-              <div className="flex flex-col items-center gap-2">
-                <FileCheck className="h-8 w-8 text-success" />
-                <p className="text-text-primary text-sm font-medium">{fileName}</p>
-                <span className="text-xs text-text-muted">Click to replace</span>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-2">
-                <Upload className="h-8 w-8 text-text-muted" />
-                <p className="text-text-secondary text-sm">
-                  Upload Resume (PDF/DOC)
-                </p>
-                <span className="text-xs text-text-muted">
-                  Drag & drop or click to select
-                </span>
-              </div>
-            )}
-
+          <div>
+            <label htmlFor="career-name" className={labelStyles}>
+              Full name
+            </label>
             <input
-              id="resume"
-              name="resume"
-              type="file"
-              accept=".pdf,.doc,.docx"
-              className="hidden"
-              disabled={loading}
-              onChange={handleFileChange}
-            />
-          </label>
-          {errors.resume && <p className="text-error text-xs -mt-2">{errors.resume}</p>}
-
-          {/* Terms */}
-          <label className="flex items-start gap-2.5 text-sm text-text-secondary">
-            <input
-              type="checkbox"
-              name="agreeTerms"
-              className={`mt-0.5 w-4 h-4 rounded border-border-subtle accent-accent-primary ${errors.agreeTerms ? "border-error" : ""}`}
+              id="career-name"
+              type="text"
+              name="name"
+              autoComplete="name"
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? "name-error" : undefined}
+              className={`${inputStyles} ${errors.name ? errorInputStyles : ""}`}
               disabled={loading}
             />
-            <span>
-              I agree to the{" "}
-              <a
-                href="/privacy-policy"
-                className="text-accent-primary hover:text-accent-hover underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                privacy policy
-              </a>{" "}
-              and terms.
+            {errorText("name")}
+          </div>
+
+          <div>
+            <label htmlFor="career-email" className={labelStyles}>
+              Email
+            </label>
+            <input
+              id="career-email"
+              type="email"
+              name="email"
+              autoComplete="email"
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "email-error" : undefined}
+              className={`${inputStyles} ${errors.email ? errorInputStyles : ""}`}
+              disabled={loading}
+            />
+            {errorText("email")}
+          </div>
+
+          <div>
+            <label htmlFor="career-phone" className={labelStyles}>
+              Phone <span className="text-text-muted font-normal">(optional)</span>
+            </label>
+            <input
+              id="career-phone"
+              type="tel"
+              name="phone"
+              autoComplete="tel"
+              aria-invalid={!!errors.phone}
+              aria-describedby={errors.phone ? "phone-error" : undefined}
+              className={`${inputStyles} ${errors.phone ? errorInputStyles : ""}`}
+              disabled={loading}
+            />
+            {errorText("phone")}
+          </div>
+
+          <div>
+            <label htmlFor="career-cover" className={labelStyles}>
+              Cover letter
+            </label>
+            <textarea
+              id="career-cover"
+              name="coverLetter"
+              rows={5}
+              maxLength={1000}
+              placeholder="The work you're proudest of, why this role, and links to your portfolio or GitHub."
+              aria-invalid={!!errors.coverLetter}
+              aria-describedby={errors.coverLetter ? "coverLetter-error" : undefined}
+              className={`${inputStyles} resize-none ${errors.coverLetter ? errorInputStyles : ""}`}
+              disabled={loading}
+            />
+            {errorText("coverLetter")}
+          </div>
+
+          <div>
+            <span className={labelStyles} id="resume-label">
+              Resume
             </span>
-          </label>
-          {errors.agreeTerms && (
-            <p className="text-error text-xs -mt-2">{errors.agreeTerms}</p>
-          )}
+            <label
+              htmlFor="resume"
+              className={`block rounded-xl border-2 border-dashed p-6 text-center cursor-pointer transition-colors duration-200 focus-within:border-accent-primary ${
+                dragActive
+                  ? "bg-accent-primary/10 border-accent-primary"
+                  : errors?.resume
+                    ? "border-error"
+                    : "border-border-subtle hover:border-border-strong hover:bg-bg-tertiary/50"
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              {fileName ? (
+                <span className="flex flex-col items-center gap-2">
+                  <FileCheck className="h-7 w-7 text-success" aria-hidden="true" />
+                  <span className="text-text-primary text-sm font-medium break-all">{fileName}</span>
+                  <span className="text-xs text-text-muted">Choose a different file</span>
+                </span>
+              ) : (
+                <span className="flex flex-col items-center gap-2">
+                  <Upload className="h-7 w-7 text-text-muted" aria-hidden="true" />
+                  <span className="text-text-secondary text-sm">Drop your resume here or choose a file</span>
+                  <span className="text-xs text-text-muted">PDF, DOC or DOCX, up to 5 MB</span>
+                </span>
+              )}
 
-          {/* Submit */}
-          <Button type="submit" isLoading={loading} className="w-full mt-2">
-            {loading ? "Submitting..." : "Submit Application"}
+              <input
+                id="resume"
+                name="resume"
+                type="file"
+                accept=".pdf,.doc,.docx"
+                className="sr-only"
+                aria-labelledby="resume-label"
+                aria-describedby={errors.resume ? "resume-error" : undefined}
+                disabled={loading}
+                onChange={handleFileChange}
+              />
+            </label>
+            {errorText("resume")}
+          </div>
+
+          <div>
+            <label className="flex items-start gap-2.5 text-sm text-text-secondary">
+              <input
+                type="checkbox"
+                name="agreeTerms"
+                aria-invalid={!!errors.agreeTerms}
+                aria-describedby={errors.agreeTerms ? "agreeTerms-error" : undefined}
+                className="mt-0.5 h-4 w-4 rounded border-border-subtle accent-accent-primary"
+                disabled={loading}
+              />
+              <span>
+                I agree to the{" "}
+                <a
+                  href="/privacy-policy"
+                  className="text-accent-primary hover:text-accent-hover underline underline-offset-4"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  privacy policy
+                </a>{" "}
+                and{" "}
+                <a
+                  href="/terms"
+                  className="text-accent-primary hover:text-accent-hover underline underline-offset-4"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  terms
+                </a>
+                .
+              </span>
+            </label>
+            {errorText("agreeTerms")}
+          </div>
+
+          <Button type="submit" isLoading={loading} size="lg" className="mt-2 w-full">
+            {loading ? "Sending application…" : "Send application"}
           </Button>
         </form>
-      </motion.div>
-    </motion.div>
+      </SheetContent>
+    </Sheet>
   );
 }
