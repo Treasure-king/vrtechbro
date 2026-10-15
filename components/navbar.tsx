@@ -6,8 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
-import vrTechBro from "@/public/images/vrTechBro-bg-remove.webp";
+import { Logo } from "@/components/brand/logo";
 import { NAV_LINKS } from "@/lib/constants";
 
 const links = NAV_LINKS;
@@ -57,15 +56,10 @@ export function Navbar() {
           transition={{ duration: 0.5 }}
         >
           <Link href="/" aria-label="VRTechBro Home" className="group">
-            <Image
-              src={vrTechBro}
-              alt="VRTechBro Logo"
-              width={scrolled ? 60 : 72}
-              height={scrolled ? 60 : 72}
-              sizes="80px"
+            <Logo
+              size={scrolled ? 60 : 72}
               priority
-              loading="eager"
-              className="transition-all duration-300 group-hover:drop-shadow-[0_0_12px_oklch(0.68_0.19_275/40%)]"
+              className="transition-all duration-300 group-hover:drop-shadow-[0_0_12px_var(--brand-signal)]"
             />
           </Link>
         </motion.div>

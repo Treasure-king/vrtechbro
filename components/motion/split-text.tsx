@@ -9,6 +9,7 @@ type SplitTextProps = {
   className?: string;
   delay?: number;
   stagger?: number;
+  id?: string;
 };
 
 /** Reveals a line of text word by word on mount. Screen readers get the full sentence. */
@@ -18,13 +19,14 @@ export function SplitText({
   className,
   delay = 0,
   stagger = 0.06,
+  id,
 }: SplitTextProps) {
   const reduce = useReducedMotion();
   const Tag = motion[as];
   const words = text.split(" ");
 
   return (
-    <Tag className={cn(className)} aria-label={text}>
+    <Tag id={id} className={cn(className)} aria-label={text}>
       {words.map((word, i) => (
         <span
           key={i}

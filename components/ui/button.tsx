@@ -12,7 +12,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "gradient-primary text-white shadow-lg shadow-accent-primary/20 hover:shadow-xl hover:shadow-accent-primary/30 hover:scale-[1.02]",
+          "gradient-primary text-on-accent shadow-lg shadow-accent-primary/20 hover:shadow-xl hover:shadow-accent-primary/30 hover:scale-[1.02]",
         secondary:
           "bg-transparent border border-accent-primary text-accent-primary hover:bg-accent-primary/10 hover:scale-[1.02]",
         ghost:

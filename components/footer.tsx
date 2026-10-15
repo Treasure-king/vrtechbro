@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BRAND } from "@/lib/brand";
 import { FaLinkedinIn, FaInstagram, FaGithub } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import {
@@ -68,9 +69,9 @@ export function Footer() {
       className="border-border-subtle bg-bg-primary border-t"
       role="contentinfo"
     >
-      <div className="container-page pt-20 pb-8">
+      <div className="container-page pt-14 pb-8">
         {/* Closing line: the one thing we want every visitor to leave with */}
-        <div className="border-border-subtle flex flex-col gap-6 border-b pb-14 md:flex-row md:items-end md:justify-between">
+        <div className="border-border-subtle flex flex-col gap-6 border-b pb-10 md:flex-row md:items-end md:justify-between">
           <p className="type-heading text-text-primary max-w-xl">
             Have a project in mind?
           </p>
@@ -82,7 +83,7 @@ export function Footer() {
           </a>
         </div>
 
-        <div className="grid grid-cols-2 gap-10 pt-14 lg:grid-cols-5 lg:gap-8">
+        <div className="grid grid-cols-2 gap-10 pt-10 lg:grid-cols-5 lg:gap-8">
           <div className="col-span-2">
             <p className="font-display text-text-primary text-lg font-bold">
               VRTechBro
@@ -130,7 +131,7 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="border-border-subtle mt-14 flex flex-col justify-between gap-3 border-t pt-6 sm:flex-row">
+        <div className="border-border-subtle mt-10 flex flex-col justify-between gap-3 border-t pt-6 sm:flex-row">
           <p className="text-text-muted text-xs">
             © {new Date().getFullYear()} {COMPANY_LEGAL_NAME} All rights
             reserved.
@@ -139,6 +140,13 @@ export function Footer() {
             Built with Next.js and Supabase
           </p>
         </div>
+      </div>
+
+      {/* Oversized wordmark, revealed as the page lifts off the footer */}
+      <div aria-hidden="true" className="overflow-hidden select-none">
+        <p className="font-display text-text-primary/[0.06] -mb-[0.22em] text-center text-[13vw] leading-none font-extrabold tracking-[-0.05em] whitespace-nowrap uppercase">
+          {BRAND.name}
+        </p>
       </div>
     </footer>
   );

@@ -641,3 +641,10 @@ Tailwind CSS v4 uses modern `@theme` OKLCH color definitions:
 - **All inner pages rebuilt** (About, Services + detail with slide-out enquiry sheet, Blog + article with TOC/share, Contact, FAQ accordion, Careers with application sheet, legal docs with sticky TOC, honest portfolio placeholder, 404/error).
 - `Button asChild` now renders a bare Slot (single child). Root title template is `%s` because page titles already include the brand.
 - **Pending:** replace placeholder/light clipart images with the Gemini set; run accessibility + Lighthouse audits; owner to confirm FAQ claims (24/7 live chat, 14-day refunds contradict Terms).
+
+### Brand system & home upgrade (2026-10-15, later)
+- **Single source of truth: `lib/brand.ts`.** All colours (hex), the display width, fonts (Archivo with wdth axis + JetBrains Mono), logo file and name. `components/brand/brand-style.tsx` injects them as `--brand-*` CSS vars; `app/globals.css` maps Tailwind tokens to those vars. Do not hard-code colours anywhere else (only exception: third-party social icon colours in the footer).
+- **To rebrand:** edit `lib/brand.ts`, then swap `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico`, `app/opengraph-image.png`. Use `<Logo />` (components/brand/logo.tsx) wherever the logo appears.
+- **Palette:** indigo primary `#7B6CF6`, signal amber `#F6B31B` (from the logo bolt, used sparingly via `text-signal`/`bg-signal`), tertiary magenta for gradients only.
+- **New home sections:** parallax hero (3 depth planes + pointer tilt), Manifesto (scroll-lit words), Capabilities (pinned horizontal scroll, 6 demos), scroll-drawn Process timeline, Under the hood (live PageSpeed scores via `lib/site-metrics.ts` — needs `PAGESPEED_API_KEY` env var to show reliably; architecture diagram; headers from `lib/security-headers.ts`), curtain footer with wordmark, page transitions (`app/template.tsx`), cursor spotlight, film grain.
+- `next.config.ts` now imports headers from `lib/security-headers.ts` (verified byte-identical).

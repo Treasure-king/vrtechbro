@@ -1,30 +1,14 @@
 // app/layout.tsx
 import "./globals.css";
-import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { BRAND, fontMono, fontSans } from "@/lib/brand";
+import { BrandStyle } from "@/components/brand/brand-style";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { Curtain } from "@/components/layout/curtain";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-  display: "swap",
-});
 
 export const metadata = {
   title: {
@@ -94,13 +78,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      className={`${fontSans.variable} ${fontMono.variable}`}
       suppressHydrationWarning
     >
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#0d0e14" />
+        <meta name="theme-color" content={BRAND.colors.canvas} />
+        <BrandStyle />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -128,13 +113,14 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-body antialiased">
+      <body className="grain font-body antialiased">
         <ThemeProvider>
           <SmoothScroll />
           <TooltipProvider>
-            <Navbar />
-            <main className="min-h-screen">{children}</main>
-            <Footer />
+            <Curtain footer={<Footer />}>
+              <Navbar />
+              <main className="relative min-h-screen">{children}</main>
+            </Curtain>
             <Toaster />
           </TooltipProvider>
         </ThemeProvider>
