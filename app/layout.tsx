@@ -1,11 +1,28 @@
 // app/layout.tsx
 import './globals.css';
-import { Inter } from 'next/font/google';
+import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Toaster } from '@/components/ui/sonner';
+import { ThemeProvider } from '@/components/theme-provider';
 
-const inter = Inter({ subsets: ['latin'], display: 'swap' });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+});
 
 export const metadata = {
   title: {
@@ -16,7 +33,7 @@ export const metadata = {
     'VRTechBro is a modern digital studio building custom software, web & mobile apps, SaaS platforms, and scalable backends using Next.js, Supabase, and Python.',
   robots: 'index, follow',
   alternates: {
-    canonical: 'https://vrtechbro.com',
+    canonical: '/',
   },
   keywords: [
     'VRTechBro',
@@ -35,7 +52,8 @@ export const metadata = {
   ],
   authors: [{ name: 'VRTechBro', url: 'https://vrtechbro.com' }],
   icons: {
-    icon: '/favicon.ico',
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
   },
   metadataBase: new URL('https://vrtechbro.com'),
   openGraph: {
@@ -46,7 +64,7 @@ export const metadata = {
     siteName: 'VRTechBro – Modern Digital Studio',
     images: [
       {
-        url: '/vrtechbro-logo.png',
+        url: '/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: 'VRTechBro - Digital Studio',
@@ -62,7 +80,7 @@ export const metadata = {
       'Offering custom software, SaaS, mobile, and backend services with Next.js, Supabase, and Python.',
     site: '@vrtechbro',
     creator: '@vrtechbro',
-    images: ['/vrtechbro-logo.png'],
+    images: ['/opengraph-image.png'],
   },
 };
 
@@ -73,12 +91,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" >
+    <html
+      lang="en"
+      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#0F172A" />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <meta name="theme-color" content="#0d0e14" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -106,11 +127,13 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className} >
-        <Navbar />
-        <main className="min-h-screen" >{children}</main>
-        <Footer />
-        <Toaster />
+      <body className="font-body antialiased">
+        <ThemeProvider>
+          <Navbar />
+          <main className="min-h-screen">{children}</main>
+          <Footer />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

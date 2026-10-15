@@ -2,12 +2,16 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Card({ title, content }: { title: string, content: string }) {
+function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div className="bg-card text-white p-5 rounded-xl shadow-lg border border-slate-700">
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-gray-300">{content}</p>
-    </div>
+    <div
+      data-slot="card"
+      className={cn(
+        "bg-bg-secondary border border-border-subtle rounded-2xl p-6 shadow-lg shadow-black/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-border-strong hover:shadow-xl hover:shadow-accent-primary/5",
+        className
+      )}
+      {...props}
+    />
   )
 }
 
@@ -28,7 +32,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-title"
-      className={cn("leading-none font-semibold", className)}
+      className={cn("leading-none font-semibold font-display text-text-primary", className)}
       {...props}
     />
   )
@@ -38,7 +42,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-description"
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn("text-text-muted text-sm", className)}
       {...props}
     />
   )

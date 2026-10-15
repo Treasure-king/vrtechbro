@@ -1,12 +1,18 @@
-// app/services/[slug]/page.tsx
 import { Metadata } from "next";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { supabase } from '@/lib/supabase';
-import ServiceOverlay from "@/components/ServiceOverlay";
 import { JSX } from "react";
 
-// ✅ Fetch a single service by slug
+const ServiceOverlay = dynamic(() => import("@/components/service-overlay"), {
+  loading: () => (
+    <div className="gradient-primary text-white text-sm font-medium px-5 py-2.5 rounded-xl opacity-70">
+      Loading...
+    </div>
+  ),
+});
+
 async function getService(slug: string) {
   const { data, error } = await supabase
     .from("services")
@@ -18,7 +24,6 @@ async function getService(slug: string) {
   return data;
 }
 
-// ✅ Dynamic SEO metadata
 export async function generateMetadata({
   params,
 }: {
@@ -45,8 +50,6 @@ export async function generateMetadata({
       ? service.keywords.slice(0, 15).join(", ")
       : "IT services, software development, SaaS, custom software, mobile app development";
 
-  const canonicalUrl = `https://vrtechbro.com/services/${slug}`;
-
   return {
     title: `${service.title} | VRTechBro`,
     description: service.short_description,
@@ -54,7 +57,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${service.title} | VRTechBro`,
       description: service.short_description,
-      url: canonicalUrl,
+      url: `https://vrtechbro.com/services/${slug}`,
       siteName: "VRTechBro",
       type: "article",
       images: service.image_url ? [{ url: service.image_url, alt: service.title }] : [],
@@ -67,7 +70,7 @@ export async function generateMetadata({
       images: service.image_url ? [service.image_url] : [],
     },
     alternates: {
-      canonical: canonicalUrl,
+      canonical: `/services/${slug}`,
     },
   };
 }
@@ -82,7 +85,7 @@ const ServicePage = async ({
 
   if (!service) return notFound();
 
-  const jsonLd = {
+  const serviceJsonLd = {
     "@context": "https://schema.org",
     "@type": "Service",
     name: service.title,
@@ -97,40 +100,32 @@ const ServicePage = async ({
     url: `https://vrtechbro.com/services/${slug}`,
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://vrtechbro.com" },
+      { "@type": "ListItem", position: 2, name: "Services", item: "https://vrtechbro.com/services" },
+      { "@type": "ListItem", position: 3, name: service.title, item: `https://vrtechbro.com/services/${slug}` },
+    ],
+  };
+
   return (
     <>
-      <head>
-        <title>{service.title} | VRTechBro</title>
-        <meta name="description" content={service.short_description} />
-        <meta name="keywords" content={service.keywords?.slice(0, 15).join(", ")} />
-        <link rel="canonical" href={`https://vrtechbro.com/services/${slug}`} />
+      {/* Service & Breadcrumb Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
 
-        {/* Open Graph */}
-        <meta property="og:title" content={`${service.title} | VRTechBro`} />
-        <meta property="og:description" content={service.short_description} />
-        <meta property="og:url" content={`https://vrtechbro.com/services/${slug}`} />
-        <meta property="og:site_name" content="VRTechBro" />
-        <meta property="og:type" content="article" />
-        {service.image_url && <meta property="og:image" content={service.image_url} />}
-
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@vrtechbro" />
-        <meta name="twitter:title" content={`${service.title} | VRTechBro`} />
-        <meta name="twitter:description" content={service.short_description} />
-        {service.image_url && <meta name="twitter:image" content={service.image_url} />}
-
-        {/* JSON-LD structured data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </head>
-
-      <div className="max-w-7xl m-auto grid lg:grid-cols-2 gap-10 items-start text-white p-10">
+      <div className="max-w-7xl m-auto grid lg:grid-cols-2 gap-12 items-start p-10">
         {/* Left Content */}
-        <div className="space-y-4">
-          <h1 className="text-4xl font-bold">{service.title}</h1>
+        <div className="space-y-5">
+          <h1 className="text-4xl font-display font-bold text-text-primary">{service.title}</h1>
 
           {/* Keywords */}
           {service.keywords?.length > 0 && (
@@ -138,7 +133,7 @@ const ServicePage = async ({
               {service.keywords.map((k: string) => (
                 <span
                   key={k}
-                  className="bg-blue-100 text-blue-600 text-sm px-3 py-1 rounded-full"
+                  className="bg-accent-primary/10 text-accent-primary text-sm px-3 py-1 rounded-full font-medium"
                 >
                   {k}
                 </span>
@@ -146,8 +141,8 @@ const ServicePage = async ({
             </div>
           )}
 
-          <p className="text-lg text-gray-200">{service.short_description}</p>
-          <p className="text-gray-300 leading-relaxed">{service.long_description}</p>
+          <p className="text-lg text-text-secondary">{service.short_description}</p>
+          <p className="text-text-secondary/80 leading-relaxed">{service.long_description}</p>
 
           {/* Action Button */}
           <ServiceOverlay serviceId={service.slug} serviceTitle={service.title} />
@@ -161,6 +156,7 @@ const ServicePage = async ({
               alt={service.title}
               width={400}
               height={300}
+              sizes="(max-width: 1024px) 100vw, 400px"
               className="rounded-2xl shadow-lg w-auto h-auto"
             />
           ) : service.icon ? (
@@ -169,6 +165,7 @@ const ServicePage = async ({
               alt={service.title}
               width={100}
               height={100}
+              sizes="100px"
               className="opacity-80"
             />
           ) : null}
@@ -180,7 +177,6 @@ const ServicePage = async ({
 
 export default ServicePage;
 
-// Generate static params for SSG
 export async function generateStaticParams() {
   const { data, error } = await supabase.from("services").select("slug");
   if (error || !data) return [];

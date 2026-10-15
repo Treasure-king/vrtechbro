@@ -1,94 +1,135 @@
-'use client'
-
-import { useEffect, useState } from 'react'
+import { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import { ServiceCard } from '@/components/service-card'
 import { ServiceCardProps } from '@/types/service-card'
-import { iconMap } from '@/lib/helper'
 import Link from 'next/link'
-import Head from 'next/head'
+import { Button } from '@/components/ui/button'
+import { ArrowRight } from 'lucide-react'
 
-export default function ServicesPage() {
-  const [services, setServices] = useState<ServiceCardProps[]>([])
-  const [error, setError] = useState<string | null>(null)
+export const metadata: Metadata = {
+  title: 'IT Services & Software Development Solutions | VRTechBro',
+  description:
+    'Explore full-stack IT services including SaaS development, custom web apps, mobile solutions, and scalable backend systems delivered by VRTechBro.',
+  keywords: [
+    'IT services',
+    'software development',
+    'SaaS development',
+    'custom web apps',
+    'mobile app development',
+    'scalable backend systems',
+    'cloud integration',
+    'Next.js developers',
+    'hire software team',
+    'digital transformation',
+    'enterprise software solutions',
+    'full-stack development',
+    'mobile solutions',
+    'software consulting',
+    'API development',
+    'VRTechBro',
+  ],
+  alternates: {
+    canonical: '/services',
+  },
+  openGraph: {
+    title: 'IT Services & Software Development Solutions | VRTechBro',
+    description:
+      'Explore full-stack IT services including SaaS development, custom web apps, mobile solutions, and scalable backend systems delivered by VRTechBro.',
+    url: 'https://vrtechbro.com/services',
+    siteName: 'VRTechBro',
+    type: 'website',
+    images: [
+      {
+        url: '/opengraph-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'VRTechBro IT Services',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'IT Services & Software Development Solutions | VRTechBro',
+    description:
+      'Full-stack IT services including SaaS development, web apps, and cloud backend solutions.',
+    images: ['/opengraph-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+}
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .order('created_at', { ascending: false })
+export const revalidate = 3600;
 
-      if (error) {
-        setError('Failed to load services.')
-      } else {
-        setServices(data || [])
-      }
-    }
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'IT Services & Software Development Solutions – VRTechBro',
+  description:
+    'Explore full-stack IT services including SaaS development, custom web apps, mobile solutions, and scalable backend systems delivered by VRTechBro.',
+  url: 'https://vrtechbro.com/services',
+  publisher: {
+    '@type': 'Organization',
+    name: 'VRTechBro',
+    url: 'https://vrtechbro.com',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://vrtechbro.com/logo.png',
+    },
+  },
+}
 
-    fetchServices()
-  }, [])
+export default async function ServicesPage() {
+  const { data: services, error } = await supabase
+    .from('services')
+    .select('*')
+    .order('created_at', { ascending: false })
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-12 text-text" role="main">
-      {/* SEO Meta Tags */}
-      <Head>
-        <title>IT Services & Software Development Solutions | VRTechBro</title>
-        <meta
-          name="description"
-          content="Explore full-stack IT services including SaaS development, custom web apps, mobile solutions, and scalable backend systems delivered by VRTechBro."
-        />
-        <meta
-          name="keywords"
-          content="
-            IT services, software development, SaaS development, custom web apps, mobile app development, scalable backend systems,
-            cloud integration, Next.js developers, hire software team, digital transformation, enterprise software solutions,
-            full-stack development, mobile solutions, software consulting, API development, VRTechBro
-          "
-        />
-        <meta name="robots" content="index, follow" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href="https://vrtechbro.com/services" />
-      </Head>
-
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <main className="max-w-7xl mx-auto px-6 py-24" role="main">
       {/* Page Heading */}
-      <h1 className="text-4xl sm:text-5xl font-bold text-center mb-6" tabIndex={-1}>
-        Full-Stack IT Services & Custom Software Solutions
+      <h1 className="text-4xl sm:text-5xl font-display font-bold text-center mb-6 text-text-primary" tabIndex={-1}>
+        Full-Stack IT Services & Custom{' '}
+        <span className="text-gradient">Software Solutions</span>
       </h1>
 
       {/* Intro Paragraph */}
-      <p className="text-lg text-center max-w-3xl mx-auto mb-12 text-gray-400">
+      <p className="text-lg text-center max-w-3xl mx-auto mb-14 text-text-secondary">
         At VRTechBro, we offer a wide range of digital solutions tailored to your business goals — from frontend development with{' '}
-        <strong>Next.js</strong> to powerful backend APIs, cloud integrations, mobile app builds, and scalable SaaS platforms. Whether you&apos;re a startup or an enterprise, our team delivers reliable, high-performance software across the stack.
+        <strong className="text-text-primary">Next.js</strong> to powerful backend APIs, cloud integrations, mobile app builds, and scalable SaaS platforms. Whether you&apos;re a startup or an enterprise, our team delivers reliable, high-performance software across the stack.
       </p>
 
       {/* Services Grid */}
       {error ? (
         <p className="text-error text-center mt-10" role="alert" aria-live="assertive">
-          {error}
+          Failed to load services.
         </p>
-      ) : services.length === 0 ? (
+      ) : !services || services.length === 0 ? (
         <p className="text-center text-info text-lg" role="status" aria-live="polite">
           No services found.
         </p>
       ) : (
         <section
           aria-labelledby="services-list-heading"
-          className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr"
+          className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr"
         >
           <h2 id="services-list-heading" className="sr-only">
             Our Services
           </h2>
-          {services.map((service, index) => {
-            const IconComponent = iconMap[service.icon as keyof typeof iconMap]
-
+          {services.map((service: ServiceCardProps, index: number) => {
             return (
               <ServiceCard
                 key={service.id}
                 title={service.title}
                 slug={service.slug}
                 short_description={service.short_description}
-                icon={IconComponent}
+                icon={service.icon}
                 keywords={service.keywords || []}
                 delay={index * 0.15}
               />
@@ -98,19 +139,22 @@ export default function ServicesPage() {
       )}
 
       {/* Call to Action */}
-      <div className="text-center mt-16">
-        <h2 className="text-2xl font-semibold mb-4">Need help choosing the right solution?</h2>
-        <p className="mb-6 text-gray-400">
+      <div className="text-center mt-20">
+        <h2 className="text-2xl font-display font-semibold mb-4 text-text-primary">Need help choosing the right solution?</h2>
+        <p className="mb-8 text-text-secondary">
           Reach out to our experts today and discover how we can build, scale, and maintain your next digital product.
         </p>
         <Link
           href="/contact"
-          className="inline-block px-6 py-3 btn text-white font-semibold rounded-lg"
           aria-label="Get a free consultation from VRTechBro"
         >
-          Get a Free Consultation
+          <Button size="lg">
+            Get a Free Consultation
+            <ArrowRight className="h-4 w-4" />
+          </Button>
         </Link>
       </div>
     </main>
+    </>
   )
 }

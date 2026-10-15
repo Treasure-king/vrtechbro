@@ -7,23 +7,28 @@ import { cn } from '@/lib/utils'
 import { Loader2 } from 'lucide-react'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none',
+  'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] cursor-pointer',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-white hover:bg-blue-700',
-        secondary: 'bg-muted text-white hover:bg-muted/80',
-        ghost: 'bg-transparent hover:bg-slate-800 text-white',
-        outline: 'border border-input bg-transparent hover:bg-slate-800 text-white',
-        destructive: 'bg-red-600 text-white hover:bg-red-700',
-        success: 'bg-green-600 text-white hover:bg-green-700',
-        link: 'underline-offset-4 hover:underline text-blue-500 p-0 h-auto',
+        default:
+          'gradient-primary text-white shadow-lg shadow-accent-primary/20 hover:shadow-xl hover:shadow-accent-primary/30 hover:scale-[1.02]',
+        secondary:
+          'bg-transparent border border-accent-primary text-accent-primary hover:bg-accent-primary/10 hover:scale-[1.02]',
+        ghost:
+          'bg-transparent text-text-secondary hover:text-text-primary hover:bg-bg-tertiary',
+        outline:
+          'border border-border-subtle bg-transparent text-text-primary hover:bg-bg-tertiary hover:border-border-strong',
+        destructive:
+          'bg-error text-white hover:bg-error/90 hover:scale-[1.02]',
+        link:
+          'underline-offset-4 hover:underline text-accent-primary p-0 h-auto active:scale-100',
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-8 px-3 text-sm',
-        lg: 'h-12 px-6 text-lg',
-        icon: 'h-10 w-10',
+        default: 'h-10 px-5 py-2.5 text-sm',
+        sm: 'h-8 px-3 py-1.5 text-sm rounded-lg',
+        lg: 'h-12 px-7 py-3.5 text-base rounded-xl',
+        icon: 'h-10 w-10 rounded-lg',
       },
     },
     defaultVariants: {
@@ -58,12 +63,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading ? (
-          <Loader2 className="animate-spin h-4 w-4 mr-2" />
+          <Loader2 className="animate-spin h-4 w-4" />
         ) : (
-          iconLeft && <span className="mr-2">{iconLeft}</span>
+          iconLeft && <span>{iconLeft}</span>
         )}
         {children}
-        {iconRight && !isLoading && <span className="ml-2">{iconRight}</span>}
+        {iconRight && !isLoading && <span>{iconRight}</span>}
       </Comp>
     )
   }
@@ -71,4 +76,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = 'Button'
 
-export {Button}
+export { Button, buttonVariants }

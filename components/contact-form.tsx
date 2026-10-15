@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { Mail, Building2, Clock } from 'lucide-react'
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name is too short'),
@@ -51,12 +52,12 @@ export function ContactForm() {
   }
 
   return (
-    <div className="w-full mx-auto p-4 text-white flex flex-col lg:flex-row lg:gap-6">
-      <form onSubmit={handleSubmit(onSubmit)} noValidate aria-describedby="form-error" className="lg:w-1/2 space-y-6 ">
-        <h2 className="text-3xl font-bold mb-6 text-shadow-lg">Contact Us</h2>
+    <div className="w-full mx-auto flex flex-col lg:flex-row lg:gap-10">
+      <form onSubmit={handleSubmit(onSubmit)} noValidate aria-describedby="form-error" className="lg:w-1/2 space-y-5">
+        <h2 className="text-2xl font-display font-bold mb-6 text-text-primary">Contact Us</h2>
 
         <div>
-          <label htmlFor="name" className="block text-sm font-semibold mb-1">
+          <label htmlFor="name" className="block text-sm font-medium mb-1.5 text-text-secondary">
             Name
           </label>
           <Input
@@ -66,18 +67,18 @@ export function ContactForm() {
             aria-invalid={errors.name ? 'true' : 'false'}
             aria-describedby={errors.name ? 'name-error' : undefined}
             {...register('name')}
-            className="bg-white/10 text-white placeholder:text-gray-400"
+            className="bg-bg-secondary border-border-subtle text-text-primary placeholder:text-text-muted"
             autoComplete="name"
           />
           {errors.name && (
-            <p id="name-error" className="text-sm text-red-400 mt-1" role="alert" aria-live="assertive">
+            <p id="name-error" className="text-sm text-error mt-1" role="alert" aria-live="assertive">
               {errors.name.message}
             </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-semibold mb-1">
+          <label htmlFor="email" className="block text-sm font-medium mb-1.5 text-text-secondary">
             Email
           </label>
           <Input
@@ -87,18 +88,18 @@ export function ContactForm() {
             aria-invalid={errors.email ? 'true' : 'false'}
             aria-describedby={errors.email ? 'email-error' : undefined}
             {...register('email')}
-            className="bg-white/10 text-white placeholder:text-gray-400"
+            className="bg-bg-secondary border-border-subtle text-text-primary placeholder:text-text-muted"
             autoComplete="email"
           />
           {errors.email && (
-            <p id="email-error" className="text-sm text-red-400 mt-1" role="alert" aria-live="assertive">
+            <p id="email-error" className="text-sm text-error mt-1" role="alert" aria-live="assertive">
               {errors.email.message}
             </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="message" className="block text-sm font-semibold mb-1">
+          <label htmlFor="message" className="block text-sm font-medium mb-1.5 text-text-secondary">
             Message
           </label>
           <Textarea
@@ -108,41 +109,60 @@ export function ContactForm() {
             aria-invalid={errors.message ? 'true' : 'false'}
             aria-describedby={errors.message ? 'message-error' : undefined}
             {...register('message')}
-            className="bg-white/10 text-white placeholder:text-gray-400"
+            className="bg-bg-secondary border-border-subtle text-text-primary placeholder:text-text-muted"
           />
           {errors.message && (
-            <p id="message-error" className="text-sm text-red-400 mt-1" role="alert" aria-live="assertive">
+            <p id="message-error" className="text-sm text-error mt-1" role="alert" aria-live="assertive">
               {errors.message.message}
             </p>
           )}
         </div>
 
-        <Button type="submit" disabled={loading} className="w-full btn" aria-live="polite" aria-busy={loading}>
+        <Button type="submit" isLoading={loading} className="w-full" aria-live="polite" aria-busy={loading}>
           {loading ? 'Sending...' : 'Send Message'}
         </Button>
 
         <div id="form-error" role="alert" aria-live="assertive" className="sr-only"></div>
-        {/* General form error container (optional) */}
       </form>
 
-      <div className="hidden lg:block w-px bg-white/20 mx-2"></div>
+      <div className="hidden lg:block w-px bg-border-subtle mx-2"></div>
 
       {/* Contact Info Section */}
-      <section className="lg:w-1/2 mt-12 space-y-4 border-white/20 border-t lg:border-t-0 pt-6">
-        <h2 className="text-3xl font-bold text-shadow-lg">Get in Touch</h2>
-        <address className="not-italic space-y-2 text-sm md:text-lg leading-relaxed font-light">
-          <p>
-            <strong className="text-white/80">Company:</strong> VRTECHBRO Pvt. Ltd.
-          </p>
-          <p>
-            <strong className="text-white/80">Email:</strong>{' '}
-            <a href="mailto:vrtechbro@gmail.com" className="underline hover:text-primaryHover">
-              vrtechbro@gmail.com
-            </a>
-          </p>
-          <p>
-            <strong className="text-white/80">Working Hours:</strong> Mon–Fri, 9:00 AM – 6:00 PM
-          </p>
+      <section className="lg:w-1/2 mt-10 lg:mt-0 space-y-6 border-border-subtle border-t lg:border-t-0 pt-6 lg:pt-0 lg:pl-4">
+        <h2 className="text-2xl font-display font-bold text-text-primary">Get in Touch</h2>
+        <p className="text-text-secondary text-sm leading-relaxed">
+          Have a project in mind? We&apos;d love to hear about it. Fill out the form or reach out directly.
+        </p>
+        <address className="not-italic space-y-4">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-lg bg-accent-primary/10">
+              <Building2 className="h-5 w-5 text-accent-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-text-primary">Company</p>
+              <p className="text-sm text-text-secondary">VRTECHBRO Pvt. Ltd.</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-lg bg-accent-primary/10">
+              <Mail className="h-5 w-5 text-accent-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-text-primary">Email</p>
+              <a href="mailto:vrtechbro@gmail.com" className="text-sm text-accent-primary hover:text-accent-hover transition-colors">
+                vrtechbro@gmail.com
+              </a>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-lg bg-accent-primary/10">
+              <Clock className="h-5 w-5 text-accent-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-text-primary">Working Hours</p>
+              <p className="text-sm text-text-secondary">Mon–Fri, 9:00 AM – 6:00 PM</p>
+            </div>
+          </div>
         </address>
       </section>
     </div>

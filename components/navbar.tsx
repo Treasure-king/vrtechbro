@@ -1,56 +1,75 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { motion } from 'motion/react'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
-import vrTechBro from '../public/images/vrTechBro-bg-remove.png'
+import vrTechBro from '@/public/images/vrTechBro-bg-remove.webp'
+import { NAV_LINKS } from '@/lib/constants'
 
-const links = [
-  { name: 'Home', href: '/' },
-  { name: 'Services', href: '/services' },
-  { name: 'Blogs', href: '/blog' },
-  { name: 'About Us', href: '/about' },
-  { name: 'FAQ', href: '/faq' },
-  { name: 'Careers', href: '/careers' },
-]
+const links = NAV_LINKS
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+  const shouldReduceMotion = useReducedMotion()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [pathname])
 
   return (
     <header
       role="banner"
-      className="bg-transparent backdrop-blur-md text-white sticky top-0 z-50 border-b-2 border-primary"
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'glass py-2 shadow-lg shadow-black/20'
+          : 'bg-bg-primary/80 backdrop-blur-md py-3'
+      }`}
     >
+      {/* Gradient bottom border */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-primary/40 to-transparent" />
+
       <div className="container mx-auto flex items-center justify-between px-4">
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
+          initial={shouldReduceMotion ? false : { opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Link href="/" aria-label="VR Tech Bro Home">
+          <Link href="/" aria-label="VRTechBro Home" className="group">
             <Image
               src={vrTechBro}
-              alt="VR Tech Bro Logo"
-              width={80}
+              alt="VRTechBro Logo"
+              width={scrolled ? 60 : 72}
+              height={scrolled ? 60 : 72}
+              sizes="80px"
               priority
               loading="eager"
+              className="transition-all duration-300 group-hover:drop-shadow-[0_0_12px_oklch(0.68_0.19_275/40%)]"
             />
           </Link>
         </motion.div>
 
         {/* Desktop Nav */}
         <motion.nav
-          className="hidden md:flex gap-6 items-center"
+          className="hidden md:flex gap-8 items-center"
           aria-label="Primary navigation"
-          initial={{ opacity: 0, x: 100 }}
+          initial={shouldReduceMotion ? false : { opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.75 }}
+          transition={{ duration: 0.6 }}
         >
           {links.map(link => {
             const isActive = pathname === link.href
@@ -59,18 +78,21 @@ export function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                aria-current={isActive ? 'page' : undefined} // Helpful for screen readers & SEO
-                className={`relative group transition font-medium text-shadow-2xs ${
+                aria-current={isActive ? 'page' : undefined}
+                className={`relative group transition-colors duration-200 text-sm font-medium ${
                   isActive
-                    ? 'text-primaryHover text-shadow-white'
-                    : 'text-white text-shadow-amber-500'
+                    ? 'text-accent-primary'
+                    : 'text-text-secondary hover:text-text-primary'
                 }`}
                 tabIndex={0}
               >
                 {link.name}
+                {/* Underline animation: width 0 → 100% from center */}
                 <span
-                  className={`pointer-events-none absolute left-1/2 -bottom-1 h-0.5 w-full max-w-full origin-center transition-transform duration-500 ease-out transform -translate-x-1/2 ${
-                    isActive ? 'bg-primaryHover scale-x-100' : 'bg-white scale-x-0 group-hover:scale-x-100'
+                  className={`pointer-events-none absolute left-0 -bottom-1.5 h-0.5 w-full origin-center rounded-full transition-transform duration-300 ease-out ${
+                    isActive
+                      ? 'bg-accent-primary scale-x-100'
+                      : 'bg-accent-primary/60 scale-x-0 group-hover:scale-x-100'
                   }`}
                   aria-hidden="true"
                 />
@@ -79,7 +101,7 @@ export function Navbar() {
           })}
 
           <Link href="/contact" tabIndex={0}>
-            <Button className="btn focus:ring-0 focus:ring-offset-0" aria-label="Login to your account">
+            <Button size="sm" aria-label="Get in touch with VRTechBro">
               Get in Touch
             </Button>
           </Link>
@@ -91,58 +113,95 @@ export function Navbar() {
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
-          className="md:hidden focus:outline-none focus:ring-2 focus:ring-primary"
+          className="md:hidden text-text-primary p-2 rounded-lg hover:bg-bg-tertiary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <motion.nav
-          id="mobile-menu"
-          aria-label="Mobile primary navigation"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="md:hidden bg-dark p-4 rounded-b-2xl shadow-xl space-y-3"
-        >
-          {links.map(link => (
-            <motion.div
-              key={link.name}
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-            >
-              <Link
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="block text-text px-3 py-2 rounded-md transition duration-300 hover:text-accent hover:bg-card/60"
-                aria-current={pathname === link.href ? 'page' : undefined}
-                tabIndex={0}
-              >
-                {link.name}
-              </Link>
-            </motion.div>
-          ))}
-
+      {/* Mobile Menu — Full-screen overlay */}
+      <AnimatePresence>
+        {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            id="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 top-0 z-40 md:hidden"
           >
-            <Link href="/contact" tabIndex={0}>
-              <Button
-                variant="secondary"
-                className="mt-2 w-full btn"
-                aria-label="Login to your account"
+            {/* Backdrop */}
+            <motion.div
+              className="absolute inset-0 bg-bg-primary/95 backdrop-blur-xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
+
+            {/* Close button */}
+            <button
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close menu"
+              className="absolute top-5 right-5 z-50 text-text-primary p-2 rounded-lg hover:bg-bg-tertiary transition-colors"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Nav links */}
+            <nav
+              aria-label="Mobile primary navigation"
+              className="relative z-50 flex flex-col items-center justify-center h-full gap-6"
+            >
+              {links.map((link, i) => (
+                <motion.div
+                  key={link.name}
+                  initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{
+                    duration: 0.3,
+                    delay: shouldReduceMotion ? 0 : i * 0.05,
+                  }}
+                >
+                  <Link
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={`block text-2xl font-display font-semibold tracking-tight transition-colors duration-200 ${
+                      pathname === link.href
+                        ? 'text-accent-primary'
+                        : 'text-text-secondary hover:text-text-primary'
+                    }`}
+                    aria-current={pathname === link.href ? 'page' : undefined}
+                    tabIndex={0}
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              ))}
+
+              <motion.div
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{
+                  duration: 0.3,
+                  delay: shouldReduceMotion ? 0 : links.length * 0.05,
+                }}
               >
-                Get in Touch
-              </Button>
-            </Link>
+                <Link href="/contact" tabIndex={0}>
+                  <Button
+                    size="lg"
+                    aria-label="Get in touch with VRTechBro"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Get in Touch
+                  </Button>
+                </Link>
+              </motion.div>
+            </nav>
           </motion.div>
-        </motion.nav>
-      )}
+        )}
+      </AnimatePresence>
     </header>
   )
 }

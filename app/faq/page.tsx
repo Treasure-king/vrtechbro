@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "VRTechBro FAQ - Get All Your Answers",
     description:
       "Looking for quick answers? Explore VRTechBro's FAQ page with detailed information on services, policies, and support.",
-    url: "https://www.vrtechbro.com/faq",
+    url: "https://vrtechbro.com/faq",
     siteName: "VRTechBro",
     type: "website",
   },
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
       "Explore VRTechBro's FAQ page with helpful answers to common questions about our services, policies, and support.",
   },
   alternates: {
-    canonical: "https://www.vrtechbro.com/faq",
+    canonical: "/faq",
   },
 };
 
@@ -71,20 +71,20 @@ export default function FAQPage() {
 
   return (
     <main
-      className="max-w-7xl mx-auto px-6 py-16"
+      className="max-w-7xl mx-auto px-6 py-24"
       role="main"
       aria-labelledby="faq-heading"
     >
       {/* Page Header */}
-      <header className="mb-12 text-center">
+      <header className="mb-16 text-center">
         <h1
           id="faq-heading"
-          className="text-4xl md:text-5xl font-extrabold mb-4 text-white drop-shadow-sm"
+          className="text-4xl md:text-5xl font-display font-extrabold mb-4 text-text-primary"
         >
-          Frequently Asked Questions
+          Frequently Asked <span className="text-gradient">Questions</span>
         </h1>
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-          Have questions about <span className="font-semibold">VRTechBro</span>?{" "}
+        <p className="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
+          Have questions about <span className="font-semibold text-text-primary">VRTechBro</span>?{" "}
           We’ve got you covered. Browse through our most commonly asked questions below.
         </p>
       </header>
@@ -102,22 +102,22 @@ export default function FAQPage() {
             itemScope
             itemProp="mainEntity"
             itemType="https://schema.org/Question"
-            className="rounded-xl border border-gray-700/40 bg-transparent shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+            className="rounded-2xl border border-border-subtle bg-bg-secondary shadow-md transition-all duration-300 hover:border-border-strong hover:shadow-xl hover:shadow-accent-primary/5 overflow-hidden"
           >
-            <details className="group" aria-expanded="false">
+            <details className="group">
               <summary
-                className="cursor-pointer px-6 py-4 flex justify-between items-center text-lg font-medium text-gray-200 hover:text-white transition-colors"
+                className="cursor-pointer px-6 py-5 flex justify-between items-center text-base font-display font-semibold text-text-primary hover:text-accent-primary transition-colors"
                 aria-controls={`faq-answer-${idx}`}
                 id={`faq-question-${idx}`}
               >
                 <span>{faq.q}</span>
-                <span className="ml-2 text-white font-bold group-open:rotate-45 transition-transform duration-300 text-2xl">
+                <span className="ml-3 text-accent-primary font-bold group-open:rotate-45 transition-transform duration-300 text-xl shrink-0">
                   +
                 </span>
               </summary>
               <div
                 id={`faq-answer-${idx}`}
-                className="px-6 py-5 text-white font-bold leading-relaxed border-t border-gray-700/50 bg-gray-800/50"
+                className="px-6 py-5 text-text-secondary leading-relaxed border-t border-border-subtle bg-bg-tertiary/50 text-sm"
                 itemScope
                 itemProp="acceptedAnswer"
                 itemType="https://schema.org/Answer"
@@ -132,11 +132,11 @@ export default function FAQPage() {
       </section>
 
       {/* Footer */}
-      <footer className="mt-14 text-center text-sm text-gray-500">
+      <footer className="mt-16 text-center text-sm text-text-muted">
         Still have questions?{" "}
         <a
           href="/contact"
-          className="text-blue-500 hover:underline font-medium"
+          className="text-accent-primary hover:text-accent-hover hover:underline font-medium"
           aria-label="Contact VRTechBro Support"
         >
           Contact our support team

@@ -1,17 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { BlogCardProps } from '@/types/blog-card'
+import { Calendar, Clock } from 'lucide-react'
 
 const tagColors = [
-  'bg-blue-500/10 text-blue-400',
-  'bg-green-500/10 text-green-400',
-  'bg-purple-500/10 text-purple-400',
-  'bg-pink-500/10 text-pink-400',
-  'bg-yellow-500/10 text-yellow-400',
-  'bg-red-500/10 text-red-400',
+  'bg-accent-primary/10 text-accent-primary',
+  'bg-success/10 text-success',
+  'bg-accent-secondary/10 text-accent-secondary',
+  'bg-warning/10 text-warning',
+  'bg-[oklch(0.70_0.15_200)]/10 text-[oklch(0.70_0.15_200)]',
+  'bg-error/10 text-error',
 ]
 
 export function BlogCard({
@@ -19,65 +20,75 @@ export function BlogCard({
   description,
   tags = [],
   published_at,
+  reading_time,
   slug,
-  delay
+  delay = 0,
 }: BlogCardProps) {
   const blogUrl = `/blog/${slug}`
+  const shouldReduceMotion = useReducedMotion()
 
   return (
     <motion.article
-      whileHover={{ scale: 1.02 }}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, delay }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.4, delay: shouldReduceMotion ? 0 : delay }}
       className={cn(
-        'hover:bg-darkclip rounded-2xl overflow-hidden shadow-xl/30 hover:shadow-white transition-all duration-100 p-4 h-full flex flex-col justify-between text-text border-[1px] border-white'
+        'group bg-bg-secondary border border-border-subtle rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:border-border-strong hover:shadow-xl hover:shadow-accent-primary/5'
       )}
     >
       <Link
         href={blogUrl}
         aria-label={`Read blog post: ${title}`}
-        className="group flex flex-col h-full"
+        className="flex flex-col h-full p-6"
       >
-        <header className="mb-4">
-          <h3 className="text-2xl font-bold mb-2 group-hover:text-accent transition-colors">
-            {title}
-          </h3>
-          <p className="text-sm text-muted-foreground line-clamp-3">
-            {description}
-          </p>
-        </header>
-
-        {/* Tags & Date */}
-        <footer className="mt-auto pt-4 border-t border-white/10">
-          <div className="flex flex-wrap justify-between items-center gap-3 text-sm">
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag, i) => (
-                <span
-                  key={i}
-                  className={cn(
-                    'px-3 py-1 rounded-full font-medium text-xs',
-                    tagColors[i % tagColors.length]
-                  )}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            {published_at && (
-              <time
-                className="text-xs text-gray-500"
-                dateTime={new Date(published_at).toISOString()}
+        {/* Tags */}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {tags.map((tag, i) => (
+              <span
+                key={i}
+                className={cn(
+                  'px-2.5 py-1 rounded-full font-medium text-xs',
+                  tagColors[i % tagColors.length]
+                )}
               >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Title */}
+        <h3 className="text-xl font-display font-bold text-text-primary mb-3 group-hover:text-accent-primary transition-colors duration-200 line-clamp-2">
+          {title}
+        </h3>
+
+        {/* Description */}
+        <p className="text-sm text-text-secondary leading-relaxed line-clamp-3 flex-1">
+          {description}
+        </p>
+
+        {/* Footer: Date + Reading Time */}
+        <footer className="mt-5 pt-4 border-t border-border-subtle flex items-center gap-4 text-xs text-text-muted">
+          {published_at && (
+            <span className="inline-flex items-center gap-1.5">
+              <Calendar className="h-3.5 w-3.5" />
+              <time dateTime={new Date(published_at).toISOString()}>
                 {new Date(published_at).toLocaleDateString(undefined, {
                   year: 'numeric',
                   month: 'short',
                   day: 'numeric',
                 })}
               </time>
-            )}
-          </div>
+            </span>
+          )}
+          {reading_time && (
+            <span className="inline-flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5" />
+              {reading_time} min read
+            </span>
+          )}
         </footer>
       </Link>
     </motion.article>

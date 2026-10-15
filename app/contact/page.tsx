@@ -1,78 +1,86 @@
-// app/contact/page.tsx
 import { ContactForm } from '@/components/contact-form';
 import { Metadata } from 'next';
-import Head from 'next/head';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | VRTECHBRO Pvt. Ltd.',
+  title: 'Contact Us | VRTechBro',
   description:
-    'Get in touch with VRTECHBRO Pvt. Ltd. for your technology solutions. Reach out via email or our contact form.',
+    'Get in touch with VRTechBro for your technology solutions. Reach out via email or our contact form to discuss your project.',
   keywords: [
-    'Contact VRTECHBRO',
+    'Contact VRTechBro',
     'Technology solutions',
     'Contact form',
-    'Bangalore tech company',
+    'hire developers',
+    'software consulting contact',
   ],
+  alternates: {
+    canonical: '/contact',
+  },
   openGraph: {
-    title: 'Contact Us | VRTECHBRO Pvt. Ltd.',
+    title: 'Contact Us | VRTechBro',
     description:
-      'Reach out to VRTECHBRO Pvt. Ltd. for innovative tech solutions. Fill our contact form or email us today.',
-    url: 'https://www.vrtechbro.com/contact',
-    siteName: 'VRTECHBRO Pvt. Ltd.',
+      'Reach out to VRTechBro for innovative tech solutions. Fill our contact form or email us today.',
+    url: 'https://vrtechbro.com/contact',
+    siteName: 'VRTechBro',
     locale: 'en_IN',
     type: 'website',
+    images: [
+      {
+        url: '/opengraph-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Contact VRTechBro',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Contact Us | VRTECHBRO Pvt. Ltd.',
-    description: 'Get in touch with VRTECHBRO Pvt. Ltd. for your technology solutions.',
+    title: 'Contact Us | VRTechBro',
+    description: 'Get in touch with VRTechBro for your custom software solutions.',
+    images: ['/opengraph-image.png'],
   },
   robots: {
     index: true,
     follow: true,
   },
-  metadataBase: new URL('https://www.vrtechbro.com'),
-  alternates: {
-    canonical: '/contact',
-  },
 };
 
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'VRTECHBRO Pvt. Ltd.',
-  url: 'https://www.vrtechbro.com',
-  logo: 'https://www.vrtechbro.com/logo.png',
-  contactPoint: [
-    {
-      '@type': 'ContactPoint',
-      telephone: '',
-      contactType: 'customer service',
-      email: 'vrtechbro@gmail.com',
-      areaServed: 'IN',
-      availableLanguage: ['English', 'Hindi'],
-      hoursAvailable: 'Mon-Fri 09:00-18:00',
-    },
-  ],
+  '@type': 'ContactPage',
+  name: 'Contact VRTechBro',
+  url: 'https://vrtechbro.com/contact',
+  mainEntity: {
+    '@type': 'Organization',
+    name: 'VRTechBro',
+    url: 'https://vrtechbro.com',
+    logo: 'https://vrtechbro.com/logo.png',
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        email: 'vrtechbro@gmail.com',
+        areaServed: 'Worldwide',
+        availableLanguage: ['English', 'Hindi'],
+      },
+    ],
+  },
 };
 
 export default function ContactPage() {
   return (
     <>
-      <Head>
-        <script
-          type="application/ld+json"
-          // JSON-LD script for SEO rich snippet structured data
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </Head>
+      {/* JSON-LD structured data rendered directly in JSX body */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       <section
-        aria-label="Contact VRTECHBRO Pvt. Ltd. team"
-        className="max-w-5xl mx-auto py-16 px-4 sm:px-6 lg:px-8"
+        aria-label="Contact VRTechBro Pvt. Ltd. team"
+        className="max-w-5xl mx-auto py-24 px-4 sm:px-6 lg:px-8"
       >
-        <h1 className="text-3xl font-semibold mb-6 text-white text-center md:text-left">
-          Get in Touch
+        <h1 className="text-3xl sm:text-4xl font-display font-bold mb-8 text-text-primary text-center md:text-left">
+          Let&apos;s Build Something <span className="text-gradient">Together</span>
         </h1>
         <ContactForm />
       </section>
