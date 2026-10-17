@@ -281,3 +281,29 @@
 .page-fade {
   animation: page-fade 0.25s ease-out;
 }
+
+/* Home hero entrance: pure CSS so it starts with the first paint, no JS wait.
+   Set --rise-delay per element for a short stagger. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.rise {
+  animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--rise-delay, 0s);
+}
+
+/* Background art settles in slowly behind the hero */
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+}
+
+.settle {
+  animation: settle 1.6s ease-out both;
+}

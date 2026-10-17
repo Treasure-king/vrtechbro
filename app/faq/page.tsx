@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Metadata } from "next";
-import { PageHero } from "@/components/page-hero";
+import { PageHero } from "@/components/shared/page-hero";
 import { Button } from "@/components/ui/button";
 import { FaqGroups, type FaqGroup } from "@/components/faq/faq-groups";
 

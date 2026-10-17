@@ -1,10 +1,10 @@
 import { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
-import { PageHero } from '@/components/page-hero'
-import { SectionHeading } from '@/components/section-heading'
+import { PageHero } from '@/components/shared/page-hero'
+import { SectionHeading } from '@/components/shared/section-heading'
 import { PostList } from '@/components/blog/post-list'
-import { formatPostDate } from '@/components/blog-card'
+import { formatPostDate } from '@/components/blog/blog-card'
 import { Button } from '@/components/ui/button'
 import { BlogCardProps } from '@/types/blog-card'
 

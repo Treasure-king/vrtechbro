@@ -1,4 +1,4 @@
-import { PageHero } from '@/components/page-hero'
+import { PageHero } from '@/components/shared/page-hero'
 
 export type LegalSection = {
   id: string

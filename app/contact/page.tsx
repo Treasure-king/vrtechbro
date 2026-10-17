@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ContactForm } from "@/components/contact-form";
-import { PageHero } from "@/components/page-hero";
+import { ContactForm } from "@/components/contact/contact-form";
+import { PageHero } from "@/components/shared/page-hero";
 import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/opengraph-image.png",
+        url: "/opengraph-image.jpg",
         width: 1200,
         height: 630,
         alt: "Contact VRTechBro",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     title: "Contact Us | VRTechBro",
     description:
       "Get in touch with VRTechBro for your custom software solutions.",
-    images: ["/opengraph-image.png"],
+    images: ["/opengraph-image.jpg"],
   },
   robots: {
     index: true,

@@ -44,3 +44,6 @@ next-env.d.ts
 (laterused)
 # playwright screenshots/logs
 /.playwright-mcp
+
+# raw design assets (originals; processed copies live in public/images)
+/assets-raw

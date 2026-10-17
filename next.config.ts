@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ['image/avif', 'image/webp'],
+    // Optimised variants are cached for 31 days; source files change rarely
+    minimumCacheTTL: 2678400,
     remotePatterns: [
       {
         protocol: 'https',

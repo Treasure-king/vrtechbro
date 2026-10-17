@@ -76,49 +76,40 @@
 
 ```
 vrtechbro/
-├── app/                      # Next.js App Router routes
-│   ├── about/                # /about
-│   ├── api/                  # Backend API routes (career-apply, enquiry-email, send-email)
-│   ├── blog/                 # /blog & /blog/[slug]
-│   ├── careers/              # /careers
-│   ├── contact/              # /contact
-│   ├── faq/                  # /faq
-│   ├── portfolio/            # /portfolio
-│   ├── privacy-policy/       # /privacy-policy
-│   ├── services/             # /services & /services/[slug]
-│   ├── terms/                # /terms
-│   ├── error.tsx             # Global error boundary
-│   ├── globals.css           # Tailwind v4 theme & animations
-│   ├── layout.tsx            # Root layout, metadataBase, Organization schema
-│   ├── loading.tsx           # Global suspense streaming skeleton
-│   ├── not-found.tsx         # Custom 404 page
-│   ├── page.tsx              # Home landing page (Hero, Services, Blog, Contact)
-│   ├── robots.ts             # Dynamic robots.txt
-│   └── sitemap.ts            # Dynamic sitemap.xml querying Supabase
-├── components/               # Reusable UI & feature components
-│   ├── ui/                   # shadcn/ui primitives (button, sonner)
-│   ├── blog-card.tsx         # Viewport-aware animated blog card
-│   ├── career-form.tsx       # Dynamic career application modal
-│   ├── careers-client.tsx    # Interactive careers listing
-│   ├── contact-form.tsx      # Contact form with rate-limiting & Zod validation
-│   ├── footer.tsx            # Site footer with constants links
-│   ├── hero.tsx              # High-performance server-rendered hero
-│   ├── navbar.tsx            # Sticky navigation with mobile menu
-│   ├── service-card.tsx      # Viewport-aware animated service card
-│   ├── service-overlay.tsx   # Dynamic service enquiry modal
-│   └── tech-tags.tsx         # Infinite scrolling tech marquee
-├── lib/                      # Utilities, clients & helpers
-│   ├── constants.ts          # Central navigation, social & company constants
-│   ├── email-template.ts     # HTML email formatting
-│   ├── helper.ts             # Icon mapper & format helpers
-│   ├── rate-limit.ts         # IP-based sliding window rate limiter
-│   ├── sanitize.ts           # HTML input sanitizer (XSS prevention)
-│   ├── supabase.ts           # Supabase client singleton
-│   └── utils.ts              # Class name merging utility (cn)
-├── public/images/            # Optimized WebP and PNG assets
-├── types/                    # TypeScript interfaces & type guards
-├── memory.md                 # Project knowledge base & phase tracker
-└── next.config.ts            # Security headers, CSP & Next.js config
+├── app/                      # Routes (App Router): one folder per page, plus api/
+│   ├── api/                  # career-apply, enquiry-email, send-email
+│   ├── globals.css           # Maps brand variables to Tailwind tokens; type scale
+│   ├── layout.tsx            # Root layout: fonts, brand tokens, navbar, curtain footer
+│   ├── template.tsx          # Page-to-page fade (skipped on first load)
+│   ├── page.tsx              # Home
+│   ├── error.tsx, loading.tsx, not-found.tsx
+│   └── robots.ts, sitemap.ts
+├── components/
+│   ├── brand/                # BrandStyle (injects colours), Logo
+│   ├── layout/               # Navbar, Footer, Curtain, ThemeProvider
+│   ├── shared/               # PageHero, SectionHeading (used on every page)
+│   ├── motion/               # Small motion helpers (Reveal, Spotlight, Counter, SmoothScroll)
+│   ├── home/                 # Hero, workbench, capabilities, process, under the hood
+│   ├── about/, blog/, careers/, contact/, faq/, legal/, services/
+│   └── ui/                   # shadcn/ui primitives
+├── lib/
+│   ├── brand.ts              # ★ Single source of brand colours, fonts and logo
+│   ├── images.ts             # Image paths + legacy service-image mapping
+│   ├── constants.ts          # Site name, nav links, social links
+│   ├── security-headers.ts   # CSP and security headers (used by next.config.ts)
+│   ├── site-metrics.ts       # PageSpeed Insights fetch for the home page
+│   └── icon-map.ts, rate-limit.ts, sanitize.ts, supabase.ts, utils.ts
+├── public/
+│   ├── images/brand/         # Logo files
+│   ├── images/site/          # Hero, CTA, about, 404 and blog fallback art
+│   ├── images/services/      # One illustration per service
+│   ├── images/process/       # Process step illustrations
+│   └── logo.png              # Logo URL used in structured data
+├── supabase/migrations/      # SQL to run once in the Supabase SQL editor
+├── types/                    # TypeScript types
+├── docs/                     # memory.md (knowledge base), phases/, research/
+├── assets-raw/               # Original design files (git-ignored, never deployed)
+└── next.config.ts            # Next.js config
 ```
 
 ---

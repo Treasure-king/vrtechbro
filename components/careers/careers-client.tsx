@@ -3,10 +3,10 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
-import { SectionHeading } from "@/components/section-heading";
+import { SectionHeading } from "@/components/shared/section-heading";
 import { CONTACT_EMAIL } from "@/lib/constants";
 
-const CareerForm = dynamic(() => import("@/components/career-form"), {
+const CareerForm = dynamic(() => import("@/components/careers/career-form"), {
   loading: () => null,
 });
 

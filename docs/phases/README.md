@@ -49,4 +49,4 @@ Phases 6–10 are about transformation — new design system, 3D integration, ne
 2. **Verify before moving on.** Each phase has a verification checklist — all items must pass.
 3. **Never read `.env.*` or `.env.local` files** under any circumstance.
 4. **Commit after each phase** with a descriptive conventional commit message.
-5. **Update the root `memory.md`** (the current source of truth; `research/memory.md` is the older snapshot) after each phase completes with any structural changes.
+5. **Update `docs/memory.md`** (the current source of truth; `docs/research/memory.md` is the older snapshot) after each phase completes with any structural changes.

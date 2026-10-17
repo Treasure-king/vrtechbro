@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { HeadingReveal } from "@/components/motion/heading-reveal";
 
 type SectionHeadingProps = {
   id: string;
@@ -9,7 +10,10 @@ type SectionHeadingProps = {
   className?: string;
 };
 
-/** Left-aligned section title used across pages. Headings stay plain: no accent words, no eyebrows. */
+/**
+ * Left-aligned section title used across pages. Headings stay plain: no accent
+ * words, no eyebrows. The title slides up into view once (see HeadingReveal).
+ */
 export function SectionHeading({
   id,
   title,
@@ -24,16 +28,7 @@ export function SectionHeading({
         className,
       )}
     >
-      <div className="max-w-2xl">
-        <h2 id={id} className="type-heading text-text-primary">
-          {title}
-        </h2>
-        {intro && (
-          <p className="text-text-secondary mt-4 text-lg leading-relaxed">
-            {intro}
-          </p>
-        )}
-      </div>
+      <HeadingReveal id={id} title={title} intro={intro} />
       {action && <div className="shrink-0">{action}</div>}
     </div>
   );

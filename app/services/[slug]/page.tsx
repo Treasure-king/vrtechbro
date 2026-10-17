@@ -1,13 +1,14 @@
 import { Metadata } from "next";
+import { serviceImage } from "@/lib/images";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JSX } from "react";
 import { Check, ChevronRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { iconMap } from "@/lib/helper";
-import ServiceOverlay from "@/components/service-overlay";
-import { SectionHeading } from "@/components/section-heading";
+import { iconMap } from "@/lib/icon-map";
+import ServiceOverlay from "@/components/services/enquiry-sheet";
+import { SectionHeading } from "@/components/shared/section-heading";
 import { Process } from "@/components/home/process";
 import { ServiceIndex } from "@/components/home/service-index";
 import { RichText } from "@/components/services/rich-text";
@@ -84,7 +85,7 @@ export async function generateMetadata({
       siteName: "VRTechBro",
       type: "article",
       images: service.image_url
-        ? [{ url: service.image_url, alt: service.title }]
+        ? [{ url: serviceImage(service.image_url), alt: service.title }]
         : [],
     },
     twitter: {
@@ -92,7 +93,7 @@ export async function generateMetadata({
       site: "@vrtechbro",
       title: `${service.title} | VRTechBro`,
       description: service.short_description,
-      images: service.image_url ? [service.image_url] : [],
+      images: service.image_url ? [serviceImage(service.image_url)] : [],
     },
     alternates: {
       canonical: `/services/${slug}`,
@@ -134,7 +135,7 @@ const ServicePage = async ({
       url: "https://vrtechbro.com",
     },
     keywords: service.keywords?.join(", "),
-    image: service.image_url || undefined,
+    image: serviceImage(service.image_url) || undefined,
     url: `https://vrtechbro.com/services/${slug}`,
   };
 
@@ -232,7 +233,7 @@ const ServicePage = async ({
             <div className="border-border-subtle bg-bg-secondary relative aspect-[16/9] max-w-xl overflow-hidden rounded-2xl border lg:aspect-[4/3] lg:max-w-none">
               {service.image_url ? (
                 <Image
-                  src={service.image_url}
+                  src={serviceImage(service.image_url)}
                   alt={`${service.title} illustration`}
                   fill
                   priority

@@ -55,16 +55,3 @@ export const securityHeaders = [
     value: cspHeader,
   },
 ]
-
-/** Plain-language explanation of each header, for display. */
-export const securityHeaderNotes: Record<string, string> = {
-  'Content-Security-Policy':
-    'Scripts, styles, fonts and data may only load from this site (plus our database), which blocks most injected-code attacks.',
-  'Strict-Transport-Security': 'Browsers must always use HTTPS for this domain, for two years, including subdomains.',
-  'X-Frame-Options': 'No other site can embed these pages in a frame, which prevents clickjacking.',
-  'X-Content-Type-Options': 'Browsers must trust the declared file type instead of guessing, closing a class of upload attacks.',
-  'Referrer-Policy': 'Other sites only see our domain when you follow a link, never the full page address.',
-  'Permissions-Policy': 'Camera, microphone, location and ad-topic tracking are switched off for every page.',
-  'X-XSS-Protection': "Turns off an old browser filter that could itself leak data; the content policy above does the job instead.",
-  'X-DNS-Prefetch-Control': 'Lets the browser resolve linked domains early, so navigation feels faster.',
-}

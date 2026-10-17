@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
-import { PageHero } from '@/components/page-hero'
-import { SectionHeading } from '@/components/section-heading'
+import { PageHero } from '@/components/shared/page-hero'
+import { SectionHeading } from '@/components/shared/section-heading'
 import { Process } from '@/components/home/process'
 import { ServiceList } from '@/components/services/service-list'
 import { Button } from '@/components/ui/button'
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/opengraph-image.png',
+        url: '/opengraph-image.jpg',
         width: 1200,
         height: 630,
         alt: 'VRTechBro IT Services',
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     title: 'IT Services & Software Development Solutions | VRTechBro',
     description:
       'Full-stack IT services including SaaS development, web apps, and cloud backend solutions.',
-    images: ['/opengraph-image.png'],
+    images: ['/opengraph-image.jpg'],
   },
   robots: {
     index: true,

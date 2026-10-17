@@ -2,11 +2,11 @@
 import "./globals.css";
 import { BRAND, fontMono, fontSans } from "@/lib/brand";
 import { BrandStyle } from "@/components/brand/brand-style";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
 import { Curtain } from "@/components/layout/curtain";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/layout/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 
@@ -50,7 +50,7 @@ export const metadata = {
     siteName: "VRTechBro – Modern Digital Studio",
     images: [
       {
-        url: "/opengraph-image.png",
+        url: "/opengraph-image.jpg",
         width: 1200,
         height: 630,
         alt: "VRTechBro - Digital Studio",
@@ -66,7 +66,7 @@ export const metadata = {
       "Offering custom software, SaaS, mobile, and backend services with Next.js, Supabase, and Python.",
     site: "@vrtechbro",
     creator: "@vrtechbro",
-    images: ["/opengraph-image.png"],
+    images: ["/opengraph-image.jpg"],
   },
 };
 

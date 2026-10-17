@@ -1,15 +1,17 @@
 import { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
+import { SITE_IMAGES } from "@/lib/images";
 import { supabase } from "@/lib/supabase";
-import { Hero } from "@/components/hero";
-import TechTags from "@/components/tech-tags";
-import { ContactForm } from "@/components/contact-form";
-import { SectionHeading } from "@/components/section-heading";
+import { Hero } from "@/components/home/hero";
+import TechTags from "@/components/home/tech-tags";
+import { ContactForm } from "@/components/contact/contact-form";
+import { SectionHeading } from "@/components/shared/section-heading";
 import { ServiceIndex } from "@/components/home/service-index";
 import { Process } from "@/components/home/process";
 import { WritingList } from "@/components/home/writing-list";
+import { Comparison } from "@/components/home/comparison";
 import { Capabilities } from "@/components/home/capabilities";
-import { UnderTheHood } from "@/components/home/under-the-hood";
 import { Button } from "@/components/ui/button";
 import { ServiceCardProps } from "@/types/service-card";
 import { BlogCardProps } from "@/types/blog-card";
@@ -29,7 +31,7 @@ export const metadata: Metadata = {
     url: "https://vrtechbro.com",
     images: [
       {
-        url: "/images/vrTechBro.webp",
+        url: "/opengraph-image.jpg",
         alt: "VRTechBro - Full-Stack IT Partner",
       },
     ],
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
     title: "VRTechBro – Empowering Your Digital Future",
     description:
       "VRTechBro offers scalable websites, applications, and cloud solutions tailored to accelerate your business growth.",
-    images: ["/images/vrTechBro.webp"],
+    images: ["/opengraph-image.jpg"],
   },
 };
 
@@ -134,7 +136,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <UnderTheHood />
+      <Comparison />
 
       {/* Writing */}
       {blogs && blogs.length > 0 && (
@@ -158,9 +160,17 @@ export default async function HomePage() {
       {/* Contact */}
       <section
         aria-labelledby="contact-title"
-        className="border-border-subtle border-t py-24 md:py-32"
+        className="border-border-subtle relative overflow-hidden border-t py-24 md:py-32"
       >
-        <div className="container-page">
+        {/* Backdrop kept faint and pushed to the edges so the form stays the focus */}
+        <Image
+          src={SITE_IMAGES.ctaBg}
+          alt=""
+          fill
+          sizes="100vw"
+          className="pointer-events-none [mask-image:linear-gradient(180deg,black,transparent_85%)] object-cover opacity-35"
+        />
+        <div className="container-page relative">
           <SectionHeading
             id="contact-title"
             title="Tell us what you're planning"

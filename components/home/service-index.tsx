@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { RevealItem } from "@/components/motion/reveal-item";
+import { serviceImage } from "@/lib/images";
 import { Spotlight } from "@/components/motion/spotlight";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import { iconMap } from "@/lib/helper";
+import { iconMap } from "@/lib/icon-map";
 import type { ServiceCardProps } from "@/types/service-card";
 
 /**
@@ -12,14 +14,18 @@ import type { ServiceCardProps } from "@/types/service-card";
 export function ServiceIndex({ services }: { services: ServiceCardProps[] }) {
   return (
     <ul className="border-border-subtle border-t">
-      {services.map((service) => {
+      {services.map((service, i) => {
         const Icon =
           typeof service.icon === "string"
             ? iconMap[service.icon as keyof typeof iconMap]
             : undefined;
 
         return (
-          <li key={service.slug} className="border-border-subtle border-b">
+          <RevealItem
+            key={service.slug}
+            index={i}
+            className="border-border-subtle border-b"
+          >
             <Link
               href={`/services/${service.slug}`}
               className="group focus-visible:bg-bg-secondary md:hover:bg-bg-secondary/60 block transition-colors outline-none"
@@ -43,7 +49,7 @@ export function ServiceIndex({ services }: { services: ServiceCardProps[] }) {
                   {service.image_url && (
                     <div className="border-border-subtle relative mr-4 h-14 w-20 overflow-hidden rounded-md border opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                       <Image
-                        src={service.image_url}
+                        src={serviceImage(service.image_url)}
                         alt=""
                         fill
                         sizes="80px"
@@ -58,7 +64,7 @@ export function ServiceIndex({ services }: { services: ServiceCardProps[] }) {
                 </div>
               </Spotlight>
             </Link>
-          </li>
+          </RevealItem>
         );
       })}
     </ul>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RevealItem } from "@/components/motion/reveal-item";
 import { Spotlight } from "@/components/motion/spotlight";
 import type { BlogCardProps } from "@/types/blog-card";
 
@@ -6,8 +7,12 @@ import type { BlogCardProps } from "@/types/blog-card";
 export function WritingList({ posts }: { posts: BlogCardProps[] }) {
   return (
     <ul className="border-border-subtle border-t">
-      {posts.map((post) => (
-        <li key={post.slug} className="border-border-subtle border-b">
+      {posts.map((post, i) => (
+        <RevealItem
+          key={post.slug}
+          index={i}
+          className="border-border-subtle border-b"
+        >
           <Link
             href={`/blog/${post.slug}`}
             className="group focus-visible:bg-bg-secondary block outline-none"
@@ -32,7 +37,7 @@ export function WritingList({ posts }: { posts: BlogCardProps[] }) {
               </span>
             </Spotlight>
           </Link>
-        </li>
+        </RevealItem>
       ))}
     </ul>
   );

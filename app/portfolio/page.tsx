@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Metadata } from 'next'
-import { PageHero } from '@/components/page-hero'
+import { PageHero } from '@/components/shared/page-hero'
 import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/opengraph-image.png',
+        url: '/opengraph-image.jpg',
         width: 1200,
         height: 630,
         alt: 'VRTechBro Portfolio',
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Portfolio & Client Projects | VRTechBro',
     description: 'Explore featured software projects and digital solutions delivered by VRTechBro.',
-    images: ['/opengraph-image.png'],
+    images: ['/opengraph-image.jpg'],
   },
 }
 

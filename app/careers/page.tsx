@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import CareersClient from "@/components/careers-client";
-import { PageHero } from "@/components/page-hero";
+import CareersClient from "@/components/careers/careers-client";
+import { PageHero } from "@/components/shared/page-hero";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import type { JobRecord } from "@/types/supabase";
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/opengraph-image.png",
+        url: "/opengraph-image.jpg",
         width: 1200,
         height: 630,
         alt: "VRTechBro Careers",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: "Careers at VRTechBro | Join Our Team",
     description:
       "Join VRTechBro's innovative team. Check out open positions in frontend, backend, and UI/UX design.",
-    images: ["/opengraph-image.png"],
+    images: ["/opengraph-image.jpg"],
   },
   robots: {
     index: true,

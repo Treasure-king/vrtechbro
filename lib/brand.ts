@@ -10,12 +10,12 @@
  *
  *  Logo: replace the image file below (keep a transparent background).
  *  Favicons: replace app/icon.png, app/apple-icon.png and app/favicon.ico.
- *  Share image: replace app/opengraph-image.png.
+ *  Share image: replace app/opengraph-image.jpg.
  *
  *  Fonts: change the loaders at the bottom of this file.
  */
 import { Archivo, JetBrains_Mono } from "next/font/google";
-import logo from "@/public/images/vrTechBro-bg-remove.webp";
+import logo from "@/public/images/brand/logo.webp";
 
 export const BRAND = {
   name: "VRTechBro",

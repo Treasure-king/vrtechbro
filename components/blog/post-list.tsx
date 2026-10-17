@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { BlogCard } from '@/components/blog-card'
+import { BlogCard } from '@/components/blog/blog-card'
 import { cn } from '@/lib/utils'
 import type { BlogCardProps } from '@/types/blog-card'
 
