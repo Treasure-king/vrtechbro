@@ -307,3 +307,40 @@
 .settle {
   animation: settle 1.6s ease-out both;
 }
+
+/* Mobile menu overlay fade (components/layout/navbar.tsx) */
+@keyframes menu-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.menu-fade {
+  animation: menu-fade 0.2s ease-out both;
+}
+
+/* Scroll reveals (components/motion/reveal*.tsx, heading-reveal.tsx).
+   Hidden states only apply once JS is running (html.js), so content is never
+   lost if scripts fail. Reduced motion collapses the transitions via the global rule. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+.js .reveal[data-shown] {
+  opacity: 1;
+  transform: none;
+}
+
+.js .reveal-mask > span {
+  transform: translateY(105%);
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.js [data-shown] .reveal-mask > span {
+  transform: none;
+}

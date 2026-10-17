@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion, type HTMLMotionProps } from "motion/react";
+import { cn } from "@/lib/utils";
+import { useInViewOnce } from "@/components/motion/use-in-view-once";
 
 /**
  * A list item that fades up the first time it scrolls into view. Pass its
@@ -8,24 +9,27 @@ import { motion, useReducedMotion, type HTMLMotionProps } from "motion/react";
  */
 export function RevealItem({
   index = 0,
+  className,
+  style,
   children,
   ...props
-}: HTMLMotionProps<"li"> & { index?: number }) {
-  const reduce = useReducedMotion();
+}: React.LiHTMLAttributes<HTMLLIElement> & { index?: number }) {
+  const [ref, inView] = useInViewOnce<HTMLLIElement>("0px 0px -40px 0px");
 
   return (
-    <motion.li
-      initial={reduce ? false : { opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{
-        duration: 0.55,
-        delay: Math.min(index, 6) * 0.07,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+    <li
+      ref={ref}
+      data-shown={inView || undefined}
+      className={cn("reveal", className)}
+      style={
+        {
+          ...style,
+          "--reveal-delay": `${Math.min(index, 6) * 0.07}s`,
+        } as React.CSSProperties
+      }
       {...props}
     >
       {children}
-    </motion.li>
+    </li>
   );
 }

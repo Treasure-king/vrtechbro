@@ -3,6 +3,7 @@ import { Resend } from 'resend'
 import { z } from 'zod'
 import { escapeHtml, sanitizeFilename, stripNewlines } from '@/lib/sanitize'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
+import { HONEYPOT_FIELD, isHoneypotFilled } from '@/lib/honeypot'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -50,6 +51,11 @@ export async function POST(req: Request) {
 
   try {
     const formData = await req.formData()
+
+    // Spam trap: pretend success and send nothing (see lib/honeypot.ts)
+    if (isHoneypotFilled(formData.get(HONEYPOT_FIELD))) {
+      return NextResponse.json({ success: true, message: 'Application sent successfully!' })
+    }
 
     const rawData = {
       name: formData.get('name') as string,

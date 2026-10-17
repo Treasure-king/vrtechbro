@@ -26,15 +26,15 @@ Phases 6–10 are about transformation — new design system, 3D integration, ne
 | **Phase 5** | 🧹 Code Quality & DX | Naming, conventions, error pages, README, TypeScript | ✅ Completed |
 | **Phase 6** | 🎨 Design System Revolution | Colors, typography, component library, spacing | ✅ Completed |
 | **Phase 7** | 📄 Page Redesign & Storytelling | Every page rebuilt with new design, UX, narrative | 🟡 Layouts done (2026-10-15); final images + audits pending |
-| **Phase 8** | 🧊 3D Integration & Interactivity | Blender model, Three.js scene, scroll animations | ⬜ Not Started |
-| **Phase 9** | 🏆 Portfolio & Showcase | Projects, extensions, packages, case studies | ⬜ Not Started |
-| **Phase 10** | 🚀 Infrastructure & Launch | Admin panel, CI/CD, monitoring, final audits | ⬜ Not Started |
+| **Phase 8** | 🧊 3D Integration & Interactivity | Blender model, Three.js scene, scroll animations | ⛔ Dropped (2026-10-17): 3D suits the owner's personal portfolio, not the company site |
+| **Phase 9** | 🏆 Portfolio & Showcase | Projects, extensions, packages, case studies | ⏸ Deferred: waiting for real projects to show |
+| **Phase 10** | 🚀 Infrastructure & Launch | Admin panel, CI/CD, monitoring, final audits | 🟡 In progress (2026-10-17) |
 
 ---
 
-### Recommended execution order (revised 2026-10-15)
+### Execution order (revised 2026-10-17)
 
-**7 → 9 → 8 → 10.** The portfolio (Phase 9) only depends on Phase 7 and is what proves capability to visitors, while the 3D hero (Phase 8) is blocked on a Blender asset. Phase 8 can be developed in parallel once its model exists.
+**7 → 10, then 9 when real projects exist.** Phase 8 is dropped: a 3D Blender scene fits the owner's planned personal portfolio better than this company site. Phase 9 needs real case studies, so it waits; the portfolio page shows an honest placeholder until then.
 
 ### Tooling for Phases 7–10
 - **Claude Code plugins:** `frontend-design` (visual direction), `playwright` (screenshots at 375/768/1440px), `context7` (current Next.js/Tailwind/Motion docs), `superpowers` (planning & verification workflow)

@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { escapeHtml, stripNewlines } from '@/lib/sanitize'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
+import { HONEYPOT_FIELD, isHoneypotFilled } from '@/lib/honeypot'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -38,6 +39,10 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json()
+    // Spam trap: pretend success and send nothing (see lib/honeypot.ts)
+    if (isHoneypotFilled(body?.[HONEYPOT_FIELD])) {
+      return NextResponse.json({ status: 'success' })
+    }
     const result = enquirySchema.safeParse(body)
 
     if (!result.success) {

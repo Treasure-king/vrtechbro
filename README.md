@@ -114,6 +114,32 @@ vrtechbro/
 
 ---
 
+## 🛡️ Admin Panel
+
+Manage services, blog posts and careers at **`/admin`** without touching code.
+
+### One-time setup (Supabase dashboard)
+
+1. **SQL Editor:** run `supabase/migrations/2026-10-15_create_jobs.sql` (if not already), then `supabase/migrations/2026-10-17_admin.sql`. This creates the admin list, row-level security for writes and the `media` image bucket.
+2. **Authentication → Users → Add user:** create your account with a strong password (tick *Auto confirm user*).
+3. **SQL Editor:** give that account admin rights (use your email):
+   ```sql
+   insert into public.admins (user_id)
+   select id from auth.users where email = 'you@example.com';
+   ```
+4. Sign in at `/admin/login`.
+
+Recommended: in **Authentication → Providers → Email**, turn off *Allow new users to sign up*, so accounts can only be created from the dashboard.
+
+### How it is protected
+
+- **Middleware** sends signed-out visitors on `/admin/*` to the login page (public pages are untouched and stay static).
+- **Every admin page and server action** re-checks that the user is signed in *and* listed in `public.admins` (`lib/admin/auth.ts`).
+- **The database** enforces the same rule with row-level security, so writes fail even if the app were bypassed. Only the public anon key is used; no service-role key exists in the app.
+- Login is rate-limited (5 attempts/minute per IP) and errors never reveal whether an account exists.
+- Uploads accept only JPEG, PNG, WebP or AVIF up to 4 MB, verified by file contents, stored under random names.
+- `/admin` is excluded from search engines (`noindex` + `robots.txt`).
+
 ## 📜 Available Scripts
 
 - `npm run dev` — Launch development server with hot reload

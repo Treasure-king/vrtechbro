@@ -2,13 +2,7 @@
 import "./globals.css";
 import { BRAND, fontMono, fontSans } from "@/lib/brand";
 import { BrandStyle } from "@/components/brand/brand-style";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { Curtain } from "@/components/layout/curtain";
-import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/layout/theme-provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { SmoothScroll } from "@/components/motion/smooth-scroll";
+import { LazyToaster } from "@/components/ui/toaster-lazy";
 
 export const metadata = {
   title: {
@@ -82,6 +76,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Marks JS as available so scroll-reveal hidden states apply only when they can be revealed */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "document.documentElement.classList.add(\"js\")",
+          }}
+        />
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content={BRAND.colors.canvas} />
@@ -114,16 +114,8 @@ export default function RootLayout({
         />
       </head>
       <body className="grain font-body antialiased">
-        <ThemeProvider>
-          <SmoothScroll />
-          <TooltipProvider>
-            <Curtain footer={<Footer />}>
-              <Navbar />
-              <main className="relative min-h-screen">{children}</main>
-            </Curtain>
-            <Toaster />
-          </TooltipProvider>
-        </ThemeProvider>
+        {children}
+        <LazyToaster />
       </body>
     </html>
   );

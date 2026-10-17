@@ -1,5 +1,7 @@
 "use client";
 
+import { Honeypot } from "@/components/shared/honeypot";
+import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -26,15 +28,22 @@ interface ServiceOverlayProps {
 
 const enquirySchema = z.object({
   clientName: z.string().min(2, "Enter your name (at least 2 characters)."),
-  clientEmail: z.string().email("Enter a valid email address, like name@company.com."),
+  clientEmail: z
+    .string()
+    .email("Enter a valid email address, like name@company.com."),
   clientPhone: z
     .string()
     .optional()
     .refine((val) => !val || /^\+?[0-9\s\-()]{7,}$/.test(val), {
-      message: "Enter a phone number with at least 7 digits, or leave it empty.",
+      message:
+        "Enter a phone number with at least 7 digits, or leave it empty.",
     }),
-  projectName: z.string().min(2, "Give the project a short name (at least 2 characters)."),
-  projectDetails: z.string().min(10, "Describe the project in at least 10 characters."),
+  projectName: z
+    .string()
+    .min(2, "Give the project a short name (at least 2 characters)."),
+  projectDetails: z
+    .string()
+    .min(10, "Describe the project in at least 10 characters."),
   budgetMin: z
     .string()
     .optional()
@@ -48,15 +57,21 @@ const enquirySchema = z.object({
       message: "Maximum budget must be a number of 0 or more.",
     }),
   timeDuration: z.enum(
-    ["less_than_1_month", "1_to_3_months", "3_to_6_months", "6_to_12_months", "more_than_1_year"],
-    { message: "Choose an estimated timeline." }
+    [
+      "less_than_1_month",
+      "1_to_3_months",
+      "3_to_6_months",
+      "6_to_12_months",
+      "more_than_1_year",
+    ],
+    { message: "Choose an estimated timeline." },
   ),
   preferredContact: z.enum(["email", "phone", "either"]).optional(),
   agreeTerms: z.preprocess(
     (val) => val === "on",
     z.boolean().refine((val) => val === true, {
       message: "Agree to the privacy policy and terms to send your enquiry.",
-    })
+    }),
   ),
   serviceTitle: z.string(),
   serviceId: z.string(),
@@ -89,13 +104,18 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-medium text-text-primary">
+      <label
+        htmlFor={id}
+        className="text-text-primary block text-sm font-medium"
+      >
         {label}
-        {hint && <span className="ml-1.5 font-normal text-text-muted">{hint}</span>}
+        {hint && (
+          <span className="text-text-muted ml-1.5 font-normal">{hint}</span>
+        )}
       </label>
       {children}
       {error && (
-        <p id={`${id}-error`} className="text-xs text-error">
+        <p id={`${id}-error`} className="text-error text-xs">
           {error}
         </p>
       )}
@@ -135,7 +155,10 @@ export default function ServiceOverlay({
       const formErrors: Record<string, string> = {};
       result.error.issues.forEach(({ path, message }) => {
         const key = path[0];
-        if ((typeof key === "string" || typeof key === "number") && !formErrors[String(key)]) {
+        if (
+          (typeof key === "string" || typeof key === "number") &&
+          !formErrors[String(key)]
+        ) {
           formErrors[String(key)] = message;
         }
       });
@@ -150,19 +173,28 @@ export default function ServiceOverlay({
       const response = await fetch("/api/enquiry-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(result.data),
+        body: JSON.stringify({
+          ...result.data,
+          [HONEYPOT_FIELD]: data[HONEYPOT_FIELD] ?? "",
+        }),
       });
 
       if (response.ok) {
         toast.success("Enquiry sent. We'll reply to you by email.");
         setOpen(false);
       } else if (response.status === 429) {
-        toast.error("Too many enquiries in a short time. Wait a minute, then send again.");
+        toast.error(
+          "Too many enquiries in a short time. Wait a minute, then send again.",
+        );
       } else {
-        toast.error("Your enquiry wasn't sent. Check your connection and send again, or email us directly.");
+        toast.error(
+          "Your enquiry wasn't sent. Check your connection and send again, or email us directly.",
+        );
       }
     } catch {
-      toast.error("Your enquiry wasn't sent. Check your connection and send again, or email us directly.");
+      toast.error(
+        "Your enquiry wasn't sent. Check your connection and send again, or email us directly.",
+      );
     } finally {
       setLoading(false);
     }
@@ -171,7 +203,11 @@ export default function ServiceOverlay({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant={triggerVariant} size={triggerSize} className={triggerClassName}>
+        <Button
+          variant={triggerVariant}
+          size={triggerSize}
+          className={triggerClassName}
+        >
           {triggerLabel}
         </Button>
       </SheetTrigger>
@@ -179,64 +215,136 @@ export default function ServiceOverlay({
       <SheetContent
         side="right"
         data-lenis-prevent
-        className="w-full gap-0 overflow-y-auto border-border-subtle bg-bg-secondary p-0 sm:max-w-lg"
+        className="border-border-subtle bg-bg-secondary w-full gap-0 overflow-y-auto p-0 sm:max-w-lg"
       >
-        <SheetHeader className="border-b border-border-subtle p-6 pr-12">
-          <SheetTitle className="font-display text-2xl font-bold tracking-tight text-text-primary">
+        <SheetHeader className="border-border-subtle border-b p-6 pr-12">
+          <SheetTitle className="font-display text-text-primary text-2xl font-bold tracking-tight">
             Enquire about {serviceTitle}
           </SheetTitle>
           <SheetDescription className="text-text-secondary">
-            Tell us what you have in mind. We read every enquiry and reply by email.
+            Tell us what you have in mind. We read every enquiry and reply by
+            email.
           </SheetDescription>
         </SheetHeader>
 
-        <form className="flex flex-col gap-5 p-6" onSubmit={handleSubmit} noValidate>
+        <form
+          className="relative flex flex-col gap-5 p-6"
+          onSubmit={handleSubmit}
+          noValidate
+        >
+          <Honeypot />
           <input type="hidden" name="serviceTitle" value={serviceTitle} />
           <input type="hidden" name="serviceId" value={serviceId} />
 
           <div className="grid gap-5 sm:grid-cols-2">
-            <Field id="enquiry-clientName" label="Name" error={errors.clientName}>
-              <input type="text" autoComplete="name" {...fieldProps("clientName")} />
+            <Field
+              id="enquiry-clientName"
+              label="Name"
+              error={errors.clientName}
+            >
+              <input
+                type="text"
+                autoComplete="name"
+                {...fieldProps("clientName")}
+              />
             </Field>
-            <Field id="enquiry-clientEmail" label="Email" error={errors.clientEmail}>
-              <input type="email" autoComplete="email" {...fieldProps("clientEmail")} />
+            <Field
+              id="enquiry-clientEmail"
+              label="Email"
+              error={errors.clientEmail}
+            >
+              <input
+                type="email"
+                autoComplete="email"
+                {...fieldProps("clientEmail")}
+              />
             </Field>
           </div>
 
-          <Field id="enquiry-clientPhone" label="Phone" hint="optional" error={errors.clientPhone}>
-            <input type="tel" autoComplete="tel" {...fieldProps("clientPhone")} />
+          <Field
+            id="enquiry-clientPhone"
+            label="Phone"
+            hint="optional"
+            error={errors.clientPhone}
+          >
+            <input
+              type="tel"
+              autoComplete="tel"
+              {...fieldProps("clientPhone")}
+            />
           </Field>
 
-          <Field id="enquiry-projectName" label="Project name" error={errors.projectName}>
-            <input type="text" placeholder="e.g. Booking app for our clinic" {...fieldProps("projectName")} />
+          <Field
+            id="enquiry-projectName"
+            label="Project name"
+            error={errors.projectName}
+          >
+            <input
+              type="text"
+              placeholder="e.g. Booking app for our clinic"
+              {...fieldProps("projectName")}
+            />
           </Field>
 
-          <Field id="enquiry-projectDetails" label="What do you need?" error={errors.projectDetails}>
+          <Field
+            id="enquiry-projectDetails"
+            label="What do you need?"
+            error={errors.projectDetails}
+          >
             <textarea
               rows={5}
               placeholder="Goals, must-have features, links to anything similar you like"
               {...fieldProps("projectDetails")}
-              className={cn(inputStyles, "resize-y", errors.projectDetails && errorStyles)}
+              className={cn(
+                inputStyles,
+                "resize-y",
+                errors.projectDetails && errorStyles,
+              )}
             />
           </Field>
 
           <fieldset className="space-y-1.5">
-            <legend className="text-sm font-medium text-text-primary">
-              Budget in USD <span className="font-normal text-text-muted">optional</span>
+            <legend className="text-text-primary text-sm font-medium">
+              Budget in USD{" "}
+              <span className="text-text-muted font-normal">optional</span>
             </legend>
             <div className="grid grid-cols-2 gap-3">
-              <input type="number" min={0} inputMode="numeric" placeholder="From" aria-label="Minimum budget in USD" {...fieldProps("budgetMin")} aria-describedby={budgetError ? "enquiry-budget-error" : undefined} />
-              <input type="number" min={0} inputMode="numeric" placeholder="To" aria-label="Maximum budget in USD" {...fieldProps("budgetMax")} aria-describedby={budgetError ? "enquiry-budget-error" : undefined} />
+              <input
+                type="number"
+                min={0}
+                inputMode="numeric"
+                placeholder="From"
+                aria-label="Minimum budget in USD"
+                {...fieldProps("budgetMin")}
+                aria-describedby={
+                  budgetError ? "enquiry-budget-error" : undefined
+                }
+              />
+              <input
+                type="number"
+                min={0}
+                inputMode="numeric"
+                placeholder="To"
+                aria-label="Maximum budget in USD"
+                {...fieldProps("budgetMax")}
+                aria-describedby={
+                  budgetError ? "enquiry-budget-error" : undefined
+                }
+              />
             </div>
             {budgetError && (
-              <p id="enquiry-budget-error" className="text-xs text-error">
+              <p id="enquiry-budget-error" className="text-error text-xs">
                 {budgetError}
               </p>
             )}
           </fieldset>
 
           <div className="grid gap-5 sm:grid-cols-2">
-            <Field id="enquiry-timeDuration" label="Timeline" error={errors.timeDuration}>
+            <Field
+              id="enquiry-timeDuration"
+              label="Timeline"
+              error={errors.timeDuration}
+            >
               <select defaultValue="" {...fieldProps("timeDuration")}>
                 <option value="" disabled>
                   Choose one
@@ -248,7 +356,11 @@ export default function ServiceOverlay({
                 ))}
               </select>
             </Field>
-            <Field id="enquiry-preferredContact" label="Reach me by" hint="optional">
+            <Field
+              id="enquiry-preferredContact"
+              label="Reach me by"
+              hint="optional"
+            >
               <select defaultValue="" {...fieldProps("preferredContact")}>
                 <option value="" disabled>
                   Choose one
@@ -261,20 +373,22 @@ export default function ServiceOverlay({
           </div>
 
           <div className="space-y-1.5">
-            <label className="flex items-start gap-2.5 text-sm text-text-secondary">
+            <label className="text-text-secondary flex items-start gap-2.5 text-sm">
               <input
                 type="checkbox"
                 name="agreeTerms"
                 disabled={loading}
                 aria-invalid={errors.agreeTerms ? true : undefined}
-                aria-describedby={errors.agreeTerms ? "enquiry-agreeTerms-error" : undefined}
-                className="mt-0.5 h-4 w-4 rounded border-border-subtle accent-accent-primary"
+                aria-describedby={
+                  errors.agreeTerms ? "enquiry-agreeTerms-error" : undefined
+                }
+                className="border-border-subtle accent-accent-primary mt-0.5 h-4 w-4 rounded"
               />
               <span>
                 I agree to the{" "}
                 <a
                   href="/privacy-policy"
-                  className="text-accent-primary underline underline-offset-2 hover:text-accent-hover"
+                  className="text-accent-primary hover:text-accent-hover underline underline-offset-2"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -283,7 +397,7 @@ export default function ServiceOverlay({
                 and{" "}
                 <a
                   href="/terms"
-                  className="text-accent-primary underline underline-offset-2 hover:text-accent-hover"
+                  className="text-accent-primary hover:text-accent-hover underline underline-offset-2"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -293,13 +407,18 @@ export default function ServiceOverlay({
               </span>
             </label>
             {errors.agreeTerms && (
-              <p id="enquiry-agreeTerms-error" className="text-xs text-error">
+              <p id="enquiry-agreeTerms-error" className="text-error text-xs">
                 {errors.agreeTerms}
               </p>
             )}
           </div>
 
-          <Button type="submit" size="lg" isLoading={loading} className="mt-1 w-full">
+          <Button
+            type="submit"
+            size="lg"
+            isLoading={loading}
+            className="mt-1 w-full"
+          >
             {loading ? "Sending enquiry" : "Send enquiry"}
           </Button>
         </form>

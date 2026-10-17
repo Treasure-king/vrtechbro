@@ -1,5 +1,5 @@
-import { ServiceCardProps } from './service-card';
-import { BlogCardProps } from './blog-card';
+import { ServiceCardProps } from "./service-card";
+import { BlogCardProps } from "./blog-card";
 
 export interface ServiceRecord {
   id: string;
@@ -11,6 +11,13 @@ export interface ServiceRecord {
   image_url?: string;
   keywords?: string[];
   featured?: boolean;
+  content?: string;
+  category?: string;
+  display_order?: number;
+  cta_label?: string;
+  cta_enabled?: boolean;
+  meta_title?: string;
+  meta_description?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -28,7 +35,15 @@ export interface BlogRecord {
   thumbnail?: string;
   image_url?: string;
   published_at?: string;
+  meta_title?: string;
+  meta_description?: string;
   updated_at?: string;
+}
+
+/** Row in public.admins: users allowed into /admin (see supabase/migrations/2026-10-17_admin.sql). */
+export interface AdminRecord {
+  user_id: string;
+  created_at: string;
 }
 
 export interface JobRecord {
@@ -46,9 +61,19 @@ export interface JobRecord {
 }
 
 export function isServiceArray(data: unknown): data is ServiceCardProps[] {
-  return Array.isArray(data) && data.every((item) => typeof item === 'object' && item !== null && 'title' in item);
+  return (
+    Array.isArray(data) &&
+    data.every(
+      (item) => typeof item === "object" && item !== null && "title" in item,
+    )
+  );
 }
 
 export function isBlogArray(data: unknown): data is BlogCardProps[] {
-  return Array.isArray(data) && data.every((item) => typeof item === 'object' && item !== null && 'title' in item);
+  return (
+    Array.isArray(data) &&
+    data.every(
+      (item) => typeof item === "object" && item !== null && "title" in item,
+    )
+  );
 }

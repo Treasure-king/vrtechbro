@@ -1,5 +1,6 @@
 "use client";
 
+import { Honeypot } from "@/components/shared/honeypot";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -33,17 +34,17 @@ const careerSchema = z.object({
     .refine((val) => !val || /^\+?[0-9\s\-()]{7,}$/.test(val), {
       message: "Invalid phone number",
     }),
-  coverLetter: z.string().min(20, "Cover letter must be at least 20 characters"),
-  resume: z
-    .any()
-    .refine((file) => file instanceof File, "Resume is required"),
+  coverLetter: z
+    .string()
+    .min(20, "Cover letter must be at least 20 characters"),
+  resume: z.any().refine((file) => file instanceof File, "Resume is required"),
   position: z.string(),
   jobId: z.string(),
   agreeTerms: z.preprocess(
     (val) => val === "on",
     z.boolean().refine((val) => val === true, {
       message: "You must agree to the privacy policy and terms",
-    })
+    }),
   ),
 });
 
@@ -88,7 +89,9 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data: Record<string, unknown> = Object.fromEntries(formData.entries());
+    const data: Record<string, unknown> = Object.fromEntries(
+      formData.entries(),
+    );
     data.resume = formData.get("resume");
 
     const result = careerSchema.safeParse(data);
@@ -128,7 +131,7 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
   const labelStyles = "block text-sm font-medium text-text-secondary mb-1.5";
   const errorText = (key: string) =>
     errors[key] ? (
-      <p id={`${key}-error`} className="text-error text-xs mt-1.5">
+      <p id={`${key}-error`} className="text-error mt-1.5 text-xs">
         {errors[key]}
       </p>
     ) : null;
@@ -137,18 +140,24 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
     <Sheet open onOpenChange={(open) => !open && !loading && onClose()}>
       <SheetContent
         side="right"
-        className="w-full gap-0 overflow-y-auto border-border-subtle bg-bg-secondary sm:max-w-lg"
+        className="border-border-subtle bg-bg-secondary w-full gap-0 overflow-y-auto sm:max-w-lg"
       >
-        <SheetHeader className="border-b border-border-subtle px-6 pt-8 pb-6">
-          <SheetTitle className="font-display text-2xl font-semibold tracking-tight text-text-primary">
+        <SheetHeader className="border-border-subtle border-b px-6 pt-8 pb-6">
+          <SheetTitle className="font-display text-text-primary text-2xl font-semibold tracking-tight">
             Apply for {job.title}
           </SheetTitle>
           <SheetDescription className="text-text-secondary">
-            {job.location}, {job.type.toLowerCase()}. All fields are required unless marked optional.
+            {job.location}, {job.type.toLowerCase()}. All fields are required
+            unless marked optional.
           </SheetDescription>
         </SheetHeader>
 
-        <form className="flex flex-col gap-5 px-6 py-6" onSubmit={handleSubmit} noValidate>
+        <form
+          className="relative flex flex-col gap-5 px-6 py-6"
+          onSubmit={handleSubmit}
+          noValidate
+        >
+          <Honeypot />
           <input type="hidden" name="position" value={job.title} />
           <input type="hidden" name="jobId" value={job.id} />
 
@@ -188,7 +197,8 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
 
           <div>
             <label htmlFor="career-phone" className={labelStyles}>
-              Phone <span className="text-text-muted font-normal">(optional)</span>
+              Phone{" "}
+              <span className="text-text-muted font-normal">(optional)</span>
             </label>
             <input
               id="career-phone"
@@ -214,7 +224,9 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
               maxLength={1000}
               placeholder="The work you're proudest of, why this role, and links to your portfolio or GitHub."
               aria-invalid={!!errors.coverLetter}
-              aria-describedby={errors.coverLetter ? "coverLetter-error" : undefined}
+              aria-describedby={
+                errors.coverLetter ? "coverLetter-error" : undefined
+              }
               className={`${inputStyles} resize-none ${errors.coverLetter ? errorInputStyles : ""}`}
               disabled={loading}
             />
@@ -227,7 +239,7 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
             </span>
             <label
               htmlFor="resume"
-              className={`block rounded-xl border-2 border-dashed p-6 text-center cursor-pointer transition-colors duration-200 focus-within:border-accent-primary ${
+              className={`focus-within:border-accent-primary block cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-colors duration-200 ${
                 dragActive
                   ? "bg-accent-primary/10 border-accent-primary"
                   : errors?.resume
@@ -240,15 +252,29 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
             >
               {fileName ? (
                 <span className="flex flex-col items-center gap-2">
-                  <FileCheck className="h-7 w-7 text-success" aria-hidden="true" />
-                  <span className="text-text-primary text-sm font-medium break-all">{fileName}</span>
-                  <span className="text-xs text-text-muted">Choose a different file</span>
+                  <FileCheck
+                    className="text-success h-7 w-7"
+                    aria-hidden="true"
+                  />
+                  <span className="text-text-primary text-sm font-medium break-all">
+                    {fileName}
+                  </span>
+                  <span className="text-text-muted text-xs">
+                    Choose a different file
+                  </span>
                 </span>
               ) : (
                 <span className="flex flex-col items-center gap-2">
-                  <Upload className="h-7 w-7 text-text-muted" aria-hidden="true" />
-                  <span className="text-text-secondary text-sm">Drop your resume here or choose a file</span>
-                  <span className="text-xs text-text-muted">PDF, DOC or DOCX, up to 5 MB</span>
+                  <Upload
+                    className="text-text-muted h-7 w-7"
+                    aria-hidden="true"
+                  />
+                  <span className="text-text-secondary text-sm">
+                    Drop your resume here or choose a file
+                  </span>
+                  <span className="text-text-muted text-xs">
+                    PDF, DOC or DOCX, up to 5 MB
+                  </span>
                 </span>
               )}
 
@@ -268,13 +294,15 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
           </div>
 
           <div>
-            <label className="flex items-start gap-2.5 text-sm text-text-secondary">
+            <label className="text-text-secondary flex items-start gap-2.5 text-sm">
               <input
                 type="checkbox"
                 name="agreeTerms"
                 aria-invalid={!!errors.agreeTerms}
-                aria-describedby={errors.agreeTerms ? "agreeTerms-error" : undefined}
-                className="mt-0.5 h-4 w-4 rounded border-border-subtle accent-accent-primary"
+                aria-describedby={
+                  errors.agreeTerms ? "agreeTerms-error" : undefined
+                }
+                className="border-border-subtle accent-accent-primary mt-0.5 h-4 w-4 rounded"
                 disabled={loading}
               />
               <span>
@@ -302,7 +330,12 @@ export default function CareerForm({ job, onClose }: CareerFormProps) {
             {errorText("agreeTerms")}
           </div>
 
-          <Button type="submit" isLoading={loading} size="lg" className="mt-2 w-full">
+          <Button
+            type="submit"
+            isLoading={loading}
+            size="lg"
+            className="mt-2 w-full"
+          >
             {loading ? "Sending application…" : "Send application"}
           </Button>
         </form>

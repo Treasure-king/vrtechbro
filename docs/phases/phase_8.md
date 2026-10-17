@@ -3,6 +3,8 @@
 > **Goal:** Design and build the custom 3D scene(s) in Blender, implement them with Three.js/R3F, add scroll-based and mouse-based interactions, and ensure graceful degradation on low-power devices.
 >
 > **Estimated Tasks:** 10
+> **Status: Dropped (2026-10-17)** — 3D belongs in the owner's personal portfolio, not this company site.
+>
 > **Depends On:** Phase 7 (Page Redesign). **Run after Phase 9** — the portfolio delivers more value sooner, and the 3D hero needs a finished Blender asset.
 
 ---
