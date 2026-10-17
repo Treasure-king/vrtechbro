@@ -15,7 +15,7 @@
 - **Live URL:** [https://www.vrtechbro.com/](https://www.vrtechbro.com/)
 - **Repository Type:** Next.js 15 App Router Full-Stack Web Application
 - **Core Technology Stack:**
-  - **Framework:** Next.js `15.5.28` (App Router, Turbopack enabled)
+  - **Framework:** Next.js `16.4.2` (App Router, Turbopack enabled)
   - **Runtime & Language:** React `19.0.0`, TypeScript `^5` (Strict mode)
   - **Styling:** Tailwind CSS `v4` (CSS-first `@theme` with OKLCH color tokens) + ShadCN UI (new-york style)
   - **Backend & Database:** Supabase (`@supabase/supabase-js` `^2.50.5`) — PostgreSQL with RLS
@@ -670,3 +670,9 @@ Tailwind CSS v4 uses modern `@theme` OKLCH color definitions:
 - **Tests:** `npm run test:e2e` (Playwright, dev server on 3460, installed Chrome, desktop/tablet/mobile). 162 tests: pages, design screenshots, axe a11y, security headers/API/admin redirects, forms. All failures from the first run were fixed (share images on 5 pages, mobile menu focus trap).
 - **CI:** `.github/workflows/ci.yml` runs tsc, lint and `npm audit --audit-level=critical` on push/PR (no build: it needs secret env vars).
 - **Still open:** Lighthouse on a production build (owner runs builds), nonce-based CSP (would force dynamic rendering, trading away performance), persistent rate limiting (needs Upstash), Sentry (needs account), Next 16 upgrade.
+
+### Next.js 16 upgrade (2026-10-17)
+- next 16.4.2, React 19.3, eslint-config-next 16.4.2. `middleware.ts` → `proxy.ts` (export `proxy`; `lib/supabase/middleware.ts` → `lib/supabase/proxy.ts`). `next lint` removed → `npm run lint` is `eslint .` with a native flat config (`eslint.config.mjs`). Turbopack is the default (dev script is plain `next dev`). `npm audit --omit=dev` now reports 0 vulnerabilities.
+- New react-hooks lint rules fixed by deriving state instead of setting it in effects (navbar route-change close, slug input, blog list hydration flag via useSyncExternalStore, workbench typing, reveal hook).
+- Verified on the dev server: desktop Playwright project 53 passed / 2 skipped, mobile menu tests pass.
+- Copy finalised: FAQ answers rewritten to match the Terms and real support hours (no 24/7, no 14-day refund), Terms and Privacy "last updated" 2026-10-17, comparison wording softened.

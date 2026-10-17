@@ -7,17 +7,18 @@ import { useEffect, useRef, useState } from "react";
  * A tiny IntersectionObserver wrapper so reveal effects don't need an
  * animation library; the transitions themselves are CSS (see `.reveal` in globals.css).
  */
-export function useInViewOnce<T extends Element>(rootMargin = "0px 0px -60px 0px") {
+export function useInViewOnce<T extends Element>(
+  rootMargin = "0px 0px -60px 0px",
+) {
   const ref = useRef<T>(null);
-  const [inView, setInView] = useState(false);
+  // Browsers without IntersectionObserver simply show everything
+  const [inView, setInView] = useState(
+    () => typeof window !== "undefined" && !("IntersectionObserver" in window),
+  );
 
   useEffect(() => {
     const node = ref.current;
     if (!node || inView) return;
-    if (!("IntersectionObserver" in window)) {
-      setInView(true);
-      return;
-    }
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

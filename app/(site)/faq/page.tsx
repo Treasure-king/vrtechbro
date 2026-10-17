@@ -53,15 +53,15 @@ const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "What is VRTechBro?",
-        a: "VRTechBro is a modern platform offering tech services, digital products, and innovative solutions for clients, creators, and businesses worldwide.",
+        a: "VRTechBro is a founder-led software studio. We design, build and maintain websites, web apps, mobile apps, Chrome extensions and APIs for businesses of any size.",
       },
       {
         q: "Where can I find services?",
-        a: "All the services are listed on the service page. You can also click on the Explore button on the home page under the services section on our website.",
+        a: "Every service is listed on the Services page, with what is included and the tools we use. The home page also shows a selection under “Pick a service”.",
       },
       {
         q: "Does VRTechBro offer business or enterprise solutions?",
-        a: "Yes, we provide tailored enterprise-level services, including development, integration, and Search Engine Optimization (SEO).",
+        a: "Yes. We take on larger projects too, including custom platforms, integrations with your existing systems, and search engine optimisation. Tell us about your requirements and we will propose a plan.",
       },
     ],
   },
@@ -70,7 +70,7 @@ const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "How do I reach out?",
-        a: "Simply go to the service section, click any service you want, then click on the Get Service button. Fill the details in the form and you will be contacted shortly.",
+        a: "Use the form on the Contact page, or open any service and send an enquiry from there. You can also email us directly. We reply by email with questions or a proposed next step.",
       },
     ],
   },
@@ -79,11 +79,11 @@ const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "What payment methods are supported?",
-        a: "We accept all major credit/debit cards, PayPal, UPI, and international payment gateways for global users.",
+        a: "Payment terms and accepted methods are agreed in each project contract and listed on your invoice. Ask us if you need a particular method.",
       },
       {
         q: "Can I get a refund?",
-        a: "Yes. Refunds are available under our Refund Policy within 14 days of purchase if conditions are met.",
+        a: "Refunds are reviewed case by case and issued when both sides agree, as set out in our Terms and Conditions. If something isn't right, contact us and we will work through it with you.",
       },
     ],
   },
@@ -92,11 +92,11 @@ const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "Is my personal data secure with VRTechBro?",
-        a: "Yes. VRTechBro doesn't share your personal data with anyone without your permission; all your data is only used to contact you regarding the project.",
+        a: "Yes. We only use your details to reply to you and to run your project, and we don't share them without your permission. Our Privacy Policy explains this in full.",
       },
       {
         q: "Do you offer customer support?",
-        a: "Absolutely. We provide 24/7 customer support through email, live chat, and a dedicated help center.",
+        a: "Yes. Support is by email, Monday to Friday, 9:00 AM to 6:00 PM. Ongoing maintenance and support after launch can be included in your project agreement.",
       },
     ],
   },

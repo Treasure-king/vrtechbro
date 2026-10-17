@@ -167,6 +167,7 @@ export default function TermsAndConditions() {
         title="Terms and conditions"
         intro="Welcome to VRTechBro. By accessing or using our website and services, you agree to comply with and be bound by the following terms and conditions. Please read them carefully."
         sections={sections}
+        updated="2026-10-17"
       />
     </>
   );

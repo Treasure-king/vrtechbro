@@ -34,10 +34,12 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close the mobile menu on navigation
-  useEffect(() => {
+  // Close the mobile menu on navigation (adjusting state during render, as React recommends)
+  const [menuPath, setMenuPath] = useState(pathname);
+  if (pathname !== menuPath) {
+    setMenuPath(pathname);
     setMobileOpen(false);
-  }, [pathname]);
+  }
 
   // While the mobile menu is open: lock page scroll, close on Escape,
   // move focus into the menu and return it to the toggle afterwards.

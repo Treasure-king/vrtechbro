@@ -141,6 +141,7 @@ export default function PrivacyPolicy() {
         title="Privacy policy"
         intro="At VRTechBro, we respect your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you interact with our website and services."
         sections={sections}
+        updated="2026-10-17"
       />
     </>
   );

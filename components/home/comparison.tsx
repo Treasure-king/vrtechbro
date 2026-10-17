@@ -9,32 +9,32 @@ import { BRAND } from "@/lib/brand";
 const ROWS = [
   {
     topic: "Who you talk to",
-    agency: "An account manager who passes messages along",
+    agency: "Usually an account manager, who relays to the team",
     freelancer: "The person doing the work",
     us: "The people who design and build it",
   },
   {
     topic: "Design, front end and back end",
-    agency: "Separate teams, with handoffs between them",
-    freelancer: "Usually one of the three; the rest is outsourced",
+    agency: "Often separate teams, with handoffs between them",
+    freelancer: "Often one of the three, with the rest outsourced",
     us: "One team covers all three",
   },
   {
     topic: "Websites, apps, extensions and APIs",
-    agency: "Often, spread across departments",
-    freelancer: "Rarely all of them",
+    agency: "Often, across different departments",
+    freelancer: "Usually one or two specialisms",
     us: "All of them, built to work together",
   },
   {
     topic: "Changes mid-project",
-    agency: "Change requests and re-estimates",
+    agency: "Usually change requests and re-estimates",
     freelancer: "Depends on their availability",
-    us: "Discussed directly, shipped in the next cycle",
+    us: "Discussed directly and planned into the next cycle",
   },
   {
     topic: "After launch",
-    agency: "A support contract, often with a new team",
-    freelancer: "Depends on their next booking",
+    agency: "A support contract, sometimes with a different team",
+    freelancer: "Depends on their other commitments",
     us: "The same people maintain what they built",
   },
 ];
@@ -97,7 +97,7 @@ export function Comparison() {
         <SectionHeading
           id="comparison-title"
           title="An agency, a freelancer, or us?"
-          intro="Three common ways to get software built, and what each one is like to work with."
+          intro="Three common ways to get software built. Each suits different projects; here is how they usually compare."
         />
 
         {/* Desktop and tablet: a real table, with our column raised */}

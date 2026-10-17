@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Field, fieldAria, inputClass } from "@/components/admin/field";
 import { slugify } from "@/lib/admin/validation";
@@ -27,12 +27,11 @@ export function TitleSlugFields({
   const [slug, setSlug] = useState(defaultSlug ?? "");
   const [touched, setTouched] = useState(Boolean(defaultSlug));
 
-  useEffect(() => {
-    if (!touched) setSlug(slugify(title));
-  }, [title, touched]);
+  // Until edited by hand, the slug is derived from the title
+  const shownSlug = touched ? slug : slugify(title);
 
   const slugHint =
-    customHint ?? `Address on the site: ${basePath}/${slug || "…"}`;
+    customHint ?? `Address on the site: ${basePath}/${shownSlug || "…"}`;
 
   return (
     <>
@@ -48,7 +47,7 @@ export function TitleSlugFields({
       <Field id="slug" label="Slug" hint={slugHint} error={errors?.slug}>
         <Input
           {...fieldAria("slug", errors?.slug, slugHint)}
-          value={slug}
+          value={shownSlug}
           onChange={(e) => {
             setTouched(true);
             setSlug(e.target.value);

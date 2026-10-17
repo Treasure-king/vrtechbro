@@ -187,50 +187,63 @@ const charCount = (code: Token[][]) =>
 
 /* ----------------------------- Code pane ----------------------------- */
 
-function CodePane({ build, typed }: { build: Build; typed: number }) {
-  const typing = typed < charCount(build.code);
+type TypedLine = { tokens: Token[]; caret: boolean };
+
+/**
+ * Splits a snippet into what is visible after the first `typed` characters, line by line,
+ * and marks the line that should show the caret. Pure, so rendering stays simple.
+ */
+function layoutTyped(code: Token[][], typed: number): TypedLine[] {
+  const typing = typed < charCount(code);
   let remaining = typed;
   let caretPlaced = false;
+  const lines: TypedLine[] = [];
+
+  for (const line of code) {
+    const lineLength = line.reduce((n, [t]) => n + t.length, 0);
+    const complete = remaining > lineLength; // line plus its newline fit
+    let left = Math.max(0, Math.min(remaining, lineLength));
+    remaining = complete ? remaining - lineLength - 1 : 0;
+
+    const tokens: Token[] = [];
+    for (const [text, kind] of line) {
+      const slice = text.slice(0, left);
+      left -= slice.length;
+      if (slice) tokens.push([slice, kind]);
+    }
+
+    const caret = typing && !complete && !caretPlaced;
+    if (caret) caretPlaced = true;
+    lines.push({ tokens, caret });
+  }
+  return lines;
+}
+
+function CodePane({ build, typed }: { build: Build; typed: number }) {
+  const lines = layoutTyped(build.code, typed);
 
   return (
     <pre
       className="font-mono text-[12.5px] leading-6 sm:text-[13px]"
       aria-hidden="true"
     >
-      {build.code.map((line, li) => {
-        const lineLength = line.reduce((n, [t]) => n + t.length, 0);
-        const complete = remaining > lineLength; // line plus its newline fit
-        const budget = Math.max(0, Math.min(remaining, lineLength));
-        remaining = complete ? remaining - lineLength - 1 : 0;
-
-        let left = budget;
-        const visible = line.map(([text, kind], ti) => {
-          const slice = text.slice(0, Math.max(0, left));
-          left -= slice.length;
-          return slice ? (
-            <span key={ti} className={tokenClass[kind]}>
-              {slice}
-            </span>
-          ) : null;
-        });
-
-        const showCaret = typing && !complete && !caretPlaced;
-        if (showCaret) caretPlaced = true;
-
-        return (
-          <div key={li} className="flex">
-            <span className="text-text-muted/60 w-8 shrink-0 pr-4 text-right select-none">
-              {li + 1}
-            </span>
-            <code>
-              {visible}
-              {showCaret && (
-                <span className="caret bg-accent-primary ml-px inline-block h-4 w-[7px] translate-y-0.5" />
-              )}
-            </code>
-          </div>
-        );
-      })}
+      {lines.map(({ tokens, caret }, li) => (
+        <div key={li} className="flex">
+          <span className="text-text-muted/60 w-8 shrink-0 pr-4 text-right select-none">
+            {li + 1}
+          </span>
+          <code>
+            {tokens.map(([text, kind], ti) => (
+              <span key={ti} className={tokenClass[kind]}>
+                {text}
+              </span>
+            ))}
+            {caret && (
+              <span className="caret bg-accent-primary ml-px inline-block h-4 w-[7px] translate-y-0.5" />
+            )}
+          </code>
+        </div>
+      ))}
     </pre>
   );
 }
@@ -432,18 +445,17 @@ export function Workbench() {
 
   // Type the first snippet on page load; later tab switches show code instantly
   const [hasTyped, setHasTyped] = useState(false);
-  const [typed, setTyped] = useState(0);
+  const [progress, setProgress] = useState(0);
+  // After the first run (or with reduced motion) code is shown in full
+  const typed = reduce || hasTyped ? total : progress;
 
   useEffect(() => {
-    if (reduce || hasTyped) {
-      setTyped(total);
-      return;
-    }
+    if (reduce || hasTyped) return;
     let n = 0;
     let timer: ReturnType<typeof setTimeout>;
     const tick = () => {
       n += 2;
-      setTyped(n);
+      setProgress(n);
       if (n < total) timer = setTimeout(tick, 22);
       else setHasTyped(true);
     };
@@ -485,7 +497,7 @@ export function Workbench() {
         <TabsContent key={b.id} value={b.id} className="m-0">
           <p className="sr-only">{b.summary}</p>
           <div className="grid md:grid-cols-[1.15fr_1fr]">
-            <div className="border-border-subtle min-h-[220px] overflow-x-auto [scrollbar-width:none] border-b p-4 md:border-r md:border-b-0">
+            <div className="border-border-subtle min-h-[220px] overflow-x-auto border-b p-4 [scrollbar-width:none] md:border-r md:border-b-0">
               <CodePane
                 build={b}
                 typed={b.id === build.id ? typed : charCount(b.code)}
