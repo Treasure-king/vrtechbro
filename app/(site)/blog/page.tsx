@@ -1,3 +1,4 @@
+import { isoDate } from "@/lib/format-date";
 import { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -126,9 +127,7 @@ export default async function BlogPage() {
                 <div className="text-text-muted flex flex-wrap gap-x-4 gap-y-1 text-sm lg:col-span-3 lg:flex-col lg:pt-3">
                   <span className="text-accent-primary">Latest</span>
                   {featured.published_at && (
-                    <time
-                      dateTime={new Date(featured.published_at).toISOString()}
-                    >
+                    <time dateTime={isoDate(featured.published_at)}>
                       {formatPostDate(featured.published_at)}
                     </time>
                   )}

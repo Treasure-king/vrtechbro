@@ -1,7 +1,7 @@
 /**
  * HTTP security headers sent with every response (wired up in next.config.ts).
- * The home page's "Under the hood" section lists these same headers, so what the
- * site claims and what it actually sends can never drift apart.
+ * Browser error reports go to Sentry through the same-origin /sentry-tunnel
+ * route, so `connect-src 'self'` already covers them.
  */
 
 const isDev = process.env.NODE_ENV !== 'production'

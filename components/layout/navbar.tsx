@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -55,14 +56,11 @@ export function Navbar() {
         return;
       }
       if (e.key !== "Tab") return;
-      // Keep Tab inside the open menu: its links plus the close toggle
+      // Keep Tab inside the open menu (it has its own close button)
       const menu = document.getElementById("mobile-menu");
-      const focusables = [
-        toggle,
-        ...Array.from(
-          menu?.querySelectorAll<HTMLElement>("a[href], button") ?? [],
-        ),
-      ].filter((el): el is HTMLElement => Boolean(el));
+      const focusables = Array.from(
+        menu?.querySelectorAll<HTMLElement>("a[href], button") ?? [],
+      );
       if (focusables.length === 0) return;
       const first = focusables[0];
       const last = focusables[focusables.length - 1];
@@ -92,10 +90,12 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 transition-[background-color,padding,box-shadow] duration-300",
+        // Same height at every scroll position, so nothing jumps on phones;
+        // only the background and shadow change once the page scrolls
+        "sticky top-0 z-50 py-2 backdrop-blur-xl transition-[background-color,box-shadow] duration-300",
         scrolled
-          ? "glass py-2 shadow-lg shadow-black/20"
-          : "bg-bg-primary/80 py-3 backdrop-blur-md",
+          ? "bg-bg-primary/85 shadow-lg shadow-black/20"
+          : "bg-bg-primary/70",
       )}
     >
       <a
@@ -110,7 +110,7 @@ export function Navbar() {
       <div className="container-page flex items-center justify-between">
         <Link href="/" aria-label="VRTechBro home" className="group">
           <Logo
-            size={scrolled ? 60 : 72}
+            size={64}
             priority
             className="transition-all duration-300 group-hover:drop-shadow-[0_0_12px_var(--brand-signal)]"
           />
@@ -168,60 +168,83 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu: full-screen overlay */}
-      {mobileOpen && (
-        <div
-          id="mobile-menu"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Site navigation"
-          className="menu-fade fixed inset-0 z-40 md:hidden"
-        >
-          <div className="bg-bg-primary/95 absolute inset-0 backdrop-blur-xl" />
-          <nav
-            aria-label="Mobile primary navigation"
-            className="relative flex h-full flex-col items-center justify-center gap-6"
+      {/* Mobile menu: full-screen overlay, rendered on document.body. Inside the
+          header it would be sized to the header instead of the screen, because
+          the header's backdrop-filter makes it the box that fixed children use. */}
+      {mobileOpen &&
+        createPortal(
+          <div
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site navigation"
+            className="menu-fade bg-bg-primary fixed inset-0 z-[70] flex flex-col overflow-y-auto md:hidden"
+            data-lenis-prevent
           >
-            {NAV_LINKS.map((link, i) => {
-              const isActive = isActiveLink(pathname, link.href);
-              return (
-                <Link
-                  key={link.name}
-                  ref={i === 0 ? firstLinkRef : undefined}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  aria-current={isActive ? "page" : undefined}
-                  className={cn(
-                    "rise font-display block text-2xl font-semibold tracking-tight transition-colors duration-200",
-                    isActive
-                      ? "text-accent-primary"
-                      : "text-text-secondary hover:text-text-primary",
-                  )}
-                  style={
-                    { "--rise-delay": `${i * 0.04}s` } as React.CSSProperties
-                  }
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
-            <Button
-              asChild
-              size="lg"
-              className="rise"
-              style={
-                {
-                  "--rise-delay": `${NAV_LINKS.length * 0.04}s`,
-                } as React.CSSProperties
-              }
-            >
-              <Link href="/contact" onClick={() => setMobileOpen(false)}>
-                Start a project
+            {/* Its own top row, matching the header: the overlay sits above the
+                page (header included), so it carries its own close button */}
+            <div className="container-page flex shrink-0 items-center justify-between py-2">
+              <Link
+                href="/"
+                aria-label="VRTechBro home"
+                onClick={() => setMobileOpen(false)}
+              >
+                <Logo size={64} />
               </Link>
-            </Button>
-          </nav>
-        </div>
-      )}
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close menu"
+                className="text-text-primary hover:bg-bg-tertiary focus-visible:ring-accent-primary/50 rounded-lg p-2 transition-colors focus:outline-none focus-visible:ring-2"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <nav
+              aria-label="Mobile primary navigation"
+              className="flex flex-1 flex-col items-center justify-center gap-6 px-6 pb-12"
+            >
+              {NAV_LINKS.map((link, i) => {
+                const isActive = isActiveLink(pathname, link.href);
+                return (
+                  <Link
+                    key={link.name}
+                    ref={i === 0 ? firstLinkRef : undefined}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    aria-current={isActive ? "page" : undefined}
+                    className={cn(
+                      "rise font-display block text-2xl font-semibold tracking-tight transition-colors duration-200",
+                      isActive
+                        ? "text-accent-primary"
+                        : "text-text-secondary hover:text-text-primary",
+                    )}
+                    style={
+                      { "--rise-delay": `${i * 0.04}s` } as React.CSSProperties
+                    }
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+              <Button
+                asChild
+                size="lg"
+                className="rise"
+                style={
+                  {
+                    "--rise-delay": `${NAV_LINKS.length * 0.04}s`,
+                  } as React.CSSProperties
+                }
+              >
+                <Link href="/contact" onClick={() => setMobileOpen(false)}>
+                  Start a project
+                </Link>
+              </Button>
+            </nav>
+          </div>,
+          document.body,
+        )}
     </header>
   );
 }

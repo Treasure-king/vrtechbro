@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { toDate } from '@/lib/format-date'
 import { supabase } from '@/lib/supabase'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -31,9 +32,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogPages: MetadataRoute.Sitemap = (blogs || []).map((b) => ({
     url: `${baseUrl}/blog/${b.slug}`,
     lastModified: b.updated_at
-      ? new Date(b.updated_at)
+      ? toDate(b.updated_at)
       : b.published_at
-      ? new Date(b.published_at)
+      ? toDate(b.published_at)
       : new Date(),
     changeFrequency: 'yearly' as const,
     priority: 0.6,

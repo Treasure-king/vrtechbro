@@ -676,3 +676,10 @@ Tailwind CSS v4 uses modern `@theme` OKLCH color definitions:
 - New react-hooks lint rules fixed by deriving state instead of setting it in effects (navbar route-change close, slug input, blog list hydration flag via useSyncExternalStore, workbench typing, reveal hook).
 - Verified on the dev server: desktop Playwright project 53 passed / 2 skipped, mobile menu tests pass.
 - Copy finalised: FAQ answers rewritten to match the Terms and real support hours (no 24/7, no 14-day refund), Terms and Privacy "last updated" 2026-10-17, comparison wording softened.
+
+### 2026-10-18
+- **Mobile navbar fix:** the menu overlay is rendered with a portal on `document.body` (the header's backdrop-filter made the header the containing block for the fixed overlay, so it was 96px tall with links off-screen). The overlay has its own logo + close button and a solid background; the header keeps a constant height (logo 64px, py-2) so nothing jumps on phones; Lenis is disabled on touch devices.
+- **Hydration fix:** React #418 on the live site came from local-timezone date formatting (Vercel = UTC, visitors = local) plus `blogs.published_at` stored without a time zone. All dates now go through `lib/format-date.ts` (UTC parsing + formatting).
+- **Sentry:** `@sentry/nextjs` 11 wired in (instrumentation files, `app/global-error.tsx`, page error boundary, `withSentryConfig` with `tunnelRoute: /sentry-tunnel`). Off until `NEXT_PUBLIC_SENTRY_DSN` is set; env vars in README. Privacy via `dataCollection` (no user info, cookies or bodies); no Session Replay.
+- **Live Lighthouse (mobile, home, before these fixes):** 86 / 100 / 93 / 100. LCP 3.3 s (hero image; render delay from framework JS). Best-practices loss was the hydration error.
+- **Learning guide:** `docs/learning-guide.md` explains the concepts behind the whole build.

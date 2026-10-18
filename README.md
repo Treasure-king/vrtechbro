@@ -69,6 +69,14 @@
 | `EMAIL_TO` | Destination inbox for contact & career forms | Yes |
 | `EMAIL_FROM` | Verified sender address in Resend (default: `onboarding@resend.dev`) | Optional |
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Google Analytics 4 Measurement ID (`G-XXXXXXXXXX`) | Optional |
+| `NEXT_PUBLIC_SENTRY_DSN` | Sentry project DSN (Project Settings → Client Keys). Sentry stays off while this is empty | Optional |
+| `SENTRY_ORG` | Sentry organisation slug (from the URL `sentry.io/organizations/<slug>/`) | With Sentry |
+| `SENTRY_PROJECT` | Sentry project slug | With Sentry |
+| `SENTRY_AUTH_TOKEN` | Organisation auth token for uploading source maps at build time. **Secret** — set only in Vercel, never in the repo | With Sentry |
+
+### Error tracking (Sentry)
+
+Errors from the browser, server components, server actions and API routes are reported to Sentry once `NEXT_PUBLIC_SENTRY_DSN` is set (`instrumentation.ts`, `instrumentation-client.ts`, `sentry.*.config.ts`, `app/global-error.tsx`). Browser reports travel through `/sentry-tunnel` on this domain, so the CSP needs no change and ad blockers don't drop them. Privacy: user details, cookies and request bodies are never sent (`dataCollection` in each config). Session Replay is intentionally off to keep pages light.
 
 ---
 

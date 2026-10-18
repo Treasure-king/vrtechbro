@@ -1,3 +1,4 @@
+import { formatDate, isoDate } from "@/lib/format-date";
 import Link from "next/link";
 import { RevealItem } from "@/components/motion/reveal-item";
 import { Spotlight } from "@/components/motion/spotlight";
@@ -20,12 +21,8 @@ export function WritingList({ posts }: { posts: BlogCardProps[] }) {
             <Spotlight className="grid gap-2 py-6 md:grid-cols-12 md:items-baseline md:gap-8 md:px-4">
               <span className="text-text-muted text-sm md:col-span-2">
                 {post.published_at && (
-                  <time dateTime={new Date(post.published_at).toISOString()}>
-                    {new Date(post.published_at).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
+                  <time dateTime={isoDate(post.published_at)}>
+                    {formatDate(post.published_at)}
                   </time>
                 )}
               </span>

@@ -1,3 +1,4 @@
+import { isoDate } from "@/lib/format-date";
 import { Metadata } from "next";
 import { SITE_IMAGES } from "@/lib/images";
 import Link from "next/link";
@@ -197,7 +198,7 @@ const BlogPage = async ({
                 <div>
                   <dt className="text-text-muted">Published</dt>
                   <dd className="text-text-primary mt-1">
-                    <time dateTime={new Date(blog.published_at).toISOString()}>
+                    <time dateTime={isoDate(blog.published_at)}>
                       {formatPostDate(blog.published_at)}
                     </time>
                   </dd>

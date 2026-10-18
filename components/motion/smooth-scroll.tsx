@@ -10,6 +10,10 @@ import "lenis/dist/lenis.css";
 export function SmoothScroll() {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Phones and tablets already scroll smoothly; Lenis there only fights the
+    // browser's own momentum, address-bar resizing and sticky elements
+    if (window.matchMedia("(hover: none) and (pointer: coarse)").matches)
+      return;
 
     let cancelled = false;
     let frame = 0;

@@ -1,3 +1,4 @@
+import { formatDate as formatUtcDate } from "@/lib/format-date";
 /** Simple responsive table shell for admin lists. */
 export function DataTable({
   headers,
@@ -40,9 +41,5 @@ export function DataTable({
 
 export function formatDate(value?: string | null) {
   if (!value) return "–";
-  return new Date(value).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+  return formatUtcDate(value, "short", "en-GB");
 }
